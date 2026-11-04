@@ -333,7 +333,16 @@
       if (Lampa.Storage) record = Lampa.Storage.get(DEVICE_KEY, null);
     } catch (e) {}
     if (!record || !record.id || typeof record !== 'object') {
-      var randomPart = String(Math.random()).slice(2, 12) + String(Math.random()).slice(2, 10);
+      var randomPart = '';
+      try {
+        if (window.crypto && typeof window.crypto.getRandomValues === 'function') {
+          var bytes = new Uint8Array(16);
+          window.crypto.getRandomValues(bytes);
+          for (var n=0; n<bytes.length; n++)
+            randomPart += ('0' + bytes[n].toString(16)).slice(-2);
+        }
+      } catch (error) {}
+      if (!randomPart) randomPart=String(Math.random()).slice(2, 12)+String(Math.random()).slice(2, 10);
       record = {id: randomPart, created_at: Date.now(), name: ''};
     }
     if (!record.name) {
@@ -564,7 +573,7 @@
       entries.push({title:'Откатить последнее групповое обновление',action:'rollback'});
       var ownAuto=Boolean(Lampa.Storage && Lampa.Storage.get(AUTO_OWN_KEY,false));
       entries.push({title:'Автообновление моих: '+(ownAuto?'включено':'выключено'),
-        subtitle:'Меняет URL только собственных плагинов. Перезапуск после проверки.',
+        subtitle:'Меняет URL собственных плагинов. Код обновится после следующего запуска Lampa.',
         action:'auto_owned'});
       Lampa.Select.show({
         title:'My Store · это устройство',
