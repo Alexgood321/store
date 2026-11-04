@@ -1,0 +1,29 @@
+name: My Store JavaScript checks
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'my_store_live.js'
+      - 'live_catalog.json'
+      - 'tests/store-versions.cjs'
+      - '.github/workflows/store-tests.yml'
+  pull_request:
+    paths:
+      - 'my_store_live.js'
+      - 'live_catalog.json'
+      - 'tests/store-versions.cjs'
+      - '.github/workflows/store-tests.yml'
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check my_store_live.js
+      - run: node --check tests/store-versions.cjs
+      - run: node tests/store-versions.cjs
+      - run: python3 -m json.tool live_catalog.json > /dev/null
