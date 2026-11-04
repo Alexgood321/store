@@ -29,7 +29,7 @@
         {
           "name": "HDREZKA",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@84427788c12c9df96cfe37d9c915946b970442f4/rezka.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@3093a703f59d614e1c289ff2d2a672e6b133d9dd/rezka.js",
           "descr": "Интеграция HDRezka: просмотр, озвучки, Premium-метки, коллекции, «Досмотреть» и прогресс. Синхронизация требует настроенного HTTPS-шлюза.",
           "version": "1.7.4"
         },
@@ -38,7 +38,7 @@
           "author": "Alexgood321",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
           "descr": "Персональный магазин Lampa: установка расширений, проверка версий, обновления, журнал изменений и управление устройством.",
-          "version": "3.2.0"
+          "version": "3.3.0"
         }
       ]
     },
@@ -89,7 +89,7 @@
         {
           "name": "HDREZKA",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@84427788c12c9df96cfe37d9c915946b970442f4/rezka.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@3093a703f59d614e1c289ff2d2a672e6b133d9dd/rezka.js",
           "descr": "Интеграция HDRezka: просмотр, озвучки, Premium-метки, коллекции, «Досмотреть» и прогресс. Синхронизация требует настроенного HTTPS-шлюза.",
           "version": "1.7.4"
         },
@@ -243,10 +243,10 @@
         "path": "rezka.js",
         "ref": "main",
         "owned": true,
-        "sha": "84427788c12c9df96cfe37d9c915946b970442f4",
+        "sha": "3093a703f59d614e1c289ff2d2a672e6b133d9dd",
         "version": "1.7.4",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@84427788c12c9df96cfe37d9c915946b970442f4/rezka.js",
-        "published_at": "2026-11-04T15:25:15Z"
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@3093a703f59d614e1c289ff2d2a672e6b133d9dd/rezka.js",
+        "published_at": "2026-11-04T15:23:33Z"
       },
       "Torrent Styles": {
         "repo": "Alexgood321/store",
@@ -333,13 +333,13 @@
         "path": "my_store_runtime.js",
         "ref": "main",
         "owned": false,
-        "sha": "f679694e22d5dec3df07339e1b7afcf090c8a39d",
-        "version": "3.2.0",
+        "sha": "5868a5ef3a3c0c8d1e184e1dc67450eaf5f257fc",
+        "version": "3.3.0",
         "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
-        "published_at": "2026-11-04T15:14:32Z"
+        "published_at": "2026-11-04T15:29:27Z"
       }
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-04T15:14:44Z"
+    "last_checked_at": "2026-11-04T15:29:42Z"
   }
 }
