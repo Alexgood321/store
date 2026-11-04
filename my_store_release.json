@@ -3,8 +3,8 @@
   "name": "My Store",
   "runtime": {
     "path": "my_store_runtime.js",
-    "version": "3.4.0",
-    "sha": "f5c56f1bc9a59fa26ef5b6582a16cd5c52d6fb4b"
+    "version": "3.4.1",
+    "sha": "b8aa4ed92d9dbd2581089f9c64b2d5d8e2b95ecd"
   },
   "loader": {
     "path": "my_store_loader.js",
