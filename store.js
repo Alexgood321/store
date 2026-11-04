@@ -5,15 +5,15 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '2.0.0',
+    version: '2.1.0',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
     emergency: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@76c6506aa50951e65b3b6edae5c4faf68490dfb8/my_extensions_v1_14.json'
   };
 
-  if (window.__alexgood321_personal_store_2000_loaded) return;
-  window.__alexgood321_personal_store_2000_loaded = true;
+  if (window.__alexgood321_personal_store_2100_loaded) return;
+  window.__alexgood321_personal_store_2100_loaded = true;
 
   var initialized = false;
 
@@ -104,7 +104,7 @@
   var installedGrid = null;
   var focusedGridCard = null;
   var patchedGridControllers = [];
-  var skinClass = 'alexgood321-skin-v200';
+  var skinClass = 'alexgood321-skin-v210';
 
 
   // Live manifest is fetched at each opening. Failed sources fall back safely.
@@ -319,6 +319,191 @@
 
 
   // This custom store shows the native installed list as a wrapped vertical grid.
+
+  var VERSION_CACHE_KEY = 'alexgood321_installed_version_cache_v1';
+  var sourceVersionCache = null;
+  var versionTasks = [];
+  var versionRequests = {};
+  var versionActive = 0;
+  var versionLimit = 2;
+
+  function savedVersions() {
+    if (sourceVersionCache) return sourceVersionCache;
+    var old = {};
+    try {
+      if (Lampa.Storage && typeof Lampa.Storage.get === 'function')
+        old = Lampa.Storage.get(VERSION_CACHE_KEY, {}) || {};
+    } catch (e) {}
+    sourceVersionCache = old && typeof old === 'object' && !Array.isArray(old) ? old : {};
+    return sourceVersionCache;
+  }
+
+  function putVersion(url, value) {
+    var cache = savedVersions();
+    cache[url] = {version: value || '', time: Date.now()};
+    var urls = Object.keys(cache);
+    if (urls.length > 65) {
+      urls.sort(function (a,b) { return (cache[b].time || 0) - (cache[a].time || 0); });
+      for (var i=65; i<urls.length; i++) delete cache[urls[i]];
+    }
+    try {
+      if (Lampa.Storage && typeof Lampa.Storage.set === 'function')
+        Lampa.Storage.set(VERSION_CACHE_KEY, cache);
+    } catch (e) {}
+  }
+
+  function isFloatingURL(url) {
+    return /@(main|master|dev|latest)\//i.test(url) ||
+      !/@[a-f0-9]{7,40}\//i.test(url);
+  }
+
+  function cachedSourceVersion(url) {
+    var cache = savedVersions();
+    var entry = cache[url];
+    if (!entry) return null;
+    var ttl = entry.version ? (isFloatingURL(url) ? 15*60*1000 : 30*24*60*60*1000) : 20*60*1000;
+    return Date.now() - (entry.time || 0) < ttl ? entry.version : null;
+  }
+
+  function parseSourceVersion(raw) {
+    if (typeof raw !== 'string' || !raw) return '';
+    var header = raw.slice(0, 36000);
+    var rules = [
+      /(?:^|\n)\s*(?:\/\*+\s*)?(?:\*\s*)?(?:Версия|Version)\s*:\s*v?(\d+(?:\.\d+){1,3})\b/im,
+      /\b(?:var|const|let)\s+VERSION\s*=\s*['"]v?(\d+(?:\.\d+){1,3})['"]/i,
+      /\bversion\s*:\s*['"]v?(\d+(?:\.\d+){1,3})['"]/i,
+      /\bversion\s*=\s*['"]v?(\d+(?:\.\d+){1,3})['"]/i
+    ];
+    for (var i=0; i<rules.length; i++) {
+      var found = header.match(rules[i]);
+      if (found) return found[1];
+    }
+    return '';
+  }
+
+  function requestVersion(url) {
+    if (Object.prototype.hasOwnProperty.call(versionRequests,url) ||
+        cachedSourceVersion(url) !== null ||
+        !/^https?:\/\/[^ ]+\/[^ ]+\.js(?:[?#]|$)/i.test(url) ||
+        !Lampa.Reguest) return;
+    versionRequests[url] = true;
+    versionTasks.push(url);
+    runVersionTasks();
+  }
+
+  function runVersionTasks() {
+    while (versionActive < versionLimit && versionTasks.length) {
+      (function (url) {
+        versionActive++;
+        var finished = false;
+        function finish(version) {
+          if (finished) return;
+          finished = true;
+          delete versionRequests[url];
+          versionActive--;
+          putVersion(url, version);
+          if (skinRoot) queueSkin();
+          runVersionTasks();
+        }
+        try {
+          var request = new Lampa.Reguest();
+          if (!request || typeof request.native !== 'function') return finish('');
+          request.native(url, function (body) {
+            finish(parseSourceVersion(body));
+          }, function () { finish(''); }, false, {dataType:'text', timeout:7500});
+        } catch (e) { finish(''); }
+      })(versionTasks.shift());
+    }
+  }
+
+  function actualInstalledRecord(displayedUrl) {
+    if (!Lampa.Plugins || typeof Lampa.Plugins.get !== 'function') return null;
+    var records = Lampa.Plugins.get() || [];
+    var safe = String(displayedUrl || '').replace(/^http:\/\//i,'https://');
+    for (var i=0; i<records.length; i++) {
+      var item = records[i];
+      if (item && item.url &&
+          String(item.url).replace(/^http:\/\//i,'https://') === safe) return item;
+    }
+    for (var j=0; j<records.length; j++) {
+      var possible = records[j];
+      if (possible && possible.url && normalized(possible.url) === normalized(displayedUrl))
+        return possible;
+    }
+    return null;
+  }
+
+  function metadataForURL(url) {
+    var key = normalized(url);
+    for (var name in LIVE_META) {
+      if (Object.prototype.hasOwnProperty.call(LIVE_META, name) &&
+          LIVE_META[name] && normalized(LIVE_META[name].link) === key)
+        return {name:name, latest:LIVE_META[name]};
+    }
+    return null;
+  }
+
+  function installedVersion(url, info) {
+    var sha = String(url || '').match(/@([a-f0-9]{7,40})\//i);
+    if (info && info.sha && sha && info.sha.indexOf(sha[1].toLowerCase()) === 0)
+      return info.version || '';
+    var cached = cachedSourceVersion(url);
+    if (cached === null) requestVersion(url);
+    return cached;
+  }
+
+  function isVersionNewer(older, newer) {
+    if (!/^\d+(?:\.\d+){1,3}$/.test(String(older || '')) ||
+        !/^\d+(?:\.\d+){1,3}$/.test(String(newer || ''))) return false;
+    var a = older.split('.'), b = newer.split('.');
+    for (var i=0; i<4; i++) {
+      var av = Number(a[i] || 0), bv = Number(b[i] || 0);
+      if (bv > av) return true;
+      if (bv < av) return false;
+    }
+    return false;
+  }
+
+  function versionText(url, label) {
+    var match = metadataForURL(url);
+    var available = match && match.latest;
+    var found = installedVersion(url, available);
+    var installed = found === null ? 'проверяется…' : (found || 'не определена');
+    var text = 'Установлена: ' + installed;
+    var newer = false;
+    if (available && available.version) {
+      var pin = String(url).match(/@([a-f0-9]{7,40})\//i);
+      var pinnedOld = pin && available.sha && available.sha.indexOf(pin[1].toLowerCase()) !== 0;
+      newer = Boolean(pinnedOld || isVersionNewer(found, available.version));
+      if (newer) text += ' · Доступна: ' + available.version;
+    }
+    return {text:text, update:newer};
+  }
+
+  function refreshInstalledVersions() {
+    if (!installedGrid) return;
+    var cards = installedGrid.querySelectorAll('.extensions__item');
+    for (var i=0; i<cards.length; i++) {
+      var card = cards[i];
+      var descr = card.querySelector('.extensions__item-descr');
+      var visibleURL = descr ? String(descr.textContent || '').trim() : '';
+      if (!/^https?:\/\//i.test(visibleURL)) continue;
+      var installed = actualInstalledRecord(visibleURL);
+      if (!installed || !installed.url) continue;
+      var info = versionText(installed.url, installed.name);
+      var mark = card.querySelector('.alex-installed-version');
+      if (!mark) {
+        mark = document.createElement('div');
+        mark.className = 'alex-installed-version';
+        var footer = card.querySelector('.extensions__item-footer');
+        if (footer) card.insertBefore(mark, footer);
+        else card.appendChild(mark);
+      }
+      if (mark.textContent !== info.text) mark.textContent = info.text;
+      mark.classList.toggle('alex-installed-version--update', Boolean(info.update));
+    }
+  }
+
   function markInstalledGrid() {
     if (!skinRoot) return;
     var first = skinRoot.querySelector('.extensions__block');
@@ -333,10 +518,11 @@
       focusedGridCard = null;
     }
     first.classList.add('alex-installed-grid');
+    refreshInstalledVersions();
     var cards = first.querySelectorAll('.scroll__body > .selector');
     for (var i = 0; i < cards.length; i++) {
-      if (cards[i].__alexGrid2000) continue;
-      cards[i].__alexGrid2000 = true;
+      if (cards[i].__alexGrid2100) continue;
+      cards[i].__alexGrid2100 = true;
       cards[i].addEventListener('hover:focus', function () {
         focusedGridCard = this;
         enableGridArrows();
@@ -352,10 +538,10 @@
     var controller = active && active.controller;
     if (!active || active.name !== 'extensions_line' || !controller ||
         !controller.link || controller.link.html !== installedGrid ||
-        controller.__alexGrid2000) return;
+        controller.__alexGrid2100) return;
     var originalUp = controller.up;
     var originalDown = controller.down;
-    controller.__alexGrid2000 = true;
+    controller.__alexGrid2100 = true;
     patchedGridControllers.push({value:controller, up:originalUp, down:originalDown});
     controller.up = function () {
       if (!moveGridRow(-1) && typeof originalUp === 'function') originalUp.apply(this, arguments);
@@ -537,7 +723,7 @@
       var patch = patchedGridControllers[i];
       patch.value.up = patch.up;
       patch.value.down = patch.down;
-      delete patch.value.__alexGrid2000;
+      delete patch.value.__alexGrid2100;
     }
     patchedGridControllers = [];
     if (installedGrid) installedGrid.classList.remove('alex-installed-grid');
@@ -565,10 +751,10 @@
     skinRoot = root;
     root.classList.add(skinClass);
     watchInstalls();
-    var css = document.getElementById('alexgood321-store-style-v200');
+    var css = document.getElementById('alexgood321-store-style-v210');
     if (!css) {
       css = document.createElement('style');
-      css.id = 'alexgood321-store-style-v200';
+      css.id = 'alexgood321-store-style-v210';
       css.textContent = [
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item{background-color:var(--alex-category-fill)!important;color:#17212F!important;box-sizing:border-box;padding:1.1em 1em 1em;transition:background-color .18s ease,box-shadow .18s ease;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{padding-right:2.4em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3;min-height:1.25em;}',
@@ -577,11 +763,16 @@
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-included{display:none!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item.focus{background-image:linear-gradient(rgba(255,255,255,.11),rgba(255,255,255,.11))!important;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);}',
         '.extensions.' + skinClass + ' .scroll--mask:not(.scroll--horizontal){-webkit-mask-image:none!important;mask-image:none!important;}',
-        ".extensions.alexgood321-skin-v200 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
-        ".extensions.alexgood321-skin-v200 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
-        ".extensions.alexgood321-skin-v200 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
-        ".extensions.alexgood321-skin-v200 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
-        "@media(max-width:640px){.extensions.alexgood321-skin-v200 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
+        ".extensions.alexgood321-skin-v210 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
+        ".extensions.alexgood321-skin-v210 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
+        ".extensions.alexgood321-skin-v210 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
+        ".extensions.alexgood321-skin-v210 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
+
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__item{height:auto!important;min-height:11.5em;box-sizing:border-box;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version{font-size:.77em;line-height:1.35;margin-top:.45em;margin-bottom:.3em;color:#B4C7E6;overflow-wrap:anywhere;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version--update{color:#EDC37C;font-weight:700;}',
+
+        "@media(max-width:640px){.extensions.alexgood321-skin-v210 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{color:#3E4A5B!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-name{color:#17212F!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-descr{color:#283548!important;}',
