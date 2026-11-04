@@ -4,7 +4,7 @@
   "runtime": {
     "path": "my_store_runtime.js",
     "version": "3.2.0",
-    "sha": "a3380ac95206ee6e2e76cc17dafc9b1a723358b6"
+    "sha": "f679694e22d5dec3df07339e1b7afcf090c8a39d"
   },
   "loader": {
     "path": "my_store_loader.js",
