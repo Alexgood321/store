@@ -36,6 +36,42 @@
       "path": "navigation_bar.js",
       "ref": "main",
       "owned": false
+    },
+    "Продолжить просмотр": {
+      "repo": "arst113/lampa-watch-resume",
+      "path": "watch_resume.js",
+      "ref": "main",
+      "owned": false
+    },
+    "Онлайн Мод": {
+      "repo": "nb557/plugins",
+      "path": "online_mod.js",
+      "ref": "main",
+      "owned": false
+    },
+    "Рейтинг КиноПоиск и IMDb": {
+      "repo": "nb557/plugins",
+      "path": "rating.js",
+      "ref": "main",
+      "owned": false
+    },
+    "Настройка шапки": {
+      "repo": "and7ey/lampa",
+      "path": "head_filter.js",
+      "ref": "main",
+      "owned": false
+    },
+    "TraktTV": {
+      "repo": "lampame/main",
+      "path": "trakttv.js",
+      "ref": "main",
+      "owned": false
+    },
+    "EasyTorrent": {
+      "repo": "darkestclouds/darkestclouds.github.io",
+      "path": "plugins/easytorrent/easytorrent.min.js",
+      "ref": "main",
+      "owned": false
     }
   },
   "policy": {
