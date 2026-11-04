@@ -29,9 +29,9 @@
         {
           "name": "HDREZKA",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@df85a7eb4d5a403a09eda34792fde0205327bf9b/rezka.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@c7c48fcab739f79c3a9c3b2522deaa3cebaedd6d/rezka.js",
           "descr": "Интеграция HDRezka: просмотр, озвучки, Premium-метки, коллекции, «Досмотреть» и прогресс. Синхронизация требует настроенного HTTPS-шлюза.",
-          "version": "1.7.0"
+          "version": "1.7.1"
         }
       ]
     },
@@ -82,9 +82,9 @@
         {
           "name": "HDREZKA",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@df85a7eb4d5a403a09eda34792fde0205327bf9b/rezka.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@c7c48fcab739f79c3a9c3b2522deaa3cebaedd6d/rezka.js",
           "descr": "Интеграция HDRezka: просмотр, озвучки, Premium-метки, коллекции, «Досмотреть» и прогресс. Синхронизация требует настроенного HTTPS-шлюза.",
-          "version": "1.7.0"
+          "version": "1.7.1"
         },
         {
           "name": "Онлайн Мод",
@@ -208,7 +208,8 @@
         "owned": true,
         "sha": "02f879c9d18f05b9bee19baf09d1203bae5f0e18",
         "version": "3.8.2",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@02f879c9d18f05b9bee19baf09d1203bae5f0e18/surs.js"
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@02f879c9d18f05b9bee19baf09d1203bae5f0e18/surs.js",
+        "published_at": "2026-11-04T11:13:39Z"
       },
       "Home Categories Pro": {
         "repo": "Alexgood321/lampa-plugins",
@@ -217,7 +218,8 @@
         "owned": true,
         "sha": "0741ed1cba12c50c7acab47436577a27f8953335",
         "version": "2.0.0",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@0741ed1cba12c50c7acab47436577a27f8953335/home_categories.js"
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@0741ed1cba12c50c7acab47436577a27f8953335/home_categories.js",
+        "published_at": "2026-11-02T00:45:08Z"
       },
       "NUM Series Pro": {
         "repo": "Alexgood321/lampa-plugins",
@@ -226,16 +228,18 @@
         "owned": true,
         "sha": "b8a6411b3cf6c4d67de8e994635598d895e41952",
         "version": "1.3.0",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@b8a6411b3cf6c4d67de8e994635598d895e41952/num_series.js"
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@b8a6411b3cf6c4d67de8e994635598d895e41952/num_series.js",
+        "published_at": "2026-11-01T23:41:54Z"
       },
       "HDREZKA": {
         "repo": "Alexgood321/lampa-hdrezka",
         "path": "rezka.js",
         "ref": "main",
         "owned": true,
-        "sha": "df85a7eb4d5a403a09eda34792fde0205327bf9b",
-        "version": "1.7.0",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@df85a7eb4d5a403a09eda34792fde0205327bf9b/rezka.js"
+        "sha": "c7c48fcab739f79c3a9c3b2522deaa3cebaedd6d",
+        "version": "1.7.1",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@c7c48fcab739f79c3a9c3b2522deaa3cebaedd6d/rezka.js",
+        "published_at": "2026-11-04T11:43:58Z"
       },
       "Torrent Styles": {
         "repo": "Alexgood321/store",
@@ -244,7 +248,8 @@
         "owned": false,
         "sha": "ae5c00323ea355d2370b8dc36046f8a2618c87d1",
         "version": "1.2.1",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/torrent_styles_v2.js?v=1.2.1"
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/torrent_styles_v2.js?v=1.2.1",
+        "published_at": "2026-09-29T06:48:51Z"
       },
       "Navigation Bar": {
         "repo": "lampaplugins/store",
@@ -253,7 +258,8 @@
         "owned": false,
         "sha": "536bc3d7d641826a3f2e14c7bdd5b633f9b47be6",
         "version": "1.0.0",
-        "link": "https://lampaplugins.github.io/store/navigation_bar.js"
+        "link": "https://lampaplugins.github.io/store/navigation_bar.js",
+        "published_at": "2026-03-02T05:28:56Z"
       },
       "Продолжить просмотр": {
         "repo": "arst113/lampa-watch-resume",
@@ -262,7 +268,8 @@
         "owned": false,
         "sha": "e40d9d8f7afe1c96f34ca84167e9359943190cf8",
         "version": "rev-e40d9d8f",
-        "link": "https://arst113.github.io/lampa-watch-resume/watch_resume.js"
+        "link": "https://arst113.github.io/lampa-watch-resume/watch_resume.js",
+        "published_at": "2026-09-08T22:36:43Z"
       },
       "Онлайн Мод": {
         "repo": "nb557/plugins",
@@ -271,7 +278,8 @@
         "owned": false,
         "sha": "cde2cf057e6634df43553fe8deeaef5030f95945",
         "version": "rev-cde2cf05",
-        "link": "https://nb557.github.io/plugins/online_mod.js"
+        "link": "https://nb557.github.io/plugins/online_mod.js",
+        "published_at": "2026-10-25T21:55:46Z"
       },
       "Рейтинг КиноПоиск и IMDb": {
         "repo": "nb557/plugins",
@@ -280,7 +288,8 @@
         "owned": false,
         "sha": "9935415e8eeb95ecbe48462232cd97130c07d96c",
         "version": "rev-9935415e",
-        "link": "https://nb557.github.io/plugins/rating.js"
+        "link": "https://nb557.github.io/plugins/rating.js",
+        "published_at": "2026-02-07T19:58:54Z"
       },
       "Настройка шапки": {
         "repo": "and7ey/lampa",
@@ -289,7 +298,8 @@
         "owned": false,
         "sha": "36988adf6314916f85cbced5e46c343cf9831180",
         "version": "0.2.1",
-        "link": "https://and7ey.github.io/lampa/head_filter.js"
+        "link": "https://and7ey.github.io/lampa/head_filter.js",
+        "published_at": "2026-01-18T12:43:59Z"
       },
       "TraktTV": {
         "repo": "lampame/main",
@@ -298,7 +308,8 @@
         "owned": false,
         "sha": "57a95c5f34d8568180c905a1005f3b0277fcb2be",
         "version": "rev-57a95c5f",
-        "link": "https://lampame.github.io/main/trakttv.js"
+        "link": "https://lampame.github.io/main/trakttv.js",
+        "published_at": "2025-11-16T08:59:42Z"
       },
       "EasyTorrent": {
         "repo": "darkestclouds/darkestclouds.github.io",
@@ -307,7 +318,8 @@
         "owned": false,
         "sha": "fedbce76bafcb9746c8866cf7e58fcbb92f9e4ea",
         "version": "2.0",
-        "link": "https://darkestclouds.github.io/plugins/easytorrent/easytorrent.min.js"
+        "link": "https://darkestclouds.github.io/plugins/easytorrent/easytorrent.min.js",
+        "published_at": "2025-12-28T22:45:48Z"
       }
     },
     "auto_update_installed": false
