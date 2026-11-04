@@ -22,9 +22,9 @@
         {
           "name": "NUM Series Pro",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d89c43ae87fa1d0f273f3bb4b960ea6367db4d17/num_series.js",
-          "descr": "Адаптивное управление сезонами: на телефоне компактный выбор сезона без обрезанных вкладок, на ТВ горизонтальные вкладки, прогресс серий и продолжение просмотра.",
-          "version": "2.0.2"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@5ceb500f9b1f727638a43b75cc85f2529c793f09/num_series.js",
+          "descr": "Навигация по сезонам свайпом слева направо на iPhone, увеличенные вкладки и кнопка просмотра, правильные статусы серии, управление прогрессом и поддержка пульта.",
+          "version": "2.0.3"
         },
         {
           "name": "HDREZKA",
@@ -76,9 +76,9 @@
         {
           "name": "NUM Series Pro",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d89c43ae87fa1d0f273f3bb4b960ea6367db4d17/num_series.js",
-          "descr": "Адаптивное управление сезонами: на телефоне компактный выбор сезона без обрезанных вкладок, на ТВ горизонтальные вкладки, прогресс серий и продолжение просмотра.",
-          "version": "2.0.2"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@5ceb500f9b1f727638a43b75cc85f2529c793f09/num_series.js",
+          "descr": "Навигация по сезонам свайпом слева направо на iPhone, увеличенные вкладки и кнопка просмотра, правильные статусы серии, управление прогрессом и поддержка пульта.",
+          "version": "2.0.3"
         }
       ]
     },
@@ -233,10 +233,10 @@
         "path": "num_series.js",
         "ref": "main",
         "owned": true,
-        "sha": "d89c43ae87fa1d0f273f3bb4b960ea6367db4d17",
-        "version": "2.0.2",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d89c43ae87fa1d0f273f3bb4b960ea6367db4d17/num_series.js",
-        "published_at": "2026-11-04T19:51:54Z"
+        "sha": "5ceb500f9b1f727638a43b75cc85f2529c793f09",
+        "version": "2.0.3",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@5ceb500f9b1f727638a43b75cc85f2529c793f09/num_series.js",
+        "published_at": "2026-11-04T19:59:28Z"
       },
       "HDREZKA": {
         "repo": "Alexgood321/lampa-hdrezka",
@@ -340,6 +340,6 @@
       }
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-04T19:53:09.517Z"
+    "last_checked_at": "2026-11-04T20:00:17.847Z"
   }
 }
