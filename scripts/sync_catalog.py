@@ -91,7 +91,7 @@ def sync() -> int:
             raw = fetch_text("https://raw.githubusercontent.com/" + repo + "/" + sha + "/" + path)
             if len(raw) < 30 or not re.search(r"\b(function|const|var|let|Lampa)\b", raw):
                 raise ValueError("Remote source is not recognizable JavaScript")
-            version = extract_version(raw) or old.get("version") or "commit"
+            version = extract_version(raw) or ("rev-" + sha[:8])
             link = "https://cdn.jsdelivr.net/gh/" + repo + "@" + sha + "/" + path
             tracked[name] = {"repo": repo, "path": path, "ref": ref,
                              "owned": bool(item.get("owned")), "sha": sha,
