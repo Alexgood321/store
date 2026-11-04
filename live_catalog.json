@@ -8,9 +8,9 @@
         {
           "name": "SURS Pro",
           "author": "aviamovie / Lampa Community / Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@09bb4a61e1a93546d646b2d77f040b88aad272be/surs.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d37608a015feeec8c693803c8fa468819a352779/surs.js",
           "descr": "Настраиваемые подборки и полки главного экрана: порядок, скрытие, источники, редактор с пульта и сенсорного экрана. Исправлен сбой sid при создании главного экрана.",
-          "version": "3.8.0"
+          "version": "3.8.1"
         },
         {
           "name": "Home Categories Pro",
@@ -42,9 +42,9 @@
         {
           "name": "SURS Pro",
           "author": "aviamovie / Lampa Community / Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@09bb4a61e1a93546d646b2d77f040b88aad272be/surs.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d37608a015feeec8c693803c8fa468819a352779/surs.js",
           "descr": "Настраиваемые подборки и полки главного экрана: порядок, скрытие, источники, редактор с пульта и сенсорного экрана. Исправлен сбой sid при создании главного экрана.",
-          "version": "3.8.0"
+          "version": "3.8.1"
         },
         {
           "name": "Home Categories Pro",
@@ -56,8 +56,9 @@
         {
           "name": "Продолжить просмотр",
           "author": "ARST113",
-          "link": "https://arst113.github.io/lampa-watch-resume/watch_resume.js",
-          "descr": "Продолжение просмотра онлайн и торрентов. Ссылка из установленного расширения."
+          "link": "https://cdn.jsdelivr.net/gh/arst113/lampa-watch-resume@e40d9d8f7afe1c96f34ca84167e9359943190cf8/watch_resume.js",
+          "descr": "Продолжение просмотра онлайн и торрентов. Ссылка из установленного расширения.",
+          "version": "commit"
         }
       ]
     },
@@ -88,8 +89,9 @@
         {
           "name": "Онлайн Мод",
           "author": "nb557",
-          "link": "https://nb557.github.io/plugins/online_mod.js",
-          "descr": "Дополнительные онлайн-источники для фильмов и сериалов. На устройстве встречались две записи с одним адресом."
+          "link": "https://cdn.jsdelivr.net/gh/nb557/plugins@cde2cf057e6634df43553fe8deeaef5030f95945/online_mod.js",
+          "descr": "Дополнительные онлайн-источники для фильмов и сериалов. На устройстве встречались две записи с одним адресом.",
+          "version": "commit"
         }
       ]
     },
@@ -100,8 +102,9 @@
         {
           "name": "EasyTorrent",
           "author": "darkestclouds",
-          "link": "https://darkestclouds.github.io/plugins/easytorrent/easytorrent.min.js",
-          "descr": "Дополнительная сортировка и оценка торрент-раздач. Экспериментальный сторонний плагин."
+          "link": "https://cdn.jsdelivr.net/gh/darkestclouds/darkestclouds.github.io@fedbce76bafcb9746c8866cf7e58fcbb92f9e4ea/plugins/easytorrent/easytorrent.min.js",
+          "descr": "Дополнительная сортировка и оценка торрент-раздач. Экспериментальный сторонний плагин.",
+          "version": "2.0"
         },
         {
           "name": "Torrent Styles",
@@ -143,8 +146,9 @@
         {
           "name": "Настройка шапки",
           "author": "@and7ey",
-          "link": "https://and7ey.github.io/lampa/head_filter.js",
-          "descr": "Добавляет возможность скрыть элементы в шапке приложения Лампа"
+          "link": "https://cdn.jsdelivr.net/gh/and7ey/lampa@36988adf6314916f85cbced5e46c343cf9831180/head_filter.js",
+          "descr": "Добавляет возможность скрыть элементы в шапке приложения Лампа",
+          "version": "0.2.1"
         },
         {
           "name": "Navigation Bar",
@@ -162,14 +166,16 @@
         {
           "name": "TraktTV",
           "author": "@lampame",
-          "link": "https://lampame.github.io/main/trakttv.js",
-          "descr": "Интеграция Trakt.tv с Lampa. Адрес из списка установленных расширений."
+          "link": "https://cdn.jsdelivr.net/gh/lampame/main@57a95c5f34d8568180c905a1005f3b0277fcb2be/trakttv.js",
+          "descr": "Интеграция Trakt.tv с Lampa. Адрес из списка установленных расширений.",
+          "version": "commit"
         },
         {
           "name": "Рейтинг КиноПоиск и IMDb",
           "author": "@t_anton",
-          "link": "https://nb557.github.io/plugins/rating.js",
-          "descr": "Добавляет оценки КиноПоиска и IMDb в интерфейс Lampa."
+          "link": "https://cdn.jsdelivr.net/gh/nb557/plugins@9935415e8eeb95ecbe48462232cd97130c07d96c/rating.js",
+          "descr": "Добавляет оценки КиноПоиска и IMDb в интерфейс Lampa.",
+          "version": "commit"
         }
       ]
     },
@@ -200,9 +206,9 @@
         "path": "surs.js",
         "ref": "main",
         "owned": true,
-        "sha": "09bb4a61e1a93546d646b2d77f040b88aad272be",
-        "version": "3.8.0",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@09bb4a61e1a93546d646b2d77f040b88aad272be/surs.js"
+        "sha": "d37608a015feeec8c693803c8fa468819a352779",
+        "version": "3.8.1",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d37608a015feeec8c693803c8fa468819a352779/surs.js"
       },
       "Home Categories Pro": {
         "repo": "Alexgood321/lampa-plugins",
@@ -248,6 +254,60 @@
         "sha": "536bc3d7d641826a3f2e14c7bdd5b633f9b47be6",
         "version": "1.0.0",
         "link": "https://cdn.jsdelivr.net/gh/lampaplugins/store@536bc3d7d641826a3f2e14c7bdd5b633f9b47be6/navigation_bar.js"
+      },
+      "Продолжить просмотр": {
+        "repo": "arst113/lampa-watch-resume",
+        "path": "watch_resume.js",
+        "ref": "main",
+        "owned": false,
+        "sha": "e40d9d8f7afe1c96f34ca84167e9359943190cf8",
+        "version": "commit",
+        "link": "https://cdn.jsdelivr.net/gh/arst113/lampa-watch-resume@e40d9d8f7afe1c96f34ca84167e9359943190cf8/watch_resume.js"
+      },
+      "Онлайн Мод": {
+        "repo": "nb557/plugins",
+        "path": "online_mod.js",
+        "ref": "main",
+        "owned": false,
+        "sha": "cde2cf057e6634df43553fe8deeaef5030f95945",
+        "version": "commit",
+        "link": "https://cdn.jsdelivr.net/gh/nb557/plugins@cde2cf057e6634df43553fe8deeaef5030f95945/online_mod.js"
+      },
+      "Рейтинг КиноПоиск и IMDb": {
+        "repo": "nb557/plugins",
+        "path": "rating.js",
+        "ref": "main",
+        "owned": false,
+        "sha": "9935415e8eeb95ecbe48462232cd97130c07d96c",
+        "version": "commit",
+        "link": "https://cdn.jsdelivr.net/gh/nb557/plugins@9935415e8eeb95ecbe48462232cd97130c07d96c/rating.js"
+      },
+      "Настройка шапки": {
+        "repo": "and7ey/lampa",
+        "path": "head_filter.js",
+        "ref": "main",
+        "owned": false,
+        "sha": "36988adf6314916f85cbced5e46c343cf9831180",
+        "version": "0.2.1",
+        "link": "https://cdn.jsdelivr.net/gh/and7ey/lampa@36988adf6314916f85cbced5e46c343cf9831180/head_filter.js"
+      },
+      "TraktTV": {
+        "repo": "lampame/main",
+        "path": "trakttv.js",
+        "ref": "main",
+        "owned": false,
+        "sha": "57a95c5f34d8568180c905a1005f3b0277fcb2be",
+        "version": "commit",
+        "link": "https://cdn.jsdelivr.net/gh/lampame/main@57a95c5f34d8568180c905a1005f3b0277fcb2be/trakttv.js"
+      },
+      "EasyTorrent": {
+        "repo": "darkestclouds/darkestclouds.github.io",
+        "path": "plugins/easytorrent/easytorrent.min.js",
+        "ref": "main",
+        "owned": false,
+        "sha": "fedbce76bafcb9746c8866cf7e58fcbb92f9e4ea",
+        "version": "2.0",
+        "link": "https://cdn.jsdelivr.net/gh/darkestclouds/darkestclouds.github.io@fedbce76bafcb9746c8866cf7e58fcbb92f9e4ea/plugins/easytorrent/easytorrent.min.js"
       }
     },
     "auto_update_installed": false
