@@ -31,7 +31,7 @@ function scenario({enabled=false,playing=false,stale=false,saveFails=false,older
   const local={
     [KEY]:enabled,
     alexgood321_installed_version_cache_v1:{
-      [installed[0].url]:{version:older?'3.8.3':'3.9.0',time:Date.now()},
+      [installed[0].url]:{version:older?'3.8.3':catalog.meta.tracked['SURS Pro'].version,time:Date.now()},
       [installed[1].url]:{version:older?'1.7.3':'1.7.9',time:Date.now()},
       [installed[3].url]:{version:'1.9.0',time:Date.now()}
     }
@@ -175,6 +175,9 @@ assert.ok(outdated.notices.some(x=>x.includes('Массовое обновлен
 
 // An installed version newer than the catalog must not be downgraded.
 const newer=scenario({enabled:true,older:false});
+newer.local.alexgood321_installed_version_cache_v1[newer.installed[0].url] = {
+  version:'99.0.0',time:Date.now()
+};
 newer.browser.__batchQA.sync();
 newer.buttons[0].action();
 assert.equal(newer.saveCount(),0);
