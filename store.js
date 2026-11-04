@@ -5,15 +5,15 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '2.3.0',
+    version: '2.4.0',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
     emergency: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@76c6506aa50951e65b3b6edae5c4faf68490dfb8/my_extensions_v1_14.json'
   };
 
-  if (window.__alexgood321_personal_store_2300_loaded) return;
-  window.__alexgood321_personal_store_2300_loaded = true;
+  if (window.__alexgood321_personal_store_2400_loaded) return;
+  window.__alexgood321_personal_store_2400_loaded = true;
 
   var initialized = false;
 
@@ -59,6 +59,7 @@
 
     if (body.find('[data-component="' + CONFIG.component + '"]').length) {
       addUpdatesMenu(body);
+      addDeviceMenu(body);
       return;
     }
 
@@ -76,6 +77,7 @@
     if (anchor.length) anchor.after(html);
     else body.append(html);
     addUpdatesMenu(body);
+    addDeviceMenu(body);
     if (typeof main.update === 'function') main.update();
   }
 
@@ -92,6 +94,17 @@
   }
 
 
+  function addDeviceMenu(body) {
+    if (body.find('[data-component="alexgood321_store_device"]').length) return;
+    var html = '<div class="settings-folder selector" data-component="alexgood321_store_device" data-static="true">' +
+      '<div class="settings-folder__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">' +
+      '<rect x="4" y="2" width="16" height="20" rx="3"/><circle cx="12" cy="17" r="1"/></svg></div>' +
+      '<div class="settings-folder__name">Устройство и обновления</div></div>';
+    var anchor = body.find('[data-component="alexgood321_store_updates"]');
+    if (anchor.length) anchor.after(html);
+    else body.append(html);
+  }
+
   // UI v1.8: only the personal extension screen, never the global Lampa UI.
   var COLOR_MAP = {"Мои":"#91A8EA","Главный экран":"#98C6AE","Сериалы":"#B7A6DB","Онлайн-просмотр":"#93BCD8","Торренты":"#D5BA8C","Интерфейс":"#D9ACC1","Системные и ТВ":"#A9B9D0","Рейтинги и сервисы":"#A7C6C8","Архив и служебные":"#92959D"};
   var LINK_MAP = {"SURS Pro":"https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@02f879c9d18f05b9bee19baf09d1203bae5f0e18/surs.js","Home Categories Pro":"https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@0741ed1cba12c50c7acab47436577a27f8953335/home_categories.js","NUM Series Pro":"https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@b8a6411b3cf6c4d67de8e994635598d895e41952/num_series.js","HDREZKA":"https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@df85a7eb4d5a403a09eda34792fde0205327bf9b/rezka.js","Продолжить просмотр":"https://arst113.github.io/lampa-watch-resume/watch_resume.js","Онлайн Мод":"https://nb557.github.io/plugins/online_mod.js","EasyTorrent":"https://darkestclouds.github.io/plugins/easytorrent/easytorrent.min.js","Torrent Styles":"https://cdn.jsdelivr.net/gh/Alexgood321/store@main/torrent_styles_v2.js?v=1.2.1","Приятные мелочи":"http://skaztv.online/js/tricks.js","TraktTV":"https://lampame.github.io/main/trakttv.js","Рейтинг КиноПоиск и IMDb":"https://nb557.github.io/plugins/rating.js","SURS (оригинальный, отключён)":"https://aviamovie.github.io/surs.js","Пиратские плагины (старый магазин)":"https://lampaplugins.github.io/store/store.js","Добавляет пункт \"Парсер\" в меню":"http://cub.red/plugin/etor","Скрытие элементов карточки":"http://skaz.tv/meta.js","Настройка шапки":"https://and7ey.github.io/lampa/head_filter.js","Navigation Bar":"https://lampaplugins.github.io/store/navigation_bar.js"};
@@ -104,7 +117,7 @@
   var installedGrid = null;
   var focusedGridCard = null;
   var patchedGridControllers = [];
-  var skinClass = 'alexgood321-skin-v230';
+  var skinClass = 'alexgood321-skin-v240';
 
 
   // Live manifest is fetched at each opening. Failed sources fall back safely.
@@ -132,6 +145,8 @@
           var items = data.results[g].results || [];
           for (var i = 0; i < items.length; i++) LINK_MAP[items[i].name] = items[i].link;
         }
+        deviceGet();
+        deviceSet({last_catalog_check:Date.now(),catalog_source:url});
         updateInstalledAutomatically();
         if (skinRoot) refreshSkin();
         callback(url);
@@ -188,6 +203,8 @@
       if (Lampa.Storage) Lampa.Storage.set(UPDATE_BACKUP_KEY, {
         name: name, oldUrl: old, newUrl: meta.link
       });
+      historyAdd('link_updated', name, old, meta.link);
+      deviceSet({last_update_at:Date.now()});
       notice('Ссылка ' + name + ' обновлена. Перезапустите Lampa.');
       return true;
     } catch (error) {
@@ -205,16 +222,21 @@
     if (!found || found.url !== item.newUrl) return false;
     found.url = item.oldUrl;
     Lampa.Plugins.save();
+    historyAdd('rollback',item.name,item.newUrl,item.oldUrl);
     Lampa.Storage.set(UPDATE_BACKUP_KEY, null);
     notice('Предыдущая ссылка восстановлена. Перезапустите Lampa.');
     return true;
   }
 
   function updateInstalledAutomatically() {
-    if (!Lampa.Storage || !Lampa.Storage.get(AUTO_KEY, false)) return;
+    if (!Lampa.Storage) return;
+    var allEnabled = Lampa.Storage.get(AUTO_KEY, false);
+    var ownedEnabled = Lampa.Storage.get(AUTO_OWN_KEY, false);
+    if (!allEnabled && !ownedEnabled) return;
     var count = 0;
     for (var name in LIVE_META) {
       if (Object.prototype.hasOwnProperty.call(LIVE_META,name) &&
+          (allEnabled || (ownedEnabled && LIVE_META[name].owned)) &&
           isUpdateAvailable(name) && replaceInstalled(name)) count++;
     }
     if (count) notice('Ссылки обновлены: ' + count + '. Нужен перезапуск Lampa.');
@@ -254,6 +276,9 @@
         action:'auto'});
       rows.push({title:'Откат последней замены ссылки',action:'rollback'});
       rows.push({title:'Проверить GitHub повторно',action:'refresh'});
+      rows.push({title:'Обновить мои и перезапустить',action:'apply_owned'});
+      rows.push({title:'Данные этого устройства и журнал',action:'device'});
+      rows.push({title:'Перезапустить Lampa без очистки кэша',action:'reload'});
       Lampa.Select.show({
         title: 'Обновления плагинов' + (count ? ' (' + count + ')' : ''),
         items: rows,
@@ -266,6 +291,12 @@
             if (!rollbackUpdate()) notice('Нет ссылки для отката');
           } else if (row.action === 'refresh') {
             showUpdateCenter(true);
+          } else if (row.action === 'apply_owned') {
+            applyOwnedAndReload();
+          } else if (row.action === 'device') {
+            showThisDevice(true);
+          } else if (row.action === 'reload') {
+            confirmReload();
           } else if (row.canUpdate) {
             var selected = row.name;
             Lampa.Select.show({
@@ -284,6 +315,301 @@
         }
       });
     }, Boolean(forceRefresh));
+  }
+
+
+  // Device inventory v2.4: local observations, not proof of executed JS version.
+  var DEVICE_KEY = 'alexgood321_device_record_v1';
+  var HISTORY_KEY = 'alexgood321_device_history_v1';
+  var BATCH_BACKUP_KEY = 'alexgood321_batch_backup_v1';
+  var AUTO_OWN_KEY = 'alexgood321_auto_own_v1';
+  var deviceCache = null;
+  var catalogRefreshBusy = false;
+
+  function deviceGet() {
+    if (deviceCache) return deviceCache;
+    var record = null;
+    try {
+      if (Lampa.Storage) record = Lampa.Storage.get(DEVICE_KEY, null);
+    } catch (e) {}
+    if (!record || !record.id || typeof record !== 'object') {
+      var randomPart = '';
+      try {
+        if (window.crypto && typeof window.crypto.getRandomValues === 'function') {
+          var bytes = new Uint8Array(16);
+          window.crypto.getRandomValues(bytes);
+          for (var n=0; n<bytes.length; n++)
+            randomPart += ('0' + bytes[n].toString(16)).slice(-2);
+        }
+      } catch (error) {}
+      if (!randomPart) randomPart=String(Math.random()).slice(2, 12)+String(Math.random()).slice(2, 10);
+      record = {id: randomPart, created_at: Date.now(), name: ''};
+    }
+    if (!record.name) {
+      var suggested = '';
+      try { suggested = Lampa.Storage.get('device_name',''); } catch(e) {}
+      record.name = suggested && String(suggested).trim() ? String(suggested).trim() : 'Это устройство';
+    }
+    deviceCache = record;
+    deviceSet({last_store_start: Date.now()});
+    return deviceCache;
+  }
+
+  function deviceSet(properties) {
+    var device = deviceCache || deviceGet();
+    for (var key in properties) {
+      if (Object.prototype.hasOwnProperty.call(properties,key)) device[key]=properties[key];
+    }
+    if (Lampa.Storage) Lampa.Storage.set(DEVICE_KEY,device);
+  }
+
+  function localHistory() {
+    var entries = [];
+    try { if (Lampa.Storage) entries = Lampa.Storage.get(HISTORY_KEY,[]) || []; } catch(e){}
+    return Array.isArray(entries) ? entries : [];
+  }
+
+  function historyAdd(event, plugin, oldUrl, newUrl) {
+    var entries = localHistory();
+    entries.unshift({
+      time: Date.now(), event: event, plugin: plugin || '',
+      from: oldUrl || '', to: newUrl || ''
+    });
+    if (entries.length > 80) entries.length = 80;
+    if (Lampa.Storage) Lampa.Storage.set(HISTORY_KEY, entries);
+  }
+
+  function displayTime(value) {
+    if (!value) return 'нет данных';
+    try { return new Date(value).toLocaleString('ru-RU'); }
+    catch (e) { return 'нет данных'; }
+  }
+
+  function loadedUrls() {
+    try {
+      return Lampa.Plugins && typeof Lampa.Plugins.loaded === 'function' ?
+        (Lampa.Plugins.loaded() || []) : [];
+    } catch(e) {return [];}
+  }
+
+  function snapshotThisDevice() {
+    var result = {};
+    try {
+      var installed = Lampa.Plugins && Lampa.Plugins.get ? Lampa.Plugins.get() : [];
+      var loaded = loadedUrls();
+      for (var i = 0; i < installed.length; i++) {
+        var item = installed[i];
+        if (!item || !item.url) continue;
+        var ref = metadataForURL(item.url);
+        var name = ref ? ref.name : (item.name || 'Без названия');
+        result[item.url] = {
+          name: name,
+          version: installedVersion(item.url, ref && ref.latest) || '',
+          enabled: item.status === 1,
+          loaded_url: loaded.indexOf(item.url) !== -1
+        };
+      }
+      deviceSet({inventory:result,last_inventory_check:Date.now()});
+      var log = localHistory(), changed = false;
+      for (var j = 0; j < log.length; j++) {
+        var entry=log[j];
+        if (entry.event === 'link_updated' && !entry.loaded_at &&
+            entry.to && loaded.indexOf(entry.to) !== -1) {
+          entry.loaded_at=Date.now();
+          changed=true;
+        }
+      }
+      if (changed && Lampa.Storage) Lampa.Storage.set(HISTORY_KEY,log);
+    } catch (e) {
+      console.warn('[My Store] Device snapshot:',e);
+    }
+  }
+
+  function rebootLampa() {
+    historyAdd('reload_requested','','','');
+    if (typeof window !== 'undefined' && window.location &&
+        typeof window.location.reload === 'function') {
+      setTimeout(function () { window.location.reload(); }, 450);
+      return true;
+    }
+    notice('Автоматический перезапуск в этой сборке Lampa недоступен');
+    return false;
+  }
+
+  function confirmReload() {
+    if (!Lampa.Select || !Lampa.Select.show) return rebootLampa();
+    Lampa.Select.show({
+      title:'Перезапустить Lampa?',
+      items:[
+        {title:'Перезапустить без очистки кэша',action:'do_reload'},
+        {title:'Отмена',action:'cancel'}
+      ],
+      onSelect:function(item) {
+        if (item.action === 'do_reload') rebootLampa();
+      }
+    });
+  }
+
+  function applyOwnedBatch() {
+    var records = Lampa.Plugins && Lampa.Plugins.get ? Lampa.Plugins.get() : [];
+    var changed = [];
+    for (var name in LIVE_META) {
+      if (!Object.prototype.hasOwnProperty.call(LIVE_META,name)) continue;
+      var meta = LIVE_META[name];
+      if (!meta || !meta.owned || !meta.link) continue;
+      var installed = findInstalled(name,meta);
+      if (!installed || !installed.url || installed.status === 0 ||
+          installed.status === false || installed.url === meta.link) continue;
+      changed.push({name:name,item:installed,oldUrl:installed.url,newUrl:meta.link});
+    }
+    if (!changed.length) return 0;
+    try {
+      for (var i=0; i<changed.length; i++) changed[i].item.url=changed[i].newUrl;
+      Lampa.Plugins.save();
+      if (Lampa.Storage) Lampa.Storage.set(BATCH_BACKUP_KEY, {
+        at:Date.now(), items:changed.map(function(e) {
+          return {name:e.name,from:e.oldUrl,to:e.newUrl};
+        })
+      });
+      for (var j=0; j<changed.length; j++)
+        historyAdd('link_updated',changed[j].name,changed[j].oldUrl,changed[j].newUrl);
+      deviceSet({last_update_at:Date.now()});
+      return changed.length;
+    } catch (e) {
+      for (var k=0; k<changed.length; k++) changed[k].item.url=changed[k].oldUrl;
+      try {Lampa.Plugins.save()}catch(ignored){}
+      console.warn('[My Store] Batch update rejected:',e);
+      return -1;
+    }
+  }
+
+  function rollbackOwnedBatch() {
+    if (!Lampa.Storage || !Lampa.Plugins || !Lampa.Plugins.save) return false;
+    var previous = Lampa.Storage.get(BATCH_BACKUP_KEY,null);
+    if (!previous || !Array.isArray(previous.items) || !previous.items.length) return false;
+    var restored=[];
+    for (var i=0; i<previous.items.length;i++) {
+      var item=previous.items[i];
+      var installed=findInstalled(item.name,{link:item.to});
+      if (installed && installed.url===item.to){
+        installed.url=item.from;
+        restored.push(item);
+      }
+    }
+    if (!restored.length) return false;
+    Lampa.Plugins.save();
+    for(var j=0;j<restored.length;j++)
+      historyAdd('rollback',restored[j].name,restored[j].to,restored[j].from);
+    Lampa.Storage.set(BATCH_BACKUP_KEY,null);
+    return true;
+  }
+
+  function applyOwnedAndReload() {
+    loadLive(function(url) {
+      if (url === CONFIG.emergency) return notice('Нет актуального каталога. Обновление отменено.');
+      if (!Lampa.Select || !Lampa.Select.show) return;
+      var candidates = Object.keys(LIVE_META).filter(function(name){
+        var meta=LIVE_META[name], item=findInstalled(name,meta);
+        return meta && meta.owned && item && item.status !== 0 && item.status !== false &&
+          item.url !== meta.link;
+      });
+      if (!candidates.length) return notice('Мои плагины уже используют актуальные ссылки.');
+      Lampa.Select.show({
+        title:'Обновить '+candidates.length+' и перезапустить?',
+        items:[{title:'Применить и перезапустить',action:'apply'},
+               {title:'Отмена',action:'cancel'}],
+        onSelect:function(choice) {
+          if (choice.action !== 'apply') return;
+          var count = applyOwnedBatch();
+          if(count>0){notice('Обновлено ссылок: '+count);rebootLampa();}
+          else notice('Замена ссылок не выполнена');
+        }
+      });
+    },true);
+  }
+
+  function showLocalHistory() {
+    if (!Lampa.Select || !Lampa.Select.show) return;
+    var names = {
+      link_updated:'Ссылка обновлена',
+      rollback:'Откат ссылки',
+      reload_requested:'Запрошен перезапуск'
+    };
+    var events=localHistory().slice(0,40).map(function(e){
+      return {title:(names[e.event] || e.event) + (e.plugin?' · '+e.plugin:''),
+        subtitle:displayTime(e.time) + (e.loaded_at?' · адрес загружен: '+displayTime(e.loaded_at):'')};
+    });
+    if (!events.length) events.push({title:'Журнал пока пуст'});
+    Lampa.Select.show({title:'Журнал обновлений · это устройство',items:events});
+  }
+
+  function showThisDevice(force) {
+    loadLive(function(url){
+      if (!Lampa.Select || !Lampa.Select.show) return;
+      snapshotThisDevice();
+      var device=deviceGet(), latest=LIVE_META;
+      var entries=[
+        {title:device.name + ' · ' + device.id.slice(0,8),
+         subtitle:'Данные хранятся локально. Другие устройства пока не подключены.'},
+        {title:'Последняя проверка каталога',subtitle:displayTime(device.last_catalog_check)},
+        {title:'Последнее изменение ссылок',subtitle:displayTime(device.last_update_at)}
+      ];
+      var own=Object.keys(latest).filter(function(name){return latest[name].owned});
+      for(var i=0;i<own.length;i++){
+        var name=own[i], meta=latest[name], current=findInstalled(name,meta);
+        if (!current) continue;
+        var version=installedVersion(current.url,meta);
+        var label=version===null?'проверяется':(version||'не определена');
+        var isLoaded=loadedUrls().indexOf(current.url)!==-1;
+        var changes=localHistory().filter(function(e){
+          return e.plugin===name && e.event==='link_updated';
+        });
+        var lastChange=changes.length?changes[0]:null;
+        var published=meta.published_at ? Date.parse(meta.published_at) : 0;
+        entries.push({title:name,
+          subtitle:'Установлена: '+label+' · Доступна: '+meta.version+
+            ' · '+(isUpdateAvailable(name)?'есть обновление':'ссылка актуальна')+
+            ' · '+(isLoaded?'URL загружен':'загрузка URL не подтверждена')+
+            ' · GitHub: '+displayTime(published)+
+            ' · Изменено на устройстве: '+displayTime(lastChange && lastChange.time)});
+      }
+      entries.push({title:'Проверить актуальные версии сейчас',action:'refresh'});
+      entries.push({title:'Обновить мои и перезапустить',action:'apply'});
+      entries.push({title:'Перезапустить Lampa без очистки кэша',action:'reload'});
+      entries.push({title:'Журнал изменений',action:'history'});
+      entries.push({title:'Откатить последнее групповое обновление',action:'rollback'});
+      var ownAuto=Boolean(Lampa.Storage && Lampa.Storage.get(AUTO_OWN_KEY,false));
+      entries.push({title:'Автообновление моих: '+(ownAuto?'включено':'выключено'),
+        subtitle:'Меняет URL собственных плагинов. Код обновится после следующего запуска Lampa.',
+        action:'auto_owned'});
+      Lampa.Select.show({
+        title:'My Store · это устройство',
+        items:entries,
+        onSelect:function(option){
+          if (option.action==='refresh') showThisDevice(true);
+          if (option.action==='apply') applyOwnedAndReload();
+          if (option.action==='reload') confirmReload();
+          if (option.action==='history') showLocalHistory();
+          if (option.action==='rollback') {
+            if (rollbackOwnedBatch()) notice('Ссылки восстановлены. Перезапустите Lampa.');
+            else notice('Доступного группового отката нет');
+          }
+          if (option.action==='auto_owned') {
+            if (Lampa.Storage) Lampa.Storage.set(AUTO_OWN_KEY,!ownAuto);
+            notice('Автообновление моих '+(!ownAuto?'включено':'выключено'));
+          }
+        }
+      });
+    },Boolean(force));
+  }
+
+  function periodicCatalogCheck() {
+    if (catalogRefreshBusy) return;
+    catalogRefreshBusy=true;
+    loadLive(function(){
+      catalogRefreshBusy=false;
+      snapshotThisDevice();
+    },true);
   }
 
   function normalized(url) {
@@ -538,8 +864,8 @@
     refreshInstalledVersions();
     var cards = first.querySelectorAll('.scroll__body > .selector');
     for (var i = 0; i < cards.length; i++) {
-      if (cards[i].__alexGrid2300) continue;
-      cards[i].__alexGrid2300 = true;
+      if (cards[i].__alexGrid2400) continue;
+      cards[i].__alexGrid2400 = true;
       cards[i].addEventListener('hover:focus', function () {
         focusedGridCard = this;
         enableGridArrows();
@@ -555,10 +881,10 @@
     var controller = active && active.controller;
     if (!active || active.name !== 'extensions_line' || !controller ||
         !controller.link || controller.link.html !== installedGrid ||
-        controller.__alexGrid2300) return;
+        controller.__alexGrid2400) return;
     var originalUp = controller.up;
     var originalDown = controller.down;
-    controller.__alexGrid2300 = true;
+    controller.__alexGrid2400 = true;
     patchedGridControllers.push({value:controller, up:originalUp, down:originalDown});
     controller.up = function () {
       if (!moveGridRow(-1) && typeof originalUp === 'function') originalUp.apply(this, arguments);
@@ -740,7 +1066,7 @@
       var patch = patchedGridControllers[i];
       patch.value.up = patch.up;
       patch.value.down = patch.down;
-      delete patch.value.__alexGrid2300;
+      delete patch.value.__alexGrid2400;
     }
     patchedGridControllers = [];
     if (installedGrid) installedGrid.classList.remove('alex-installed-grid');
@@ -768,10 +1094,10 @@
     skinRoot = root;
     root.classList.add(skinClass);
     watchInstalls();
-    var css = document.getElementById('alexgood321-store-style-v230');
+    var css = document.getElementById('alexgood321-store-style-v240');
     if (!css) {
       css = document.createElement('style');
-      css.id = 'alexgood321-store-style-v230';
+      css.id = 'alexgood321-store-style-v240';
       css.textContent = [
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item{background-color:var(--alex-category-fill)!important;color:#17212F!important;box-sizing:border-box;padding:1.1em 1em 1em;transition:background-color .18s ease,box-shadow .18s ease;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{padding-right:2.4em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3;min-height:1.25em;}',
@@ -780,16 +1106,16 @@
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-included{display:none!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item.focus{background-image:linear-gradient(rgba(255,255,255,.11),rgba(255,255,255,.11))!important;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);}',
         '.extensions.' + skinClass + ' .scroll--mask:not(.scroll--horizontal){-webkit-mask-image:none!important;mask-image:none!important;}',
-        ".extensions.alexgood321-skin-v230 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
-        ".extensions.alexgood321-skin-v230 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
-        ".extensions.alexgood321-skin-v230 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
-        ".extensions.alexgood321-skin-v230 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
+        ".extensions.alexgood321-skin-v240 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
+        ".extensions.alexgood321-skin-v240 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
+        ".extensions.alexgood321-skin-v240 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
+        ".extensions.alexgood321-skin-v240 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
 
         '.extensions.' + skinClass + ' .alex-installed-grid .extensions__item{height:auto!important;min-height:11.5em;box-sizing:border-box;}',
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version{font-size:.77em;line-height:1.35;margin-top:.45em;margin-bottom:.3em;color:#B4C7E6;overflow-wrap:anywhere;}',
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version--update{color:#EDC37C;font-weight:700;}',
 
-        "@media(max-width:640px){.extensions.alexgood321-skin-v230 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
+        "@media(max-width:640px){.extensions.alexgood321-skin-v240 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{color:#3E4A5B!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-name{color:#17212F!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-descr{color:#283548!important;}',
@@ -843,6 +1169,11 @@
     if (!menu || !menu.length) return;
     menu.off('hover:enter.alexgood321_personal_store');
     menu.on('hover:enter.alexgood321_personal_store', openStore);
+    var device = body.find('[data-component="alexgood321_store_device"]');
+    if (device && device.length) {
+      device.off('hover:enter.alexgood321_store_device');
+      device.on('hover:enter.alexgood321_store_device',function(){showThisDevice(true)});
+    }
     var updates = body.find('[data-component="alexgood321_store_updates"]');
     if (updates && updates.length) {
       updates.off('hover:enter.alexgood321_store_updates');
@@ -855,6 +1186,10 @@
     initialized = true;
     register();
     addMenu();
+    deviceGet();
+    setTimeout(snapshotThisDevice,5000);
+    setTimeout(periodicCatalogCheck,12000);
+    if (typeof setInterval === 'function') setInterval(periodicCatalogCheck,5*60*1000);
     if (Lampa.Settings && Lampa.Settings.listener && typeof Lampa.Settings.listener.follow === 'function') {
       Lampa.Settings.listener.follow('open', onSettingsOpen);
     }
