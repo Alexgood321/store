@@ -124,8 +124,35 @@
   var LIVE_META = {};
   var LIVE_DATA = null;
   var LAST_LIVE_URL = null;
+  var LIVE_OVERRIDES = {};
   var UPDATE_BACKUP_KEY = 'alexgood321_store_update_backup';
   var AUTO_KEY = 'alexgood321_store_auto_update';
+
+  // Keep newer data discovered manually if scheduled catalog sync has not run.
+  function applyLiveOverrides() {
+    if (!LIVE_DATA || !LIVE_META) return;
+    for (var name in LIVE_OVERRIDES) {
+      if (!Object.prototype.hasOwnProperty.call(LIVE_OVERRIDES,name)) continue;
+      var newer = LIVE_OVERRIDES[name], existing = LIVE_META[name];
+      if (!existing || existing.repo !== newer.repo || existing.path !== newer.path) continue;
+      if (existing.sha === newer.sha ||
+          isVersionNewer(newer.version, existing.version) ||
+          (existing.published_at && newer.published_at &&
+           existing.published_at > newer.published_at)) {
+        delete LIVE_OVERRIDES[name];
+        continue;
+      }
+      existing.sha = newer.sha;
+      existing.version = newer.version;
+      existing.link = newer.link;
+      if (newer.published_at) existing.published_at = newer.published_at;
+      for (var g=0;g<(LIVE_DATA.results || []).length;g++) {
+        (LIVE_DATA.results[g].results || []).forEach(function(card) {
+          if (card.name === name) {card.link = newer.link;card.version = newer.version;}
+        });
+      }
+    }
+  }
 
   function loadLive(callback, force, quietAutoUpdate) {
     if (!force && LIVE_DATA && LAST_LIVE_URL) return callback(LAST_LIVE_URL);
@@ -141,6 +168,7 @@
         LIVE_DATA = data;
         LAST_LIVE_URL = url;
         LIVE_META = data.meta.tracked;
+        applyLiveOverrides();
         for (var g = 0; g < data.results.length; g++) {
           var items = data.results[g].results || [];
           for (var i = 0; i < items.length; i++) LINK_MAP[items[i].name] = items[i].link;
@@ -387,6 +415,10 @@
                       }
                     }
                     LINK_MAP[name] = newLink;
+                    LIVE_OVERRIDES[name] = {
+                      repo:meta.repo, path:meta.path, sha:sha, version:version,
+                      link:newLink, published_at:meta.published_at || ''
+                    };
                     changed.push({name:name,version:version,from:oldSHA,to:sha});
                     finishOne(name,false);
                   } catch(e) { finishOne(name,true); }
@@ -447,15 +479,15 @@
         var floating = /@(main|master|dev|latest)\//i.test(String(installed.url));
         var currentVersion = installedVersion(String(installed.url), info);
         var currentLabel = currentVersion === null ? 'проверяется' : (currentVersion || 'не определена');
-        rows.push({
-          title: name,
-          subtitle: outdated ?
-            'Установлена: ' + currentLabel + ' · Доступна: ' + info.version + ' · обновить ссылку' :
-            floating && currentVersion === null ?
-              'Проверяется версия JS · при обновлении ветки может потребоваться перезапуск' :
-              'Установлена: ' + currentLabel + ' · Актуальная: ' + info.version,
-          name: name, canUpdate: outdated
-        });
+        var details = outdated ?
+          'Сохранённая ссылка: ' + currentLabel + ' · Доступна: ' + info.version + ' · обновить ссылку' :
+          floating && currentVersion === null ?
+            'Проверяется версия JS · после обновления ветки нужен перезапуск' :
+            'Сохранённая ссылка: ' + currentLabel + ' · В каталоге: ' + info.version;
+        details += runtimeSuffix(name, currentVersion || '');
+        var countCopies = matchingInstalled(name, info).length;
+        if (countCopies > 1) details += ' · Установлено копий: ' + countCopies;
+        rows.push({title:name,subtitle:details,name:name,canUpdate:outdated});
       }
       if (rows.length === 0) rows.push({title:'Установленных отслеживаемых плагинов нет', action:'none'});
       var enabled = Boolean(Lampa.Storage && Lampa.Storage.get(AUTO_KEY, false));
