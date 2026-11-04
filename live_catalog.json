@@ -8,9 +8,9 @@
         {
           "name": "SURS Pro",
           "author": "aviamovie / Lampa Community / Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d37608a015feeec8c693803c8fa468819a352779/surs.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@02f879c9d18f05b9bee19baf09d1203bae5f0e18/surs.js",
           "descr": "Настраиваемые подборки и полки главного экрана: порядок, скрытие, источники, редактор с пульта и сенсорного экрана. Исправлен сбой sid при создании главного экрана.",
-          "version": "3.8.1"
+          "version": "3.8.2"
         },
         {
           "name": "Home Categories Pro",
@@ -42,9 +42,9 @@
         {
           "name": "SURS Pro",
           "author": "aviamovie / Lampa Community / Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d37608a015feeec8c693803c8fa468819a352779/surs.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@02f879c9d18f05b9bee19baf09d1203bae5f0e18/surs.js",
           "descr": "Настраиваемые подборки и полки главного экрана: порядок, скрытие, источники, редактор с пульта и сенсорного экрана. Исправлен сбой sid при создании главного экрана.",
-          "version": "3.8.1"
+          "version": "3.8.2"
         },
         {
           "name": "Home Categories Pro",
@@ -206,9 +206,9 @@
         "path": "surs.js",
         "ref": "main",
         "owned": true,
-        "sha": "d37608a015feeec8c693803c8fa468819a352779",
-        "version": "3.8.1",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d37608a015feeec8c693803c8fa468819a352779/surs.js"
+        "sha": "02f879c9d18f05b9bee19baf09d1203bae5f0e18",
+        "version": "3.8.2",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@02f879c9d18f05b9bee19baf09d1203bae5f0e18/surs.js"
       },
       "Home Categories Pro": {
         "repo": "Alexgood321/lampa-plugins",
