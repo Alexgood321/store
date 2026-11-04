@@ -10,6 +10,7 @@ on:
       - 'catalog_seed.json'
       - 'sync_sources.json'
       - 'torrent_styles_v2.js'
+      - 'my_store_live.js'
       - 'scripts/sync_catalog.py'
       - '.github/workflows/sync_catalog.yml'
 
