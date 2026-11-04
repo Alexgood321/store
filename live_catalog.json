@@ -333,10 +333,10 @@
         "path": "my_store_live.js",
         "ref": "main",
         "owned": false,
-        "sha": "6fbd17a38febbb6f6576894a85da70675095be86",
+        "sha": "b7e5acea0a523a69235363720987996700d04881",
         "version": "2.8.0",
         "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_live.js",
-        "published_at": "2026-11-04T13:34:31Z"
+        "published_at": "2026-11-04T13:47:14Z"
       }
     },
     "auto_update_installed": false
