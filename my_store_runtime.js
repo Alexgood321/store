@@ -808,6 +808,15 @@
     } catch(e) { return true; }
   }
 
+  function needsCoreReload() {
+    var meta=LIVE_META['My Store'];
+    var core=window.__AlexgoodStoreRuntime;
+    if (!meta || !core || core.ready !== true || !meta.sha || !core.sha ||
+        !meta.version || !core.version) return false;
+    if (isVersionNewer(meta.version,core.version)) return false;
+    return meta.sha.toLowerCase() !== core.sha.toLowerCase();
+  }
+
   function getSafeBatchPlan() {
     var result = {items:[],skipped:[],already:0};
     for (var name in LIVE_META) {
@@ -865,7 +874,7 @@
     if (!headerBatchButton || !isHeaderBatchEnabled()) return;
     var count=0;
     if (LAST_LIVE_URL && LAST_LIVE_URL.indexOf(CONFIG.catalog + '?')===0 &&
-        catalogIsFresh()) count=getSafeBatchPlan().items.length;
+        catalogIsFresh()) count=getSafeBatchPlan().items.length+(needsCoreReload()?1:0);
     var bubble=headerBatchButton.find('.alex-store-header-batch-count');
     if (bubble && bubble.length) {
       bubble.text(count>0?String(count>9?'9+':count):'');
@@ -948,26 +957,28 @@
           return;
         }
         var plan=getSafeBatchPlan();
-        if (!plan.items.length) {
+        var corePending=needsCoreReload();
+        if (!plan.items.length && !corePending) {
           done();
           notice('Подтверждённых обновлений нет.'+
             (plan.skipped.length?' Пропущено без проверки версии: '+plan.skipped.length+'.':''));
           return;
         }
-        var saved=saveSafeBatch(plan.items);
+        var saved=plan.items.length ? saveSafeBatch(plan.items) : 0;
         if (saved<0) {
           done();
           notice('Не удалось сохранить массовое обновление. Ссылки восстановлены.');
           return;
         }
-        if (saved===0) {
+        if (saved===0 && !corePending) {
           done();
           notice('Не найдено подтверждённых новых ссылок.');
           return;
         }
         headerBatchPendingRestart=true;
         done();
-        var description='Обновлено ссылок: '+saved+
+        var description=(saved ? 'Обновлено ссылок: '+saved : 'Новых ссылок не требуется')+
+          (corePending ? '. Доступно обновление ядра My Store' : '')+
           (plan.skipped.length?'. Пропущено: '+plan.skipped.length:'')+'.';
         if (isPlayerOpened()) {
           notice(description+' Просмотр не прерывается; перезапустите Lampa позже.');
