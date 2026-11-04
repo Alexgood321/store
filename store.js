@@ -1,39 +1,118 @@
-(function() {
-    'use strict';
-	Lampa.Lang.add({
-        pirate_store: {
-            ru: "Пиратские плагины",
-            en: "Pirate Store",
-            uk: "Піратські плагіни",
-            be: "Пірацкія плагіны",
-            zh: "盜版插件",
-            pt: "Pirate Store",
-            bg: "Пиратски добавки",
-			he: "תוספים פיראטיים"
-        }
-    });
-    function addStore() {
-        if (Lampa.Settings.main && !Lampa.Settings.main().render().find('[data-component="pirate_store"]').length) {
-            var field = "<div class=\"settings-folder selector\" data-component=\"pirate_store\" data-static=\"true\">\n\t\t\t<div class=\"settings-folder__icon\">\n\t\t\t\t<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"512\" height=\"512\" x=\"0\" y=\"0\" viewBox=\"0 0 490 490\" xml:space=\"preserve\"><path d=\"M153.125 317.435h183.75v30.625h-183.75z\" fill=\"white\"></path><circle cx=\"339.672\" cy=\"175.293\" r=\"42.642\" fill=\"white\"></circle><path d=\"M420.914 0H69.086C30.999 0 0 30.999 0 69.086v351.829C0 459.001 30.999 490 69.086 490h351.829C459.001 490 490 459.001 490 420.914V69.086C490 30.999 459.001 0 420.914 0zM69.086 30.625h237.883c-17.146 20.912-42.277 47.893-75.177 74.575-9.514-12.906-26.35-19.331-42.586-14.613l-69.644 20.242c-20.778 6.039-32.837 27.98-26.798 48.758l6.475 22.278c-21.375 8-44.353 14.456-68.614 19.267V69.086c0-21.204 17.257-38.461 38.461-38.461zm390.289 390.289c0 21.204-17.257 38.461-38.461 38.461H69.086c-21.204 0-38.461-17.257-38.461-38.461V232.459c27.504-4.993 53.269-12.075 77.268-20.816l3.811 13.111c6.038 20.778 27.98 32.837 48.758 26.799l69.643-20.242c20.778-6.039 32.837-27.98 26.799-48.758l-13.481-46.382c50.532-39.47 84.67-80.759 102.687-105.546h74.805c21.204 0 38.461 17.257 38.461 38.461v351.828z\" fill=\"white\"></path></svg>\n\t\t\t</div>\n\t\t\t<div class=\"settings-folder__name\">"+Lampa.Lang.translate('pirate_store')+"</div>\n\t\t</div>";
-            Lampa.Settings.main().render().find('[data-component="more"]').after(field);
-            Lampa.Settings.main().update();
-        }
+(function () {
+  'use strict';
+
+  // Персональный магазин Alexgood321. Не использует внешний extensions.json.
+  var CONFIG = {
+    id: 'alexgood321_personal_store',
+    component: 'alexgood321_personal_store',
+    version: '1.4.0',
+    name: 'Мои плагины',
+    catalog: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_extensions.json?v=20261104-1'
+  };
+
+  if (window.__alexgood321_personal_store_140_loaded) return;
+  window.__alexgood321_personal_store_140_loaded = true;
+
+  var initialized = false;
+
+  function title() {
+    try {
+      return Lampa.Lang.translate('alexgood321_personal_store_title') || CONFIG.name;
+    } catch (e) {
+      return CONFIG.name;
     }
-    Lampa.Settings.listener.follow('open', function(e) {
-        if (e.name == 'main') {
-            e.body.find('[data-component="pirate_store"]').on('hover:enter', function() {
-                Lampa.Extensions.show({
-                    store: 'https://lampaplugins.github.io/store/extensions.json',
-                    with_installed: true
-                });
-            });
+  }
+
+  function register() {
+    if (Lampa.Lang && typeof Lampa.Lang.add === 'function') {
+      Lampa.Lang.add({
+        alexgood321_personal_store_title: {
+          ru: 'Мои плагины',
+          en: 'My plugins',
+          uk: 'Мої плагіни'
         }
-    });
-    if (window.appready) addStore();
-    else {
-        Lampa.Listener.follow('app', function(e) {
-            if (e.type == 'ready') addStore();
-        });
+      });
     }
 
+    Lampa.Manifest = Lampa.Manifest || {};
+    Lampa.Manifest.plugins = Lampa.Manifest.plugins || {};
+    Lampa.Manifest.plugins[CONFIG.id] = {
+      type: 'other',
+      name: CONFIG.name,
+      version: CONFIG.version,
+      description: 'Персональный каталог расширений Alexgood321'
+    };
+  }
+
+  function addMenu() {
+    if (!Lampa.Settings || typeof Lampa.Settings.main !== 'function') return;
+    var main = Lampa.Settings.main();
+    if (!main || typeof main.render !== 'function') return;
+    var body = main.render();
+    if (!body || typeof body.find !== 'function') return;
+
+    // Скрыть устаревший пункт нашего старого загрузчика.
+    var oldMenu = body.find('[data-component="alexgood321_store"]');
+    if (oldMenu && typeof oldMenu.remove === 'function') oldMenu.remove();
+
+    if (body.find('[data-component="' + CONFIG.component + '"]').length) return;
+
+    var icon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
+      '<rect x="3" y="3" width="7" height="7" rx="1.5"/>' +
+      '<rect x="14" y="3" width="7" height="7" rx="1.5"/>' +
+      '<rect x="3" y="14" width="7" height="7" rx="1.5"/>' +
+      '<rect x="14" y="14" width="7" height="7" rx="1.5"/>' +
+      '</svg>';
+    var html = '<div class="settings-folder selector" data-component="' +
+      CONFIG.component + '" data-static="true"><div class="settings-folder__icon">' +
+      icon + '</div><div class="settings-folder__name">' +
+      title() + '</div></div>';
+    var anchor = body.find('[data-component="more"]');
+    if (anchor.length) anchor.after(html);
+    else body.append(html);
+    if (typeof main.update === 'function') main.update();
+  }
+
+  function openStore() {
+    if (Lampa.Extensions && typeof Lampa.Extensions.show === 'function') {
+      Lampa.Extensions.show({
+        store: CONFIG.catalog,
+        with_installed: true
+      });
+    } else {
+      console.error('[Alexgood321 Store] Lampa.Extensions.show unavailable');
+    }
+  }
+
+  function onSettingsOpen(event) {
+    if (!event || event.name !== 'main') return;
+    addMenu();
+
+    var body = event.body;
+    if (!body || typeof body.find !== 'function') return;
+    var menu = body.find('[data-component="' + CONFIG.component + '"]');
+    if (!menu || !menu.length) return;
+    menu.off('hover:enter.alexgood321_personal_store');
+    menu.on('hover:enter.alexgood321_personal_store', openStore);
+  }
+
+  function ready() {
+    if (initialized) return;
+    initialized = true;
+    register();
+    addMenu();
+    if (Lampa.Settings && Lampa.Settings.listener && typeof Lampa.Settings.listener.follow === 'function') {
+      Lampa.Settings.listener.follow('open', onSettingsOpen);
+    }
+    console.log('[Alexgood321 Store] ready v' + CONFIG.version);
+  }
+
+  if (typeof Lampa !== 'undefined') {
+    if (window.appready) ready();
+    else if (Lampa.Listener && typeof Lampa.Listener.follow === 'function') {
+      Lampa.Listener.follow('app', function (event) {
+        if (event && event.type === 'ready') ready();
+      });
+    }
+  }
 })();
