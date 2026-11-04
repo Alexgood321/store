@@ -133,7 +133,8 @@ assert.ok(actions.every(x => x.className.includes('selector') &&
 actions[0].listeners['hover:enter']();
 assert.equal(modals.length, 0, 'quick check must not open update popup');
 assert.equal(notices[0], 'Проверено. Новых версий не найдено.');
-assert.ok(requests.filter(x => x.includes('/commits?')).length >= 4);
+assert.equal(requests.filter(x => x.includes('api.github.com')).length, 0);
+assert.ok(requests.some(x => x.includes('live_catalog.json')));
 
 actions[1].listeners['hover:enter']();
 assert.match(modals[0].title, /Обновления плагинов/);
