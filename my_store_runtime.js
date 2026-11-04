@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.4.2',
+    version: '3.4.3',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -115,6 +115,8 @@
   var nativePluginAdd = null;
   var installRefreshTimer = null;
   var reopenAfterInstall = false;
+  var storeOpenPending = false;
+  var backButton = null, backClick = null, backKey = null;
   var installedGrid = null;
   var focusedGridCard = null;
   var patchedGridControllers = [];
@@ -1829,8 +1831,77 @@
   function onStoreClose() {
     var reopen = reopenAfterInstall;
     reopenAfterInstall = false;
+    storeOpenPending = false;
     releaseSkin();
     if (reopen) setTimeout(openStore, 0);
+  }
+
+
+  // Native Lampa Back is bound to whichever controller currently owns focus.
+  // Restore the extensions controller only if the store is still visible.
+  function storeVisible() {
+    return Boolean(skinRoot && skinRoot.parentNode);
+  }
+
+  function repairStoreBack() {
+    if (!storeVisible() || !Lampa.Controller ||
+        typeof Lampa.Controller.enabled !== 'function') return;
+    try {
+      var active = Lampa.Controller.enabled() || {};
+      var name = active.name, current = active.controller;
+      if ((name === 'extensions' || name === 'extensions_line') &&
+          current && typeof current.back === 'function') return;
+      if (typeof Lampa.Controller.windowTop === 'function' &&
+          Lampa.Controller.windowTop()) return;
+      if (name === 'select' || name === 'modal' || name === 'player' ||
+          name === 'keyboard' || name === 'search') return;
+      if (!name || name === 'content' || name === 'head' ||
+          name === 'menu' || name === 'settings' || name === 'items_line' ||
+          name === 'full_start' || name === 'full_descr' ||
+          name === 'extensions' || name === 'extensions_line' ||
+          !current || typeof current.back !== 'function') {
+        if (typeof Lampa.Controller.toggle === 'function')
+          Lampa.Controller.toggle('extensions', true);
+      }
+    } catch (error) {
+      console.warn('[My Store] Back controller recovery failed:', error);
+    }
+  }
+
+  function closeStoreFromArrow(event) {
+    if (!storeVisible()) return;
+    if (event) {
+      if (typeof event.preventDefault === 'function') event.preventDefault();
+      if (typeof event.stopImmediatePropagation === 'function')
+        event.stopImmediatePropagation();
+      else if (typeof event.stopPropagation === 'function')
+        event.stopPropagation();
+    }
+    repairStoreBack();
+    if (Lampa.Controller && typeof Lampa.Controller.back === 'function')
+      Lampa.Controller.back();
+  }
+
+  function onStoreBackKey(event) {
+    var code = event && (event.keyCode || event.which);
+    if (code === 8 || code === 27 || code === 461 ||
+        code === 10009 || code === 88) repairStoreBack();
+    // Never consume a hardware Back key; native Lampa closes the view.
+  }
+
+  function bindStoreBack() {
+    if (!storeVisible()) return;
+    var button = skinRoot.querySelector('.head-backward__button');
+    if (button && typeof button.addEventListener === 'function') {
+      backButton = button;
+      backClick = closeStoreFromArrow;
+      button.addEventListener('click', backClick, true);
+    }
+    if (typeof document !== 'undefined' &&
+        typeof document.addEventListener === 'function') {
+      backKey = onStoreBackKey;
+      document.addEventListener('keydown', backKey, true);
+    }
   }
 
   function queueSkin() {
@@ -1839,6 +1910,12 @@
   }
 
   function releaseSkin() {
+    if (backButton && backClick && typeof backButton.removeEventListener === 'function')
+      backButton.removeEventListener('click', backClick, true);
+    if (backKey && typeof document !== 'undefined' &&
+        typeof document.removeEventListener === 'function')
+      document.removeEventListener('keydown', backKey, true);
+    backButton = backClick = backKey = null;
     for (var i = 0; i < patchedGridControllers.length; i++) {
       var patch = patchedGridControllers[i];
       patch.value.up = patch.up;
@@ -1870,6 +1947,7 @@
     releaseSkin();
     skinRoot = root;
     root.classList.add(skinClass);
+    bindStoreBack();
     watchInstalls();
     var css = document.getElementById('alexgood321-store-style-v341');
     if (!css) {
@@ -1888,7 +1966,7 @@
         ".extensions.alexgood321-skin-v341 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
         ".extensions.alexgood321-skin-v341 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
 
-        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v3.4.2";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v3.4.3";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
         '.extensions.' + skinClass + ' .alex-store-tool{min-height:11.5em;box-sizing:border-box;padding:1.05em;border-radius:1em;background:#444D5B;color:#F0F5FA;border:2px solid transparent;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:.35em;cursor:pointer;}',
         '.extensions.' + skinClass + ' .alex-store-tool--manage{background:#47564E;}',
         '.extensions.' + skinClass + ' .alex-store-tool.focus{box-shadow:inset 0 0 0 2px #fff;border-color:#fff;background-image:linear-gradient(rgba(255,255,255,.1),rgba(255,255,255,.1));}',
@@ -1939,17 +2017,35 @@
   }
 
   function openStore() {
-    if (Lampa.Extensions && typeof Lampa.Extensions.show === 'function') {
-      loadLive(function (url) {
-        Lampa.Extensions.show({
-          store: url,
-          with_installed: true,
-          onClose: onStoreClose
-        });
-        attachSkin();
-      }, true);
-    } else {
+    if (storeOpenPending || storeVisible()) return;
+    if (!Lampa.Extensions || typeof Lampa.Extensions.show !== 'function') {
       console.error('[Alexgood321 Store] Lampa.Extensions.show unavailable');
+      return;
+    }
+    if (typeof Lampa.Extensions.render === 'function') {
+      var existing = Lampa.Extensions.render(true);
+      if (existing && existing.parentNode && existing.classList &&
+          existing.classList.contains('extensions')) return;
+    }
+    storeOpenPending = true;
+    try {
+      loadLive(function (url) {
+        storeOpenPending = false;
+        if (storeVisible()) return;
+        try {
+          Lampa.Extensions.show({
+            store: url,
+            with_installed: true,
+            onClose: onStoreClose
+          });
+          attachSkin();
+        } catch (error) {
+          console.warn('[My Store] Unable to open store:', error);
+        }
+      }, true);
+    } catch (error) {
+      storeOpenPending = false;
+      console.warn('[My Store] Unable to fetch store:', error);
     }
   }
 
