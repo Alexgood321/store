@@ -38,7 +38,7 @@
           "author": "Alexgood321",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
           "descr": "Персональный магазин Lampa: установка расширений, проверка версий, обновления, журнал изменений и управление устройством.",
-          "version": "3.4.1"
+          "version": "3.4.2"
         }
       ]
     },
@@ -333,13 +333,13 @@
         "path": "my_store_runtime.js",
         "ref": "main",
         "owned": false,
-        "sha": "b8aa4ed92d9dbd2581089f9c64b2d5d8e2b95ecd",
-        "version": "3.4.1",
+        "sha": "20701b9bcd38ded883940c20323be78516960145",
+        "version": "3.4.2",
         "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
-        "published_at": "2026-11-04T16:26:09Z"
+        "published_at": "2026-11-04T21:37:26Z"
       }
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-04T20:34:50Z"
+    "last_checked_at": "2026-11-04T21:37:47Z"
   }
 }
