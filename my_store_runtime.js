@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.2.0',
+    version: '3.3.0',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -118,7 +118,7 @@
   var installedGrid = null;
   var focusedGridCard = null;
   var patchedGridControllers = [];
-  var skinClass = 'alexgood321-skin-v320';
+  var skinClass = 'alexgood321-skin-v330';
 
 
   // Live manifest is fetched at each opening. Failed sources fall back safely.
@@ -230,6 +230,23 @@
       return String(window.__AlexgoodStoreRuntime.version);
     if (name === 'SURS Pro' && window.LampaShelfManager &&
         window.LampaShelfManager.version) return String(window.LampaShelfManager.version);
+    // HDREZKA registers the manifest of the executing JS when startPlugin runs.
+    // Do not use the catalog or the saved plugin URL as evidence of execution.
+    if (name === 'HDREZKA' && window.rezka_plugin_started === true &&
+        Lampa.Manifest && Lampa.Manifest.plugins) {
+      var records = Lampa.Manifest.plugins;
+      var rezka = null;
+      if (Array.isArray(records)) {
+        for (var i = 0; i < records.length; i++) {
+          if (records[i] && records[i].component === 'rezka_online') {
+            rezka = records[i];
+            break;
+          }
+        }
+      } else rezka = records.rezka_online;
+      if (rezka && /^\d+(?:\.\d+){1,3}$/.test(String(rezka.version || '')))
+        return String(rezka.version);
+    }
     return '';
   }
 
@@ -383,6 +400,101 @@
   }
 
 
+  // Explicit status colours, independent of the global Lampa theme. Colours
+  // supplement text labels; they are never the sole signal of an update.
+  var UPDATE_COLORS = {
+    current: {background:'#244C39',foreground:'#C5F3D3'},
+    newer: {background:'#65451E',foreground:'#FFE1A2'},
+    ahead: {background:'#483861',foreground:'#E8D8FF'},
+    catalog: {background:'#28435D',foreground:'#D1E9FF'},
+    unknown: {background:'#41434A',foreground:'#E1E2E6'}
+  };
+
+  function updateVersionBadge(label, version, status) {
+    return {label:label, version:version || 'неизвестна',
+      status:UPDATE_COLORS[status] ? status : 'unknown'};
+  }
+
+  function compareKnownVersion(actual, expected) {
+    if (!actual || !expected) return 'unknown';
+    if (actual === expected) return 'current';
+    if (isVersionNewer(actual, expected)) return 'newer';
+    if (isVersionNewer(expected, actual)) return 'ahead';
+    return 'unknown';
+  }
+
+  function versionDisplayState(name, savedVersion, availableVersion, hasUpdate) {
+    var running = runningVersion(name);
+    var savedState = compareKnownVersion(savedVersion, availableVersion);
+    if (!savedVersion) savedState = 'unknown';
+    var runningState = running ?
+      compareKnownVersion(running, availableVersion) : 'unknown';
+    var hint = '';
+    if (running && savedVersion && isVersionNewer(running, savedVersion)) {
+      runningState = 'newer';
+      hint = 'Перезапустите Lampa: работает предыдущая версия.';
+    } else if (savedState === 'newer' || hasUpdate && savedState !== 'ahead') {
+      hint = 'Доступна новая ссылка. Для применения потребуется перезапуск.';
+    } else if (savedState === 'ahead') {
+      hint = 'Сохранённая версия новее каталога. Автооткат не выполняется.';
+    } else if (!running) {
+      hint = 'Исполняемая версия не подтверждена плагином.';
+    } else if (savedState === 'current' && runningState === 'current') {
+      hint = 'Версии совпадают.';
+    }
+    return {
+      badges: [
+        updateVersionBadge('Сохранена',savedVersion || 'не определена',savedState),
+        updateVersionBadge('Каталог',availableVersion || 'не определена','catalog'),
+        updateVersionBadge('Запущена',running || 'не подтверждена',runningState)
+      ],
+      hint:hint
+    };
+  }
+
+  function decorateUpdateVersionRow(item, row) {
+    if (!row || !row.versionDisplay || !item || typeof item.find !== 'function') return;
+    var subtitle = item.find('.selectbox-item__subtitle');
+    if (!subtitle || !subtitle.length || typeof subtitle.empty !== 'function') return;
+    var group = document.createElement('div');
+    group.className = 'alex-update-version-badges';
+    group.style.cssText = 'display:flex;flex-wrap:wrap;align-items:center;gap:.35em .45em;' +
+      'max-width:100%;margin-top:.15em;';
+    var badges = row.versionDisplay.badges || [];
+    for (var i = 0; i < badges.length; i++) {
+      var badge = badges[i];
+      var palette = UPDATE_COLORS[badge.status] || UPDATE_COLORS.unknown;
+      var pill = document.createElement('span');
+      pill.className = 'alex-update-version-badge alex-update-version-badge--' + badge.status;
+      pill.style.cssText = 'display:inline-flex;max-width:100%;box-sizing:border-box;' +
+        'align-items:center;gap:.35em;border-radius:.45em;padding:.28em .58em;' +
+        'background:' + palette.background + ';color:' + palette.foreground + ';' +
+        'font-size:.87em;line-height:1.35;font-weight:500;white-space:normal;';
+      var label = document.createElement('span');
+      label.textContent = badge.label + ':';
+      label.style.cssText = 'font-weight:400;opacity:.88;';
+      var version = document.createElement('strong');
+      version.textContent = badge.version;
+      version.style.cssText = 'font-weight:650;';
+      pill.appendChild(label);
+      pill.appendChild(version);
+      group.appendChild(pill);
+    }
+    subtitle.empty().append(group);
+    if (row.versionDisplay.hint) {
+      var hint = document.createElement('div');
+      hint.className = 'alex-update-version-hint';
+      hint.textContent = row.versionDisplay.hint;
+      hint.style.cssText = 'margin-top:.38em;color:inherit;opacity:.72;' +
+        'font-size:.83em;line-height:1.3;white-space:normal;';
+      subtitle.append(hint);
+    }
+    if (typeof subtitle.css === 'function') {
+      subtitle.css({'white-space':'normal','overflow':'visible',
+        'text-overflow':'clip','max-height':'none','line-height':'1.4'});
+    }
+  }
+
   function showUpdateCenter(forceRefresh, reportResult, reopenAfterCheck) {
     loadLive(function (resolvedUrl, autoApplied) {
       if (reportResult) {
@@ -420,7 +532,12 @@
         details += runtimeSuffix(name, currentVersion || '');
         var countCopies = matchingInstalled(name, info).length;
         if (countCopies > 1) details += ' · Установлено копий: ' + countCopies;
-        rows.push({title:name,subtitle:details,name:name,canUpdate:outdated});
+        var versionDisplay = versionDisplayState(name,currentVersion || '',
+          info.version || '',outdated);
+        if (countCopies > 1)
+          versionDisplay.hint += ' Установлено копий: ' + countCopies + '.';
+        rows.push({title:name,subtitle:details,name:name,canUpdate:outdated,
+          versionDisplay:versionDisplay,onDraw:decorateUpdateVersionRow});
       }
       if (rows.length === 0) rows.push({title:'Установленных отслеживаемых плагинов нет', action:'none'});
       var enabled = Boolean(Lampa.Storage && Lampa.Storage.get(AUTO_KEY, false));
@@ -1403,10 +1520,10 @@
     skinRoot = root;
     root.classList.add(skinClass);
     watchInstalls();
-    var css = document.getElementById('alexgood321-store-style-v320');
+    var css = document.getElementById('alexgood321-store-style-v330');
     if (!css) {
       css = document.createElement('style');
-      css.id = 'alexgood321-store-style-v320';
+      css.id = 'alexgood321-store-style-v330';
       css.textContent = [
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item{background-color:var(--alex-category-fill)!important;color:#17212F!important;box-sizing:border-box;padding:1.1em 1em 1em;transition:background-color .18s ease,box-shadow .18s ease;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{padding-right:2.4em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3;min-height:1.25em;}',
@@ -1415,12 +1532,12 @@
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-included{display:none!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item.focus{background-image:linear-gradient(rgba(255,255,255,.11),rgba(255,255,255,.11))!important;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);}',
         '.extensions.' + skinClass + ' .scroll--mask:not(.scroll--horizontal){-webkit-mask-image:none!important;mask-image:none!important;}',
-        ".extensions.alexgood321-skin-v320 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
-        ".extensions.alexgood321-skin-v320 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
-        ".extensions.alexgood321-skin-v320 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
-        ".extensions.alexgood321-skin-v320 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
+        ".extensions.alexgood321-skin-v330 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
+        ".extensions.alexgood321-skin-v330 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
+        ".extensions.alexgood321-skin-v330 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
+        ".extensions.alexgood321-skin-v330 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
 
-        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v3.2.0";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v3.3.0";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
         '.extensions.' + skinClass + ' .alex-store-tool{min-height:11.5em;box-sizing:border-box;padding:1.05em;border-radius:1em;background:#444D5B;color:#F0F5FA;border:2px solid transparent;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:.35em;cursor:pointer;}',
         '.extensions.' + skinClass + ' .alex-store-tool--manage{background:#47564E;}',
         '.extensions.' + skinClass + ' .alex-store-tool.focus{box-shadow:inset 0 0 0 2px #fff;border-color:#fff;background-image:linear-gradient(rgba(255,255,255,.1),rgba(255,255,255,.1));}',
@@ -1441,7 +1558,7 @@
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version{font-size:.77em;line-height:1.35;margin-top:.45em;margin-bottom:.3em;color:#B4C7E6;overflow-wrap:anywhere;}',
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version--update{color:#EDC37C;font-weight:700;}',
 
-        "@media(max-width:640px){.extensions.alexgood321-skin-v320 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
+        "@media(max-width:640px){.extensions.alexgood321-skin-v330 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{color:#3E4A5B!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-name{color:#17212F!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-descr{color:#283548!important;}',
