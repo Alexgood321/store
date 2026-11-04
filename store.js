@@ -5,15 +5,15 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '2.2.0',
+    version: '2.3.0',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
     emergency: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@76c6506aa50951e65b3b6edae5c4faf68490dfb8/my_extensions_v1_14.json'
   };
 
-  if (window.__alexgood321_personal_store_2200_loaded) return;
-  window.__alexgood321_personal_store_2200_loaded = true;
+  if (window.__alexgood321_personal_store_2300_loaded) return;
+  window.__alexgood321_personal_store_2300_loaded = true;
 
   var initialized = false;
 
@@ -104,7 +104,7 @@
   var installedGrid = null;
   var focusedGridCard = null;
   var patchedGridControllers = [];
-  var skinClass = 'alexgood321-skin-v220';
+  var skinClass = 'alexgood321-skin-v230';
 
 
   // Live manifest is fetched at each opening. Failed sources fall back safely.
@@ -157,12 +157,18 @@
     if (!meta || !meta.link || !meta.sha) return false;
     var item = findInstalled(name, meta);
     if (!item || item.status === 0 || item.status === false || item.url === meta.link) return false;
+
     var url = String(item.url);
-    // Branch addresses update on Lampa restart, so no false update badge.
-    if (/@(main|master|dev)\//i.test(url)) return false;
-    var sha = url.match(/@([a-f0-9]{7,40})\//i);
-    if (sha) return meta.sha.indexOf(sha[1].toLowerCase()) !== 0;
-    return normalized(url) === normalized(meta.link);
+    var pinned = url.match(/@([a-f0-9]{7,40})\//i);
+    // A previous immutable commit is outdated even if no version string is declared.
+    if (pinned) return meta.sha.indexOf(pinned[1].toLowerCase()) !== 0;
+
+    // @main/@master, GitHub Pages and other floating URLs can still return a
+    // stale JS file from cache. Compare its detected version with the manifest.
+    // Unknown or non-semantic versions must not generate a false notification.
+    if (normalized(url) !== normalized(meta.link)) return false;
+    var currentVersion = installedVersion(url, meta);
+    return isVersionNewer(currentVersion, meta.version);
   }
 
   function notice(message) {
@@ -228,12 +234,16 @@
         if (!installed) continue;
         var outdated = isUpdateAvailable(name);
         if (outdated) count++;
-        var floating = /@(main|master|dev)\//i.test(String(installed.url));
+        var floating = /@(main|master|dev|latest)\//i.test(String(installed.url));
+        var currentVersion = installedVersion(String(installed.url), info);
+        var currentLabel = currentVersion === null ? 'проверяется' : (currentVersion || 'не определена');
         rows.push({
           title: name,
-          subtitle: outdated ? 'Обновление ' + info.version + ' · нажмите для установки' :
-            floating ? 'Следует за веткой GitHub, обновление при запуске' :
-            'Актуальная версия ' + info.version,
+          subtitle: outdated ?
+            'Установлена: ' + currentLabel + ' · Доступна: ' + info.version + ' · обновить ссылку' :
+            floating && currentVersion === null ?
+              'Проверяется версия JS · при обновлении ветки может потребоваться перезапуск' :
+              'Установлена: ' + currentLabel + ' · Актуальная: ' + info.version,
           name: name, canUpdate: outdated
         });
       }
@@ -528,8 +538,8 @@
     refreshInstalledVersions();
     var cards = first.querySelectorAll('.scroll__body > .selector');
     for (var i = 0; i < cards.length; i++) {
-      if (cards[i].__alexGrid2200) continue;
-      cards[i].__alexGrid2200 = true;
+      if (cards[i].__alexGrid2300) continue;
+      cards[i].__alexGrid2300 = true;
       cards[i].addEventListener('hover:focus', function () {
         focusedGridCard = this;
         enableGridArrows();
@@ -545,10 +555,10 @@
     var controller = active && active.controller;
     if (!active || active.name !== 'extensions_line' || !controller ||
         !controller.link || controller.link.html !== installedGrid ||
-        controller.__alexGrid2200) return;
+        controller.__alexGrid2300) return;
     var originalUp = controller.up;
     var originalDown = controller.down;
-    controller.__alexGrid2200 = true;
+    controller.__alexGrid2300 = true;
     patchedGridControllers.push({value:controller, up:originalUp, down:originalDown});
     controller.up = function () {
       if (!moveGridRow(-1) && typeof originalUp === 'function') originalUp.apply(this, arguments);
@@ -730,7 +740,7 @@
       var patch = patchedGridControllers[i];
       patch.value.up = patch.up;
       patch.value.down = patch.down;
-      delete patch.value.__alexGrid2200;
+      delete patch.value.__alexGrid2300;
     }
     patchedGridControllers = [];
     if (installedGrid) installedGrid.classList.remove('alex-installed-grid');
@@ -758,10 +768,10 @@
     skinRoot = root;
     root.classList.add(skinClass);
     watchInstalls();
-    var css = document.getElementById('alexgood321-store-style-v220');
+    var css = document.getElementById('alexgood321-store-style-v230');
     if (!css) {
       css = document.createElement('style');
-      css.id = 'alexgood321-store-style-v220';
+      css.id = 'alexgood321-store-style-v230';
       css.textContent = [
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item{background-color:var(--alex-category-fill)!important;color:#17212F!important;box-sizing:border-box;padding:1.1em 1em 1em;transition:background-color .18s ease,box-shadow .18s ease;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{padding-right:2.4em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3;min-height:1.25em;}',
@@ -770,16 +780,16 @@
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-included{display:none!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item.focus{background-image:linear-gradient(rgba(255,255,255,.11),rgba(255,255,255,.11))!important;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);}',
         '.extensions.' + skinClass + ' .scroll--mask:not(.scroll--horizontal){-webkit-mask-image:none!important;mask-image:none!important;}',
-        ".extensions.alexgood321-skin-v220 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
-        ".extensions.alexgood321-skin-v220 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
-        ".extensions.alexgood321-skin-v220 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
-        ".extensions.alexgood321-skin-v220 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
+        ".extensions.alexgood321-skin-v230 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
+        ".extensions.alexgood321-skin-v230 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
+        ".extensions.alexgood321-skin-v230 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
+        ".extensions.alexgood321-skin-v230 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
 
         '.extensions.' + skinClass + ' .alex-installed-grid .extensions__item{height:auto!important;min-height:11.5em;box-sizing:border-box;}',
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version{font-size:.77em;line-height:1.35;margin-top:.45em;margin-bottom:.3em;color:#B4C7E6;overflow-wrap:anywhere;}',
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version--update{color:#EDC37C;font-weight:700;}',
 
-        "@media(max-width:640px){.extensions.alexgood321-skin-v220 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
+        "@media(max-width:640px){.extensions.alexgood321-skin-v230 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{color:#3E4A5B!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-name{color:#17212F!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-descr{color:#283548!important;}',
