@@ -92,7 +92,16 @@ def sync() -> int:
             if len(raw) < 30 or not re.search(r"\b(function|const|var|let|Lampa)\b", raw):
                 raise ValueError("Remote source is not recognizable JavaScript")
             version = extract_version(raw) or ("rev-" + sha[:8])
-            link = "https://cdn.jsdelivr.net/gh/" + repo + "@" + sha + "/" + path
+            # Keep original publisher URLs for third-party plugins: origin,
+            # CORS, and relative asset paths may be significant to their JS.
+            # Our own plugins get immutable links to the verified Git commit.
+            publisher_link = next(
+                (p["link"] for g in seed["results"] for p in g.get("results", [])
+                 if p.get("name") == name), None)
+            link = ("https://cdn.jsdelivr.net/gh/" + repo + "@" + sha + "/" + path
+                    if item.get("owned") else publisher_link)
+            if not link:
+                raise ValueError("No publisher link for " + name)
             tracked[name] = {"repo": repo, "path": path, "ref": ref,
                              "owned": bool(item.get("owned")), "sha": sha,
                              "version": version, "link": link}
