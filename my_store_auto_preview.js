@@ -57,7 +57,10 @@
     var oldMenu = body.find('[data-component="alexgood321_store"]');
     if (oldMenu && typeof oldMenu.remove === 'function') oldMenu.remove();
 
-    if (body.find('[data-component="' + CONFIG.component + '"]').length) return;
+    if (body.find('[data-component="' + CONFIG.component + '"]').length) {
+      addUpdatesMenu(body);
+      return;
+    }
 
     var icon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
       '<rect x="3" y="3" width="7" height="7" rx="1.5"/>' +
@@ -72,7 +75,20 @@
     var anchor = body.find('[data-component="more"]');
     if (anchor.length) anchor.after(html);
     else body.append(html);
+    addUpdatesMenu(body);
     if (typeof main.update === 'function') main.update();
+  }
+
+  function addUpdatesMenu(body) {
+    if (body.find('[data-component="alexgood321_store_updates"]').length) return;
+    var icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">' +
+      '<path d="M20 11a8 8 0 1 0-2 6"/><path d="M20 4v7h-7"/></svg>';
+    var html = '<div class="settings-folder selector" data-component="alexgood321_store_updates" data-static="true">' +
+      '<div class="settings-folder__icon">' + icon + '</div>' +
+      '<div class="settings-folder__name">Обновления плагинов</div></div>';
+    var existing = body.find('[data-component="' + CONFIG.component + '"]');
+    if (existing.length) existing.after(html);
+    else body.append(html);
   }
 
 
@@ -196,6 +212,68 @@
           isUpdateAvailable(name) && replaceInstalled(name)) count++;
     }
     if (count) notice('Ссылки обновлены: ' + count + '. Нужен перезапуск Lampa.');
+  }
+
+
+  function showUpdateCenter(forceRefresh) {
+    loadLive(function () {
+      if (!Lampa.Select || typeof Lampa.Select.show !== 'function') {
+        return notice('Меню обновлений недоступно');
+      }
+      var rows = [];
+      var count = 0;
+      for (var name in LIVE_META) {
+        if (!Object.prototype.hasOwnProperty.call(LIVE_META, name)) continue;
+        var info = LIVE_META[name], installed = findInstalled(name, info);
+        if (!installed) continue;
+        var outdated = isUpdateAvailable(name);
+        if (outdated) count++;
+        var floating = /@(main|master|dev)\//i.test(String(installed.url));
+        rows.push({
+          title: name,
+          subtitle: outdated ? 'Обновление ' + info.version + ' · нажмите для установки' :
+            floating ? 'Следует за веткой GitHub, обновление при запуске' :
+            'Актуальная версия ' + info.version,
+          name: name, canUpdate: outdated
+        });
+      }
+      if (rows.length === 0) rows.push({title:'Установленных отслеживаемых плагинов нет', action:'none'});
+      var enabled = Boolean(Lampa.Storage && Lampa.Storage.get(AUTO_KEY, false));
+      rows.push({title:'Автообновление ссылок: ' + (enabled ? 'включено' : 'выключено'),
+        subtitle:'По умолчанию отключено. При включении требуется перезапуск Lampa.',
+        action:'auto'});
+      rows.push({title:'Откат последней замены ссылки',action:'rollback'});
+      rows.push({title:'Проверить GitHub повторно',action:'refresh'});
+      Lampa.Select.show({
+        title: 'Обновления плагинов' + (count ? ' (' + count + ')' : ''),
+        items: rows,
+        onSelect: function (row) {
+          if (row.action === 'auto') {
+            if (Lampa.Storage) Lampa.Storage.set(AUTO_KEY, !enabled);
+            if (!enabled) updateInstalledAutomatically();
+            notice('Автообновление ' + (!enabled ? 'включено' : 'выключено'));
+          } else if (row.action === 'rollback') {
+            if (!rollbackUpdate()) notice('Нет ссылки для отката');
+          } else if (row.action === 'refresh') {
+            showUpdateCenter(true);
+          } else if (row.canUpdate) {
+            var selected = row.name;
+            Lampa.Select.show({
+              title: 'Обновить ' + selected + '?',
+              items: [{title:'Заменить установленную ссылку',action:'confirm'},
+                      {title:'Отмена',action:'cancel'}],
+              onSelect: function (decision) {
+                if (decision.action === 'confirm') {
+                  if (!replaceInstalled(selected)) notice('Обновление не удалось');
+                }
+              }
+            });
+          } else if (row.action !== 'none') {
+            notice('Обновление не требуется');
+          }
+        }
+      });
+    }, Boolean(forceRefresh));
   }
 
   function normalized(url) {
@@ -361,6 +439,18 @@
         var name = nameNode ? (nameNode.textContent || '').trim() : '';
         if (Object.prototype.hasOwnProperty.call(LINK_MAP, name)) {
           setStatus(cards[j], installedStatus(LINK_MAP[name]));
+          var available = isUpdateAvailable(name);
+          cards[j].classList.toggle('alex-update-available', available);
+          var note = cards[j].querySelector('.alex-update-label');
+          if (available && !note) {
+            note = document.createElement('div');
+            note.className = 'alex-update-label';
+            cards[j].appendChild(note);
+          }
+          if (note) {
+            note.textContent = available ? 'Обновление ' + (LIVE_META[name].version || '') : '';
+            note.style.display = available ? '' : 'none';
+          }
         }
       }
     }
@@ -503,7 +593,9 @@
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item:before{position:absolute;right:0.7em;top:0.7em;width:1.5em;height:1.5em;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:0.85em;pointer-events:none;}',
         '.extensions.' + skinClass + ' .alex-status-installed:before{content:"✓";color:#fff;background:#3569B4;}',
         '.extensions.' + skinClass + ' .alex-status-disabled:before{content:"–";color:#885318;background:rgba(127,77,18,.09);border:1px solid #885318;}',
-        '.extensions.' + skinClass + ' .alex-status-missing:before{content:"+";color:#344458;border:1px solid #50637A;background:rgba(255,255,255,.17);}'
+        '.extensions.' + skinClass + ' .alex-status-missing:before{content:"+";color:#344458;border:1px solid #50637A;background:rgba(255,255,255,.17);}',
+        '.extensions.' + skinClass + ' .alex-update-available:before{content:"↑";background:#926016;color:#fff;}',
+        '.extensions.' + skinClass + ' .alex-update-label{margin-top:auto;padding-top:.6em;font-size:.79em;font-weight:700;color:#704512;}'
       ].join('\n');
       document.head.appendChild(css);
     }
@@ -541,6 +633,11 @@
     if (!menu || !menu.length) return;
     menu.off('hover:enter.alexgood321_personal_store');
     menu.on('hover:enter.alexgood321_personal_store', openStore);
+    var updates = body.find('[data-component="alexgood321_store_updates"]');
+    if (updates && updates.length) {
+      updates.off('hover:enter.alexgood321_store_updates');
+      updates.on('hover:enter.alexgood321_store_updates', function () { showUpdateCenter(true); });
+    }
   }
 
   function ready() {
