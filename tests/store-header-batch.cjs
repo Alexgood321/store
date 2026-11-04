@@ -147,6 +147,19 @@ newer.buttons[0].action();
 assert.equal(newer.saveCount(),0);
 assert.deepEqual(newer.installed.map(x=>x.url),newer.previous);
 
+// The header button also restarts Lampa to load a newer My Store core
+// even when no installed plugin URL needs replacing.
+const core=scenario({enabled:true,older:false});
+core.browser.__AlexgoodStoreRuntime={
+  ready:true,version:'3.3.0',sha:'f'.repeat(40)
+};
+core.browser.__batchQA.sync();
+core.buttons[0].action();
+core.flush();
+assert.equal(core.saveCount(),0);
+assert.equal(core.reloads(),1);
+assert.ok(core.notices.some(x=>x.includes('ядра My Store')));
+
 // Failed persistence rolls back in-memory URLs; no forced restart.
 const fail=scenario({enabled:true,saveFails:true});
 fail.browser.__batchQA.sync();
@@ -157,4 +170,4 @@ assert.equal(fail.reloads(),0);
 assert.ok(fail.notices.some(x=>x.includes('Не удалось сохранить')));
 
 assert.ok(!source.includes('api.github.com'));
-console.log('PASS header one-click: default OFF, enable/hide, no duplicates, safe multi-update, group rollback, player guard, stale check, no downgrade, save failure, zero REST calls');
+console.log('PASS header one-click: default OFF, enable/hide, no duplicates, safe multi-update, group rollback, player guard, stale check, no downgrade, core-only restart, save failure, zero REST calls');
