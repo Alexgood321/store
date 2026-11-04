@@ -18,6 +18,12 @@
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@main/home_categories.js?v=2.0.0",
           "descr": "Скрытие и изменение порядка категорий главного экрана Lampa. Управление с ТВ-пульта и сенсорного экрана.",
           "version": "2.0.0"
+        },
+        {
+          "name": "Продолжить просмотр",
+          "author": "ARST113",
+          "link": "https://arst113.github.io/lampa-watch-resume/watch_resume.js",
+          "descr": "Продолжение просмотра онлайн и торрентов. Ссылка из установленного расширения."
         }
       ]
     },
@@ -44,6 +50,79 @@
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@main/rezka.js?v=1.4.0",
           "descr": "Интеграция HDRezka: просмотр, озвучки, Premium-метки, коллекции, «Досмотреть» и прогресс. Синхронизация требует настроенного HTTPS-шлюза.",
           "version": "1.4.0"
+        },
+        {
+          "name": "Онлайн Мод",
+          "author": "nb557",
+          "link": "https://nb557.github.io/plugins/online_mod.js",
+          "descr": "Дополнительные онлайн-источники для фильмов и сериалов. На устройстве встречались две записи с одним адресом."
+        }
+      ]
+    },
+    {
+      "title": "Торренты",
+      "hpu": "alex_torrents",
+      "results": [
+        {
+          "name": "EasyTorrent",
+          "author": "darkestclouds",
+          "link": "https://darkestclouds.github.io/plugins/easytorrent/easytorrent.min.js",
+          "descr": "Дополнительная сортировка и оценка торрент-раздач. Экспериментальный сторонний плагин."
+        },
+        {
+          "name": "Torrent Styles",
+          "author": "@pavelpikta",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/torrent_styles_v2.js?v=1.2.1",
+          "descr": "Оформление списка торрентов: цветовые метки сидов, пиров, битрейта и размера. Копия из твоего форка.",
+          "version": "1.2.1"
+        }
+      ]
+    },
+    {
+      "title": "Интерфейс",
+      "hpu": "alex_interface",
+      "results": [
+        {
+          "name": "Приятные мелочи",
+          "author": "@AndreyURL54",
+          "link": "http://skaztv.online/js/tricks.js",
+          "descr": "Небольшие изменения интерфейса Lampa. На скриншоте установлен по HTTP; на HTTPS-сборках возможна блокировка загрузки."
+        }
+      ]
+    },
+    {
+      "title": "Рейтинги и сервисы",
+      "hpu": "alex_services",
+      "results": [
+        {
+          "name": "TraktTV",
+          "author": "@lampame",
+          "link": "https://lampame.github.io/main/trakttv.js",
+          "descr": "Интеграция Trakt.tv с Lampa. Адрес из списка установленных расширений."
+        },
+        {
+          "name": "Рейтинг КиноПоиск и IMDb",
+          "author": "@t_anton",
+          "link": "https://nb557.github.io/plugins/rating.js",
+          "descr": "Добавляет оценки КиноПоиска и IMDb в интерфейс Lampa."
+        }
+      ]
+    },
+    {
+      "title": "Архив и служебные",
+      "hpu": "alex_legacy",
+      "results": [
+        {
+          "name": "SURS (оригинальный, отключён)",
+          "author": "Roman V",
+          "link": "https://aviamovie.github.io/surs.js",
+          "descr": "Исходный SURS из установленных плагинов. На скриншоте отключён. Не включать одновременно с SURS Pro."
+        },
+        {
+          "name": "Пиратские плагины (старый магазин)",
+          "author": "lampaplugins",
+          "link": "https://lampaplugins.github.io/store/store.js",
+          "descr": "Ранее установленный сторонний магазин. Включён только как сохранённая ссылка; его внешний каталог не входит в «Мои плагины»."
         }
       ]
     }
