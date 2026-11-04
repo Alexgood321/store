@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.4.1',
+    version: '3.4.2',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -130,6 +130,9 @@
   var AUTO_KEY = 'alexgood321_store_auto_update';
   // Device-local opt-in; the button is never enabled automatically.
   var HEADER_BATCH_KEY = 'alexgood321_store_header_batch_v1';
+  var HEADER_STORE_KEY = 'alexgood321_store_header_shortcut_v1';
+  var headerStoreShortcutButton = null;
+  var headerStoreShortcutLastClick = 0;
   var headerBatchButton = null;
   var headerBatchBusy = false;
   var headerBatchPendingRestart = false;
@@ -560,6 +563,12 @@
         subtitle:'Одно нажатие обновляет все подтверждённые ссылки. По умолчанию выключена.',
         action:'header_batch_toggle'
       });
+      var storeHeaderEnabled = isHeaderStoreShortcutEnabled();
+      rows.push({
+        title:'Иконка «Мои плагины» в шапке: ' + (storeHeaderEnabled ? 'включена' : 'выключена'),
+        subtitle:'Быстрый переход в магазин с верхней панели. Настраивается отдельно для этого устройства.',
+        action:'header_store_toggle'
+      });
       rows.push({title:'Откат последней замены ссылки',action:'rollback'});
       rows.push({title:'Проверить каталог повторно',action:'refresh'});
       rows.push({title:'Обновить мои и перезапустить',action:'apply_owned'});
@@ -577,6 +586,11 @@
             if (Lampa.Storage) Lampa.Storage.set(HEADER_BATCH_KEY, !headerEnabled);
             syncHeaderBatchButton();
             notice('Кнопка обновления в шапке ' + (!headerEnabled ? 'включена' : 'выключена'));
+            showUpdateCenter(false,false);
+          } else if (row.action === 'header_store_toggle') {
+            if (Lampa.Storage) Lampa.Storage.set(HEADER_STORE_KEY,!storeHeaderEnabled);
+            syncHeaderStoreShortcut();
+            notice('Иконка «Мои плагины» в шапке ' + (!storeHeaderEnabled ? 'включена' : 'выключена'));
             showUpdateCenter(false,false);
           } else if (row.action === 'rollback') {
             if (!rollbackUpdate()) notice('Нет ссылки для отката');
@@ -964,6 +978,77 @@
     // click when a web shell does not synthesize the hover event.
     headerBatchButton.on('click.alex_store_batch',function(){runHeaderBatch();});
     refreshHeaderBatchBadge();
+  }
+
+
+  // Optional quick access to the personal plugin store. Keep independent of
+  // the batch-update button and use the native Lampa head selector for DPAD.
+  function isHeaderStoreShortcutEnabled() {
+    try {
+      return Boolean(Lampa.Storage && Lampa.Storage.get(HEADER_STORE_KEY,false));
+    } catch (error) {return false;}
+  }
+
+  function ensureHeaderStoreShortcutStyle() {
+    if (typeof document === 'undefined' || !document.head ||
+        typeof document.createElement !== 'function' ||
+        typeof document.getElementById !== 'function') return;
+    var id='alex-store-header-shortcut-style-v342';
+    if (document.getElementById(id)) return;
+    var style=document.createElement('style');
+    style.id=id;
+    style.textContent=
+      '.head__action.alex-store-header-shortcut{'+
+        'color:#EAF0F9!important;background-color:#303B49!important;'+
+        'border-radius:50%!important;'+
+        'box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)!important;'+
+      '}'+
+      '.head__action.alex-store-header-shortcut svg{'+
+        'width:1.45em!important;height:1.45em!important;'+
+        'stroke:currentColor!important;stroke-width:1.9!important;'+
+        'fill:none!important;flex-shrink:0;'+
+      '}'+
+      '.head__action.alex-store-header-shortcut.focus,'+
+      '.head__action.alex-store-header-shortcut.hover{'+
+        'box-shadow:inset 0 0 0 2px #FFFFFF,0 0 0 2px rgba(255,255,255,.3)!important;'+
+      '}';
+    document.head.appendChild(style);
+  }
+
+  function syncHeaderStoreShortcut() {
+    if (!isHeaderStoreShortcutEnabled()) {
+      if (headerStoreShortcutButton) {
+        headerStoreShortcutButton.remove();
+        headerStoreShortcutButton=null;
+      }
+      return;
+    }
+    if (headerStoreShortcutButton) return;
+    if (!Lampa.Head || typeof Lampa.Head.addIcon !== 'function') return;
+    ensureHeaderStoreShortcutStyle();
+
+    // Four separate rounded tiles match the icon in the settings menu.
+    var svg='<svg viewBox="0 0 24 24" width="24" height="24" '+
+      'fill="none" stroke="currentColor" stroke-width="1.9" '+
+      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+
+      '<rect x="3" y="3" width="7" height="7" rx="1.5"/>'+
+      '<rect x="14" y="3" width="7" height="7" rx="1.5"/>'+
+      '<rect x="3" y="14" width="7" height="7" rx="1.5"/>'+
+      '<rect x="14" y="14" width="7" height="7" rx="1.5"/>'+
+      '</svg>';
+    function activate() {
+      var now=Date.now();
+      // Lampa may emit both hover:enter and click for one touch.
+      if (now-headerStoreShortcutLastClick < 650) return;
+      headerStoreShortcutLastClick=now;
+      openStore();
+    }
+    headerStoreShortcutButton=Lampa.Head.addIcon(svg,activate);
+    if (!headerStoreShortcutButton) return;
+    headerStoreShortcutButton.addClass('alex-store-header-shortcut');
+    headerStoreShortcutButton.attr('title','Мои плагины');
+    headerStoreShortcutButton.attr('aria-label','Открыть Мои плагины');
+    headerStoreShortcutButton.on('click.alex_store_shortcut',activate);
   }
 
   function waitForBatchVersions(callback, attempt) {
@@ -1803,7 +1888,7 @@
         ".extensions.alexgood321-skin-v341 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
         ".extensions.alexgood321-skin-v341 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
 
-        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v3.4.1";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v3.4.2";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
         '.extensions.' + skinClass + ' .alex-store-tool{min-height:11.5em;box-sizing:border-box;padding:1.05em;border-radius:1em;background:#444D5B;color:#F0F5FA;border:2px solid transparent;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:.35em;cursor:pointer;}',
         '.extensions.' + skinClass + ' .alex-store-tool--manage{background:#47564E;}',
         '.extensions.' + skinClass + ' .alex-store-tool.focus{box-shadow:inset 0 0 0 2px #fff;border-color:#fff;background-image:linear-gradient(rgba(255,255,255,.1),rgba(255,255,255,.1));}',
@@ -1877,6 +1962,7 @@
     var menu = body.find('[data-component="' + CONFIG.component + '"]');
     if (!menu || !menu.length) return;
     syncHeaderBatchButton();
+    syncHeaderStoreShortcut();
     menu.off('hover:enter.alexgood321_personal_store');
     menu.on('hover:enter.alexgood321_personal_store', openStore);
   }
@@ -1888,9 +1974,11 @@
     addMenu();
     deviceGet();
     syncHeaderBatchButton();
+    syncHeaderStoreShortcut();
     // Some Lampa builds create Head after appready; retry without touching
     // the global toolbar unless this device has opted in.
     if (isHeaderBatchEnabled()) setTimeout(syncHeaderBatchButton,1200);
+    if (isHeaderStoreShortcutEnabled()) setTimeout(syncHeaderStoreShortcut,1200);
     setTimeout(snapshotThisDevice,5000);
     setTimeout(periodicCatalogCheck,12000);
     if (typeof setInterval === 'function') setInterval(periodicCatalogCheck,5*60*1000);

@@ -13,11 +13,13 @@ assert.ok(ending>0);
 const code=source.slice(0,ending)+
   'window.__batchQA={sync:syncHeaderBatchButton,run:runHeaderBatch,'+
   'plan:getSafeBatchPlan,rollback:rollbackOwnedBatch,show:showUpdateCenter,'+
+  'shortcut:syncHeaderStoreShortcut,'+
   'periodic:periodicCatalogCheck};\n'+
   source.slice(ending);
 const KEY='alexgood321_store_header_batch_v1';
+const SHORTCUT_KEY='alexgood321_store_header_shortcut_v1';
 
-function scenario({enabled=false,playing=false,stale=false,saveFails=false,older=true}={}) {
+function scenario({enabled=false,shortcutEnabled=false,playing=false,stale=false,saveFails=false,older=true}={}) {
   const catalog=JSON.parse(JSON.stringify(original));
   catalog.meta.last_checked_at=stale?'2000-01-01T00:00:00Z':
     new Date().toISOString().replace(/\.\d+Z$/,'Z');
@@ -30,13 +32,14 @@ function scenario({enabled=false,playing=false,stale=false,saveFails=false,older
   const previous=installed.map(x=>x.url);
   const local={
     [KEY]:enabled,
+    [SHORTCUT_KEY]:shortcutEnabled,
     alexgood321_installed_version_cache_v1:{
       [installed[0].url]:{version:older?'3.8.3':catalog.meta.tracked['SURS Pro'].version,time:Date.now()},
       [installed[1].url]:{version:older?'1.7.3':'1.7.9',time:Date.now()},
       [installed[3].url]:{version:'1.9.0',time:Date.now()}
     }
   };
-  const notices=[],network=[],timers=[],buttons=[],selection=[];
+  const notices=[],network=[],timers=[],buttons=[],selection=[],opened=[];
   let saved=0,reloaded=0;
   function button(action) {
     const btn={action,removed:false,classes:new Set(),badge:{length:1},
@@ -59,6 +62,7 @@ function scenario({enabled=false,playing=false,stale=false,saveFails=false,older
     Storage:{get:(k,d)=>Object.hasOwn(local,k)?local[k]:d,set:(k,v)=>{local[k]=v;}},
     Plugins:{get:()=>installed,loaded:()=>[],save(){saved++;if(saveFails)throw Error('simulated save failure');}},
     Head:{addIcon(svg,action){const item=button(action);item.svg=svg;buttons.push(item);return item;}},
+    Extensions:{show(options){opened.push(options);}},
     Player:{opened:()=>playing},
     Select:{show(o){selection.push(o);}},
     Noty:{show(t){notices.push(t);}},
@@ -78,7 +82,7 @@ function scenario({enabled=false,playing=false,stale=false,saveFails=false,older
     while(timers.length && ++i<30)timers.shift().fn();
     assert.ok(i<30,'timer loop');
   }
-  return {browser,Lampa,local,notices,network,buttons,installed,previous,
+  return {browser,Lampa,local,notices,network,buttons,opened,installed,previous,
     selection,flush,saveCount:()=>saved,reloads:()=>reloaded};
 }
 
@@ -98,6 +102,42 @@ setup.selection.at(-1).onSelect({action:'header_batch_toggle'});
 assert.equal(setup.local[KEY],false);
 assert.equal(setup.buttons[0].removed,true);
 assert.equal(setup.saveCount(),0);
+
+
+// Independent store shortcut: default OFF, immediate setting toggle and
+// native header navigation must work on touch and with a TV remote.
+const shortcut=scenario();
+shortcut.browser.__batchQA.shortcut();
+assert.equal(shortcut.buttons.length,0);
+shortcut.browser.__batchQA.show(true,false);
+assert.ok(shortcut.selection.at(-1).items.some(x=>x.action==='header_store_toggle'));
+shortcut.selection.at(-1).onSelect({action:'header_store_toggle'});
+assert.equal(shortcut.local[SHORTCUT_KEY],true);
+assert.equal(shortcut.buttons.length,1);
+assert.ok(shortcut.buttons[0].svg.includes('<rect x="3" y="3"'));
+shortcut.browser.__batchQA.shortcut();
+assert.equal(shortcut.buttons.length,1,'must not duplicate the shortcut');
+shortcut.buttons[0].action();
+assert.equal(shortcut.opened.length,1,'header shortcut must open My Store');
+assert.ok(shortcut.opened[0].store.includes('live_catalog.json'));
+shortcut.buttons[0]['on:click.alex_store_shortcut']();
+assert.equal(shortcut.opened.length,1,'touch and native click must be debounced');
+shortcut.selection.at(-1).onSelect({action:'header_store_toggle'});
+assert.equal(shortcut.local[SHORTCUT_KEY],false);
+assert.equal(shortcut.buttons[0].removed,true);
+assert.equal(shortcut.saveCount(),0,'header visibility must not modify plugin URLs');
+
+const both=scenario({enabled:true,shortcutEnabled:true});
+both.browser.__batchQA.sync();
+both.browser.__batchQA.shortcut();
+assert.equal(both.buttons.length,2,'both header buttons can coexist');
+assert.equal(both.buttons[0].removed,false);
+assert.equal(both.buttons[1].removed,false);
+both.local[SHORTCUT_KEY]=false;
+both.browser.__batchQA.shortcut();
+assert.equal(both.buttons[1].removed,true);
+assert.equal(both.buttons[0].removed,false,'turning off shortcut must keep batch update');
+assert.ok(source.includes('.head__action.alex-store-header-shortcut'));
 
 // Normal single press. Two newer semantic versions, one current, one disabled.
 // One Plugins.save(), one group rollback, then safe restart outside player.
@@ -206,4 +246,4 @@ assert.equal(fail.reloads(),0);
 assert.ok(fail.notices.some(x=>x.includes('Не удалось сохранить')));
 
 assert.ok(!source.includes('api.github.com'));
-console.log('PASS header one-click: default OFF, enable/hide, no duplicates, safe multi-update, group rollback, player guard, stale check, no downgrade, core-only restart, save failure, zero REST calls');
+console.log('PASS header one-click and store shortcut: default OFF, enable/hide, no duplicates, safe multi-update, group rollback, player guard, stale check, no downgrade, core-only restart, save failure, zero REST calls');
