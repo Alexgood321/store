@@ -187,6 +187,7 @@
         // Never silently apply a stale CDN fallback or unverified catalog.
         var autoApplied = (i === 0 && catalogIsFresh() && !suppressAutomatic) ?
           updateInstalledAutomatically(Boolean(quietAutoUpdate)) : [];
+        if (autoApplied.length) headerBatchPendingRestart=true;
         if (skinRoot) refreshSkin();
         callback(url, autoApplied);
       }, function () { attempt(i+1); });
@@ -877,8 +878,9 @@
         catalogIsFresh()) count=getSafeBatchPlan().items.length+(needsCoreReload()?1:0);
     var bubble=headerBatchButton.find('.alex-store-header-batch-count');
     if (bubble && bubble.length) {
-      bubble.text(count>0?String(count>9?'9+':count):'');
-      bubble.toggle(count>0 && !headerBatchPendingRestart);
+      bubble.text(headerBatchPendingRestart ? '↻' :
+        (count>0?String(count>9?'9+':count):''));
+      bubble.toggle(headerBatchPendingRestart || count>0);
     }
     headerBatchButton.toggleClass('alex-store-header-batch-update',count>0);
     headerBatchButton.toggleClass('alex-store-header-batch-restart',headerBatchPendingRestart);
@@ -958,7 +960,8 @@
         }
         var plan=getSafeBatchPlan();
         var corePending=needsCoreReload();
-        if (!plan.items.length && !corePending) {
+        var pendingRestart=headerBatchPendingRestart;
+        if (!plan.items.length && !corePending && !pendingRestart) {
           done();
           notice('Подтверждённых обновлений нет.'+
             (plan.skipped.length?' Пропущено без проверки версии: '+plan.skipped.length+'.':''));
@@ -970,14 +973,16 @@
           notice('Не удалось сохранить массовое обновление. Ссылки восстановлены.');
           return;
         }
-        if (saved===0 && !corePending) {
+        if (saved===0 && !corePending && !pendingRestart) {
           done();
           notice('Не найдено подтверждённых новых ссылок.');
           return;
         }
         headerBatchPendingRestart=true;
         done();
-        var description=(saved ? 'Обновлено ссылок: '+saved : 'Новых ссылок не требуется')+
+        var description=(saved ? 'Обновлено ссылок: '+saved :
+          (pendingRestart ? 'Ранее обновлённые ссылки готовы к применению' :
+            'Новых ссылок не требуется'))+
           (corePending ? '. Доступно обновление ядра My Store' : '')+
           (plan.skipped.length?'. Пропущено: '+plan.skipped.length:'')+'.';
         if (isPlayerOpened()) {
