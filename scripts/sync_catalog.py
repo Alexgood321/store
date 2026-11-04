@@ -86,8 +86,25 @@ def sync() -> int:
         if not re.fullmatch(r"[\w.-]+/[\w.-]+", repo) or not re.fullmatch(r"[\w./-]+\.js", path):
             raise ValueError("Invalid source repo/path: " + name)
         old = old_tracked.get(name, {})
+        publisher_link = next(
+            (p["link"] for g in seed["results"] for p in g.get("results", [])
+             if p.get("name") == name), None)
         try:
             sha = latest_path_commit(repo, ref, path)
+            unchanged = (
+                sha == old.get("sha")
+                and old.get("repo") == repo
+                and old.get("path") == path
+                and old.get("ref") == ref
+                and bool(old.get("owned")) == bool(item.get("owned"))
+                and old.get("version")
+                and old.get("link")
+                and (bool(item.get("owned")) or old.get("link") == publisher_link)
+            )
+            if unchanged:
+                tracked[name] = old
+                print(name + ": unchanged @ " + sha[:12])
+                continue
             raw = fetch_text("https://raw.githubusercontent.com/" + repo + "/" + sha + "/" + path)
             if len(raw) < 30 or not re.search(r"\b(function|const|var|let|Lampa)\b", raw):
                 raise ValueError("Remote source is not recognizable JavaScript")
@@ -95,9 +112,6 @@ def sync() -> int:
             # Keep original publisher URLs for third-party plugins: origin,
             # CORS, and relative asset paths may be significant to their JS.
             # Our own plugins get immutable links to the verified Git commit.
-            publisher_link = next(
-                (p["link"] for g in seed["results"] for p in g.get("results", [])
-                 if p.get("name") == name), None)
             link = ("https://cdn.jsdelivr.net/gh/" + repo + "@" + sha + "/" + path
                     if item.get("owned") else publisher_link)
             if not link:
