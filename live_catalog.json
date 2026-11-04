@@ -32,6 +32,13 @@
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@c7c48fcab739f79c3a9c3b2522deaa3cebaedd6d/rezka.js",
           "descr": "Интеграция HDRezka: просмотр, озвучки, Premium-метки, коллекции, «Досмотреть» и прогресс. Синхронизация требует настроенного HTTPS-шлюза.",
           "version": "1.7.1"
+        },
+        {
+          "name": "My Store",
+          "author": "Alexgood321",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_live.js",
+          "descr": "Персональный магазин Lampa: установка расширений, проверка версий, обновления, журнал изменений и управление устройством.",
+          "version": "2.5.0"
         }
       ]
     },
@@ -320,6 +327,16 @@
         "version": "2.0",
         "link": "https://darkestclouds.github.io/plugins/easytorrent/easytorrent.min.js",
         "published_at": "2025-12-28T22:45:48Z"
+      },
+      "My Store": {
+        "repo": "Alexgood321/store",
+        "path": "my_store_live.js",
+        "ref": "main",
+        "owned": false,
+        "sha": "f77064258cfc32d602bbf3a6740bf580c44ae887",
+        "version": "2.5.0",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_live.js",
+        "published_at": "2026-11-04T12:12:05Z"
       }
     },
     "auto_update_installed": false
