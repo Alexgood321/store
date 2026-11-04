@@ -38,7 +38,7 @@ def fetch_text(url: str, limit: int = MAX_JS_BYTES) -> str:
     return body.decode("utf-8")
 
 
-def latest_path_commit(repo: str, ref: str, path: str) -> str:
+def latest_path_commit(repo: str, ref: str, path: str) -> tuple[str, str]:
     query = urllib.parse.urlencode({"sha": ref, "path": path, "per_page": 1})
     url = "https://api.github.com/repos/" + repo + "/commits?" + query
     result = json.loads(fetch_text(url, 500_000))
@@ -47,7 +47,12 @@ def latest_path_commit(repo: str, ref: str, path: str) -> str:
     sha = result[0].get("sha", "")
     if not re.fullmatch(r"[a-f0-9]{40}", sha):
         raise ValueError("Invalid Git commit SHA")
-    return sha
+    details = result[0].get("commit", {})
+    published_at = (details.get("committer") or {}).get("date") or (
+        details.get("author") or {}).get("date") or ""
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", published_at):
+        published_at = ""
+    return sha, published_at
 
 
 VERSION_PATTERNS = [
@@ -90,7 +95,7 @@ def sync() -> int:
             (p["link"] for g in seed["results"] for p in g.get("results", [])
              if p.get("name") == name), None)
         try:
-            sha = latest_path_commit(repo, ref, path)
+            sha, published_at = latest_path_commit(repo, ref, path)
             unchanged = (
                 sha == old.get("sha")
                 and old.get("repo") == repo
@@ -99,6 +104,7 @@ def sync() -> int:
                 and bool(old.get("owned")) == bool(item.get("owned"))
                 and old.get("version")
                 and old.get("link")
+                and old.get("published_at", "") == published_at
                 and (bool(item.get("owned")) or old.get("link") == publisher_link)
             )
             if unchanged:
@@ -118,7 +124,8 @@ def sync() -> int:
                 raise ValueError("No publisher link for " + name)
             tracked[name] = {"repo": repo, "path": path, "ref": ref,
                              "owned": bool(item.get("owned")), "sha": sha,
-                             "version": version, "link": link}
+                             "version": version, "link": link,
+                             "published_at": published_at}
             print(name + ": " + version + " @ " + sha[:12])
         except (ValueError, UnicodeError, OSError, urllib.error.HTTPError) as exc:
             if old.get("sha") and old.get("link"):
