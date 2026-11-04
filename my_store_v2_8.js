@@ -307,7 +307,7 @@
     if (!names.length) return finished({checked:0,failed:[],changed:[]});
     if (!Lampa.Reguest) return finished({checked:0,failed:names.slice(),changed:[]});
 
-    var cursor = 0, active = 0, checked = 0, failed = [], changed = [];
+    var cursor = 0, active = 0, checked = 0, failed = [], changed = [], completed = false;
     function finishOne(name,failedOne) {
       if (failedOne) failed.push(name);
       else checked++;
@@ -315,6 +315,7 @@
       next();
     }
     function next() {
+      if (completed) return;
       while (active < 2 && cursor < names.length) {
         (function(name) {
           var meta = LIVE_META[name];
@@ -371,7 +372,8 @@
           } catch(e) { finishOne(name,true); }
         })(names[cursor++]);
       }
-      if (cursor >= names.length && active === 0) {
+      if (cursor >= names.length && active === 0 && !completed) {
+        completed = true;
         finished({checked:checked,failed:failed,changed:changed});
       }
     }
