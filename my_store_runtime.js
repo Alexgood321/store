@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.4.0',
+    version: '3.4.1',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -118,7 +118,7 @@
   var installedGrid = null;
   var focusedGridCard = null;
   var patchedGridControllers = [];
-  var skinClass = 'alexgood321-skin-v340';
+  var skinClass = 'alexgood321-skin-v341';
 
 
   // Live manifest is fetched at each opening. Failed sources fall back safely.
@@ -878,7 +878,7 @@
         catalogIsFresh()) count=getSafeBatchPlan().items.length+(needsCoreReload()?1:0);
     var bubble=headerBatchButton.find('.alex-store-header-batch-count');
     if (bubble && bubble.length) {
-      bubble.text(headerBatchPendingRestart ? '↻' :
+      bubble.text(headerBatchPendingRestart ? '✓' :
         (count>0?String(count>9?'9+':count):''));
       bubble.toggle(headerBatchPendingRestart || count>0);
     }
@@ -891,6 +891,43 @@
       (count ? count+' обновлений' : 'проверить все обновления'));
   }
 
+  function ensureHeaderBatchStyle() {
+    if (typeof document === 'undefined' || !document.head ||
+        typeof document.createElement !== 'function' ||
+        typeof document.getElementById !== 'function') return;
+    var id='alex-store-header-batch-style-v341';
+    if (document.getElementById(id)) return;
+    var style=document.createElement('style');
+    style.id=id;
+    // Scoped to this button: leave Lampa's stock refresh and other icons alone.
+    style.textContent=
+      '.head__action.alex-store-header-batch{'+
+        'background-color:#186F68!important;color:#F6FFFD!important;'+
+        'border-radius:50%!important;'+
+        'box-shadow:inset 0 0 0 1px rgba(255,255,255,.17)!important;'+
+        'transition:background-color .18s ease,box-shadow .18s ease;'+
+      '}'+
+      '.head__action.alex-store-header-batch svg{'+
+        'width:1.65em!important;height:1.65em!important;'+
+        'stroke:currentColor!important;stroke-width:2.2!important;'+
+        'fill:none!important;flex-shrink:0;'+
+      '}'+
+      '.head__action.alex-store-header-batch.alex-store-header-batch-update{'+
+        'background-color:#A96D25!important;color:#FFFFFF!important;'+
+      '}'+
+      '.head__action.alex-store-header-batch.alex-store-header-batch-restart{'+
+        'background-color:#287D54!important;color:#FFFFFF!important;'+
+      '}'+
+      '.head__action.alex-store-header-batch.alex-store-header-batch-busy{'+
+        'background-color:#385D8B!important;color:#FFFFFF!important;'+
+      '}'+
+      '.head__action.alex-store-header-batch.focus,'+
+      '.head__action.alex-store-header-batch.hover{'+
+        'box-shadow:inset 0 0 0 2px #FFFFFF,0 0 0 2px rgba(255,255,255,.3)!important;'+
+      '}';
+    document.head.appendChild(style);
+  }
+
   function syncHeaderBatchButton() {
     if (!isHeaderBatchEnabled()) {
       if (headerBatchButton) {
@@ -901,12 +938,15 @@
     }
     if (headerBatchButton) {refreshHeaderBatchBadge();return;}
     if (!Lampa.Head || typeof Lampa.Head.addIcon !== 'function') return;
+    ensureHeaderBatchStyle();
+    // Clean circular synchronization icon: no overlapping download arrow.
     var svg='<svg viewBox="0 0 24 24" width="24" height="24" '+
-      'fill="none" stroke="currentColor" stroke-width="1.8" '+
+      'fill="none" stroke="currentColor" stroke-width="2.2" '+
       'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+
-      '<path d="M20 10a8 8 0 1 0-2.8 6.4"/>'+
-      '<path d="M20 4v6h-6"/>'+
-      '<path d="M9 11v5m0 0 2-2m-2 2-2-2"/>'+
+      '<path d="M3 12a9 9 0 0 1 15.36-6.36L21 8"/>'+
+      '<path d="M21 3v5h-5"/>'+
+      '<path d="M21 12a9 9 0 0 1-15.36 6.36L3 16"/>'+
+      '<path d="M8 16H3v5"/>'+
       '</svg><span class="alex-store-header-batch-count"></span>';
     headerBatchButton=Lampa.Head.addIcon(svg,function(){runHeaderBatch();});
     if (!headerBatchButton) return;
@@ -1746,10 +1786,10 @@
     skinRoot = root;
     root.classList.add(skinClass);
     watchInstalls();
-    var css = document.getElementById('alexgood321-store-style-v340');
+    var css = document.getElementById('alexgood321-store-style-v341');
     if (!css) {
       css = document.createElement('style');
-      css.id = 'alexgood321-store-style-v340';
+      css.id = 'alexgood321-store-style-v341';
       css.textContent = [
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item{background-color:var(--alex-category-fill)!important;color:#17212F!important;box-sizing:border-box;padding:1.1em 1em 1em;transition:background-color .18s ease,box-shadow .18s ease;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{padding-right:2.4em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3;min-height:1.25em;}',
@@ -1758,12 +1798,12 @@
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-included{display:none!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item.focus{background-image:linear-gradient(rgba(255,255,255,.11),rgba(255,255,255,.11))!important;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);}',
         '.extensions.' + skinClass + ' .scroll--mask:not(.scroll--horizontal){-webkit-mask-image:none!important;mask-image:none!important;}',
-        ".extensions.alexgood321-skin-v340 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
-        ".extensions.alexgood321-skin-v340 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
-        ".extensions.alexgood321-skin-v340 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
-        ".extensions.alexgood321-skin-v340 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
+        ".extensions.alexgood321-skin-v341 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
+        ".extensions.alexgood321-skin-v341 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
+        ".extensions.alexgood321-skin-v341 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
+        ".extensions.alexgood321-skin-v341 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
 
-        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v3.4.0";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v3.4.1";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
         '.extensions.' + skinClass + ' .alex-store-tool{min-height:11.5em;box-sizing:border-box;padding:1.05em;border-radius:1em;background:#444D5B;color:#F0F5FA;border:2px solid transparent;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:.35em;cursor:pointer;}',
         '.extensions.' + skinClass + ' .alex-store-tool--manage{background:#47564E;}',
         '.extensions.' + skinClass + ' .alex-store-tool.focus{box-shadow:inset 0 0 0 2px #fff;border-color:#fff;background-image:linear-gradient(rgba(255,255,255,.1),rgba(255,255,255,.1));}',
@@ -1784,7 +1824,7 @@
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version{font-size:.77em;line-height:1.35;margin-top:.45em;margin-bottom:.3em;color:#B4C7E6;overflow-wrap:anywhere;}',
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version--update{color:#EDC37C;font-weight:700;}',
 
-        "@media(max-width:640px){.extensions.alexgood321-skin-v340 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
+        "@media(max-width:640px){.extensions.alexgood321-skin-v341 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{color:#3E4A5B!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-name{color:#17212F!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-descr{color:#283548!important;}',
