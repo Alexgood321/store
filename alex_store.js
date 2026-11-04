@@ -5,15 +5,15 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '2.4.0',
+    version: '2.5.0',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
     emergency: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@76c6506aa50951e65b3b6edae5c4faf68490dfb8/my_extensions_v1_14.json'
   };
 
-  if (window.__alexgood321_personal_store_2400_loaded) return;
-  window.__alexgood321_personal_store_2400_loaded = true;
+  if (window.__alexgood321_personal_store_2500_loaded) return;
+  window.__alexgood321_personal_store_2500_loaded = true;
 
   var initialized = false;
 
@@ -117,7 +117,7 @@
   var installedGrid = null;
   var focusedGridCard = null;
   var patchedGridControllers = [];
-  var skinClass = 'alexgood321-skin-v240';
+  var skinClass = 'alexgood321-skin-v250';
 
 
   // Live manifest is fetched at each opening. Failed sources fall back safely.
@@ -823,6 +823,63 @@
     return {text:text, update:newer};
   }
 
+
+  // Identify our own extensions by publisher/path rather than visible card title.
+  // This works with @main, old SHA-pinned URLs and anonymous installed cards.
+  function installedGithubKey(url) {
+    var text=String(url || '').trim().toLowerCase()
+      .replace(/^http:\/\//,'https://').replace(/[?#].*$/,'');
+    var jsdelivr=text.match(/^https:\/\/cdn\.jsdelivr\.net\/gh\/([a-z0-9_.-]+\/[a-z0-9_.-]+)(?:@[^/]+)?\/(.+\.js)$/);
+    if (jsdelivr) return jsdelivr[1]+'/'+jsdelivr[2];
+    var raw=text.match(/^https:\/\/raw\.githubusercontent\.com\/([a-z0-9_.-]+\/[a-z0-9_.-]+)\/[^/]+\/(.+\.js)$/);
+    if (raw) return raw[1]+'/'+raw[2];
+    return '';
+  }
+
+  function isOwnInstalledPlugin(url) {
+    var key=installedGithubKey(url);
+    var clean=normalized(url);
+    if (!clean) return false;
+    // The manager itself is also ours, despite not being listed in category "Мои".
+    if (/^alexgood321\/store\/(?:my_store_live|my_store_v\d+(?:_\d+)*|my_store|alex_store|store)\.js$/.test(key))
+      return true;
+
+    var known={
+      'alexgood321/lampa-plugins/surs.js':1,
+      'alexgood321/lampa-plugins/home_categories.js':1,
+      'alexgood321/lampa-plugins/num_series.js':1,
+      'alexgood321/lampa-hdrezka/rezka.js':1
+    };
+    if (key && known[key]) return true;
+
+    // Future first-party catalog additions require no hand-edited color list.
+    var ownSection=null;
+    if (LIVE_DATA && Array.isArray(LIVE_DATA.results)) {
+      for (var i=0; i<LIVE_DATA.results.length; i++) {
+        if (LIVE_DATA.results[i].title==='Мои') {
+          ownSection=LIVE_DATA.results[i].results || [];
+          break;
+        }
+      }
+    }
+    if (ownSection) {
+      for (var j=0; j<ownSection.length; j++) {
+        var member=ownSection[j];
+        if ((key && installedGithubKey(member.link)===key) ||
+            (member.link && normalized(member.link)===clean)) return true;
+      }
+    }
+    // Allowlisted first-party metadata includes the same plugin across categories.
+    for (var name in LIVE_META) {
+      if (!Object.prototype.hasOwnProperty.call(LIVE_META,name)) continue;
+      var meta=LIVE_META[name];
+      if (!meta || !meta.owned) continue;
+      if ((key && installedGithubKey(meta.link)===key) ||
+          (meta.link && normalized(meta.link)===clean)) return true;
+    }
+    return false;
+  }
+
   function refreshInstalledVersions() {
     if (!installedGrid) return;
     var cards = installedGrid.querySelectorAll('.extensions__item');
@@ -833,6 +890,9 @@
       if (!/^https?:\/\//i.test(visibleURL)) continue;
       var installed = actualInstalledRecord(visibleURL);
       if (!installed || !installed.url) continue;
+      var own=isOwnInstalledPlugin(installed.url);
+      if (card.classList.contains('alex-installed-own') !== own)
+        card.classList.toggle('alex-installed-own',own);
       var info = versionText(installed.url, installed.name);
       var mark = card.querySelector('.alex-installed-version');
       if (!mark) {
@@ -864,8 +924,8 @@
     refreshInstalledVersions();
     var cards = first.querySelectorAll('.scroll__body > .selector');
     for (var i = 0; i < cards.length; i++) {
-      if (cards[i].__alexGrid2400) continue;
-      cards[i].__alexGrid2400 = true;
+      if (cards[i].__alexGrid2500) continue;
+      cards[i].__alexGrid2500 = true;
       cards[i].addEventListener('hover:focus', function () {
         focusedGridCard = this;
         enableGridArrows();
@@ -881,10 +941,10 @@
     var controller = active && active.controller;
     if (!active || active.name !== 'extensions_line' || !controller ||
         !controller.link || controller.link.html !== installedGrid ||
-        controller.__alexGrid2400) return;
+        controller.__alexGrid2500) return;
     var originalUp = controller.up;
     var originalDown = controller.down;
-    controller.__alexGrid2400 = true;
+    controller.__alexGrid2500 = true;
     patchedGridControllers.push({value:controller, up:originalUp, down:originalDown});
     controller.up = function () {
       if (!moveGridRow(-1) && typeof originalUp === 'function') originalUp.apply(this, arguments);
@@ -1066,7 +1126,7 @@
       var patch = patchedGridControllers[i];
       patch.value.up = patch.up;
       patch.value.down = patch.down;
-      delete patch.value.__alexGrid2400;
+      delete patch.value.__alexGrid2500;
     }
     patchedGridControllers = [];
     if (installedGrid) installedGrid.classList.remove('alex-installed-grid');
@@ -1094,10 +1154,10 @@
     skinRoot = root;
     root.classList.add(skinClass);
     watchInstalls();
-    var css = document.getElementById('alexgood321-store-style-v240');
+    var css = document.getElementById('alexgood321-store-style-v250');
     if (!css) {
       css = document.createElement('style');
-      css.id = 'alexgood321-store-style-v240';
+      css.id = 'alexgood321-store-style-v250';
       css.textContent = [
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item{background-color:var(--alex-category-fill)!important;color:#17212F!important;box-sizing:border-box;padding:1.1em 1em 1em;transition:background-color .18s ease,box-shadow .18s ease;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{padding-right:2.4em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3;min-height:1.25em;}',
@@ -1106,16 +1166,24 @@
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-included{display:none!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item.focus{background-image:linear-gradient(rgba(255,255,255,.11),rgba(255,255,255,.11))!important;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);}',
         '.extensions.' + skinClass + ' .scroll--mask:not(.scroll--horizontal){-webkit-mask-image:none!important;mask-image:none!important;}',
-        ".extensions.alexgood321-skin-v240 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
-        ".extensions.alexgood321-skin-v240 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
-        ".extensions.alexgood321-skin-v240 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
-        ".extensions.alexgood321-skin-v240 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
+        ".extensions.alexgood321-skin-v250 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
+        ".extensions.alexgood321-skin-v250 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
+        ".extensions.alexgood321-skin-v250 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
+        ".extensions.alexgood321-skin-v250 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
 
         '.extensions.' + skinClass + ' .alex-installed-grid .extensions__item{height:auto!important;min-height:11.5em;box-sizing:border-box;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__item.alex-installed-own{background:#E5D49E!important;background-image:none!important;color:#2C2A24!important;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__item.alex-installed-own .extensions__item-author{color:#695B3E!important;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__item.alex-installed-own .extensions__item-name{color:#27241C!important;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__item.alex-installed-own .extensions__item-descr{color:#3E392D!important;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__item.alex-installed-own .extensions__item-status{color:#5F5848!important;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__item.alex-installed-own .alex-installed-version{color:#69552B!important;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__item.alex-installed-own .alex-installed-version--update{color:#92520D!important;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__item.alex-installed-own.focus{box-shadow:inset 0 0 0 2px rgba(255,255,255,.4);}',
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version{font-size:.77em;line-height:1.35;margin-top:.45em;margin-bottom:.3em;color:#B4C7E6;overflow-wrap:anywhere;}',
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version--update{color:#EDC37C;font-weight:700;}',
 
-        "@media(max-width:640px){.extensions.alexgood321-skin-v240 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
+        "@media(max-width:640px){.extensions.alexgood321-skin-v250 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{color:#3E4A5B!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-name{color:#17212F!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-descr{color:#283548!important;}',
