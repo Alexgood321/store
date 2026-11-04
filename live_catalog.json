@@ -29,16 +29,16 @@
         {
           "name": "HDREZKA",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@c7c48fcab739f79c3a9c3b2522deaa3cebaedd6d/rezka.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@1d76e6c0d5890a96e7d0c9cbdc63501d814fe1ac/rezka.js",
           "descr": "Интеграция HDRezka: просмотр, озвучки, Premium-метки, коллекции, «Досмотреть» и прогресс. Синхронизация требует настроенного HTTPS-шлюза.",
-          "version": "1.7.1"
+          "version": "1.7.2"
         },
         {
           "name": "My Store",
           "author": "Alexgood321",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_live.js",
           "descr": "Персональный магазин Lampa: установка расширений, проверка версий, обновления, журнал изменений и управление устройством.",
-          "version": "2.5.0"
+          "version": "2.7.0"
         }
       ]
     },
@@ -89,9 +89,9 @@
         {
           "name": "HDREZKA",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@c7c48fcab739f79c3a9c3b2522deaa3cebaedd6d/rezka.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@1d76e6c0d5890a96e7d0c9cbdc63501d814fe1ac/rezka.js",
           "descr": "Интеграция HDRezka: просмотр, озвучки, Premium-метки, коллекции, «Досмотреть» и прогресс. Синхронизация требует настроенного HTTPS-шлюза.",
-          "version": "1.7.1"
+          "version": "1.7.2"
         },
         {
           "name": "Онлайн Мод",
@@ -243,10 +243,10 @@
         "path": "rezka.js",
         "ref": "main",
         "owned": true,
-        "sha": "c7c48fcab739f79c3a9c3b2522deaa3cebaedd6d",
-        "version": "1.7.1",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@c7c48fcab739f79c3a9c3b2522deaa3cebaedd6d/rezka.js",
-        "published_at": "2026-11-04T11:43:58Z"
+        "sha": "1d76e6c0d5890a96e7d0c9cbdc63501d814fe1ac",
+        "version": "1.7.2",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@1d76e6c0d5890a96e7d0c9cbdc63501d814fe1ac/rezka.js",
+        "published_at": "2026-11-04T13:00:42Z"
       },
       "Torrent Styles": {
         "repo": "Alexgood321/store",
@@ -334,7 +334,7 @@
         "ref": "main",
         "owned": false,
         "sha": "f77064258cfc32d602bbf3a6740bf580c44ae887",
-        "version": "2.5.0",
+        "version": "2.7.0",
         "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_live.js",
         "published_at": "2026-11-04T12:12:05Z"
       }
