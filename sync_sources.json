@@ -75,7 +75,7 @@
     },
     "My Store": {
       "repo": "Alexgood321/store",
-      "path": "my_store_live.js",
+      "path": "my_store_runtime.js",
       "ref": "main",
       "owned": false
     }
