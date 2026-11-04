@@ -442,6 +442,9 @@
     } else if (savedState === 'current' && runningState === 'current') {
       hint = 'Версии совпадают.';
     }
+    if (savedState === 'ahead' && hint.indexOf('Автооткат') === -1)
+      hint += (hint ? ' ' : '') +
+        'Сохранённая версия новее каталога. Автооткат не выполняется.';
     return {
       badges: [
         updateVersionBadge('Сохранена',savedVersion || 'не определена',savedState),
