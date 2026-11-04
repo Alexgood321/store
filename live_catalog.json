@@ -29,9 +29,9 @@
         {
           "name": "HDREZKA",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@1d76e6c0d5890a96e7d0c9cbdc63501d814fe1ac/rezka.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@b9fe6f97e219c6a16f742a31b8d7c27f56eada9b/rezka.js",
           "descr": "Интеграция HDRezka: просмотр, озвучки, Premium-метки, коллекции, «Досмотреть» и прогресс. Синхронизация требует настроенного HTTPS-шлюза.",
-          "version": "1.7.2"
+          "version": "1.7.3"
         },
         {
           "name": "My Store",
@@ -89,9 +89,9 @@
         {
           "name": "HDREZKA",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@1d76e6c0d5890a96e7d0c9cbdc63501d814fe1ac/rezka.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@b9fe6f97e219c6a16f742a31b8d7c27f56eada9b/rezka.js",
           "descr": "Интеграция HDRezka: просмотр, озвучки, Premium-метки, коллекции, «Досмотреть» и прогресс. Синхронизация требует настроенного HTTPS-шлюза.",
-          "version": "1.7.2"
+          "version": "1.7.3"
         },
         {
           "name": "Онлайн Мод",
@@ -243,10 +243,10 @@
         "path": "rezka.js",
         "ref": "main",
         "owned": true,
-        "sha": "1d76e6c0d5890a96e7d0c9cbdc63501d814fe1ac",
-        "version": "1.7.2",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@1d76e6c0d5890a96e7d0c9cbdc63501d814fe1ac/rezka.js",
-        "published_at": "2026-11-04T13:00:42Z"
+        "sha": "b9fe6f97e219c6a16f742a31b8d7c27f56eada9b",
+        "version": "1.7.3",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@b9fe6f97e219c6a16f742a31b8d7c27f56eada9b/rezka.js",
+        "published_at": "2026-11-04T14:42:47Z"
       },
       "Torrent Styles": {
         "repo": "Alexgood321/store",
