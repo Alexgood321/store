@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.0.2',
+    version: '3.1.0',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -74,9 +74,19 @@
     var oldMenu = body.find('[data-component="alexgood321_store"]');
     if (oldMenu && typeof oldMenu.remove === 'function') oldMenu.remove();
 
+    // The two legacy settings entries have moved inside the store itself.
+    // Remove them from an already-rendered Lampa settings view too.
+    var legacy = ['alexgood321_store_updates', 'alexgood321_store_device'];
+    var cleaned = false;
+    for (var k = 0; k < legacy.length; k++) {
+      var obsolete = body.find('[data-component="' + legacy[k] + '"]');
+      if (obsolete && obsolete.length && typeof obsolete.remove === 'function') {
+        obsolete.remove();
+        cleaned = true;
+      }
+    }
     if (body.find('[data-component="' + CONFIG.component + '"]').length) {
-      addUpdatesMenu(body);
-      addDeviceMenu(body);
+      if (cleaned && typeof main.update === 'function') main.update();
       return;
     }
 
@@ -93,33 +103,7 @@
     var anchor = body.find('[data-component="more"]');
     if (anchor.length) anchor.after(html);
     else body.append(html);
-    addUpdatesMenu(body);
-    addDeviceMenu(body);
     if (typeof main.update === 'function') main.update();
-  }
-
-  function addUpdatesMenu(body) {
-    if (body.find('[data-component="alexgood321_store_updates"]').length) return;
-    var icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">' +
-      '<path d="M20 11a8 8 0 1 0-2 6"/><path d="M20 4v7h-7"/></svg>';
-    var html = '<div class="settings-folder selector" data-component="alexgood321_store_updates" data-static="true">' +
-      '<div class="settings-folder__icon">' + icon + '</div>' +
-      '<div class="settings-folder__name">Обновления плагинов</div></div>';
-    var existing = body.find('[data-component="' + CONFIG.component + '"]');
-    if (existing.length) existing.after(html);
-    else body.append(html);
-  }
-
-
-  function addDeviceMenu(body) {
-    if (body.find('[data-component="alexgood321_store_device"]').length) return;
-    var html = '<div class="settings-folder selector" data-component="alexgood321_store_device" data-static="true">' +
-      '<div class="settings-folder__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">' +
-      '<rect x="4" y="2" width="16" height="20" rx="3"/><circle cx="12" cy="17" r="1"/></svg></div>' +
-      '<div class="settings-folder__name">Устройство и обновления</div></div>';
-    var anchor = body.find('[data-component="alexgood321_store_updates"]');
-    if (anchor.length) anchor.after(html);
-    else body.append(html);
   }
 
   // UI v1.8: only the personal extension screen, never the global Lampa UI.
@@ -134,7 +118,7 @@
   var installedGrid = null;
   var focusedGridCard = null;
   var patchedGridControllers = [];
-  var skinClass = 'alexgood321-skin-v302';
+  var skinClass = 'alexgood321-skin-v310';
 
 
   // Live manifest is fetched at each opening. Failed sources fall back safely.
@@ -465,12 +449,12 @@
     next();
   }
 
-  function showUpdateCenter(forceRefresh, reportResult) {
+  function showUpdateCenter(forceRefresh, reportResult, reopenAfterCheck) {
     loadLive(function (resolvedUrl, autoApplied) {
       if (reportResult) {
         if (!resolvedUrl || resolvedUrl === CONFIG.emergency) {
           notice('Не удалось проверить GitHub. Нет свежего каталога.');
-          showUpdateCenter(false,false);
+          if (reopenAfterCheck !== false) showUpdateCenter(false,false);
           return;
         }
         checkOwnSourcesLive(function(result) {
@@ -489,7 +473,7 @@
           } else {
             notifyGitHubCheck(applied,0);
           }
-          showUpdateCenter(false,false);
+          if (reopenAfterCheck !== false) showUpdateCenter(false,false);
         });
         return;
       }
@@ -1209,6 +1193,50 @@
     }
   }
 
+
+  // Store actions are native focusable selectors inside the installed plugins
+  // row, so both TV remotes and pointer/touch navigation can activate them.
+  function storeTool(action, label, hint, glyph, invoke) {
+    var button = document.createElement('div');
+    button.className = 'selector alex-store-tool alex-store-tool--' + action;
+    button.setAttribute('data-alex-store-tool', action);
+    button.innerHTML = '<div class="alex-store-tool__icon">' + glyph + '</div>' +
+      '<div class="alex-store-tool__title">' + label + '</div>' +
+      '<div class="alex-store-tool__hint">' + hint + '</div>';
+    var last = 0;
+    function activate() {
+      var now = Date.now();
+      if (now - last < 650) return;
+      last = now;
+      invoke();
+    }
+    button.addEventListener('hover:enter', activate);
+    button.addEventListener('click', activate);
+    return button;
+  }
+
+  function renderStoreTools() {
+    if (!installedGrid) return;
+    var container = installedGrid.querySelector('.scroll__body');
+    if (!container || container.querySelector('[data-alex-store-tool]')) return;
+    var refreshGlyph = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">' +
+      '<path d="M20 11a8 8 0 1 0-2 6"/><path d="M20 4v7h-7"/></svg>';
+    var manageGlyph = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">' +
+      '<path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="currentColor"/>' +
+      '<circle cx="15" cy="12" r="2" fill="currentColor"/></svg>';
+    var check = storeTool('check', 'Проверить обновления',
+      'Проверка GitHub и уведомление о новых версиях', refreshGlyph,
+      function () { showUpdateCenter(true, true, false); });
+    var manage = storeTool('manage', 'Управление обновлениями',
+      'Версии, устройства, журнал, откат и перезапуск', manageGlyph,
+      function () { showUpdateCenter(true, false); });
+
+    var addPlugin = container.querySelector('.extensions__block-add');
+    var anchor = addPlugin ? addPlugin.nextSibling : container.firstChild;
+    container.insertBefore(check, anchor);
+    container.insertBefore(manage, anchor);
+  }
+
   function markInstalledGrid() {
     if (!skinRoot) return;
     var first = skinRoot.querySelector('.extensions__block');
@@ -1224,6 +1252,7 @@
     }
     first.classList.add('alex-installed-grid');
     refreshInstalledVersions();
+    renderStoreTools();
     var cards = first.querySelectorAll('.scroll__body > .selector');
     for (var i = 0; i < cards.length; i++) {
       if (cards[i].__alexGrid2800) continue;
@@ -1456,10 +1485,10 @@
     skinRoot = root;
     root.classList.add(skinClass);
     watchInstalls();
-    var css = document.getElementById('alexgood321-store-style-v302');
+    var css = document.getElementById('alexgood321-store-style-v310');
     if (!css) {
       css = document.createElement('style');
-      css.id = 'alexgood321-store-style-v302';
+      css.id = 'alexgood321-store-style-v310';
       css.textContent = [
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item{background-color:var(--alex-category-fill)!important;color:#17212F!important;box-sizing:border-box;padding:1.1em 1em 1em;transition:background-color .18s ease,box-shadow .18s ease;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{padding-right:2.4em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3;min-height:1.25em;}',
@@ -1468,12 +1497,20 @@
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-included{display:none!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item.focus{background-image:linear-gradient(rgba(255,255,255,.11),rgba(255,255,255,.11))!important;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);}',
         '.extensions.' + skinClass + ' .scroll--mask:not(.scroll--horizontal){-webkit-mask-image:none!important;mask-image:none!important;}',
-        ".extensions.alexgood321-skin-v302 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
-        ".extensions.alexgood321-skin-v302 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
-        ".extensions.alexgood321-skin-v302 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
-        ".extensions.alexgood321-skin-v302 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
+        ".extensions.alexgood321-skin-v310 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
+        ".extensions.alexgood321-skin-v310 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
+        ".extensions.alexgood321-skin-v310 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
+        ".extensions.alexgood321-skin-v310 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
 
-        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v3.0.2";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v3.1.0";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
+        '.extensions.' + skinClass + ' .alex-store-tool{min-height:11.5em;box-sizing:border-box;padding:1.05em;border-radius:1em;background:#444D5B;color:#F0F5FA;border:2px solid transparent;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:.35em;cursor:pointer;}',
+        '.extensions.' + skinClass + ' .alex-store-tool--manage{background:#47564E;}',
+        '.extensions.' + skinClass + ' .alex-store-tool.focus{box-shadow:inset 0 0 0 2px #fff;border-color:#fff;background-image:linear-gradient(rgba(255,255,255,.1),rgba(255,255,255,.1));}',
+        '.extensions.' + skinClass + ' .alex-store-tool__icon{width:2em;height:2em;margin-bottom:.4em;}',
+        '.extensions.' + skinClass + ' .alex-store-tool__icon svg{width:100%;height:100%;}',
+        '.extensions.' + skinClass + ' .alex-store-tool__title{font-size:1.04em;line-height:1.25;font-weight:600;}',
+        '.extensions.' + skinClass + ' .alex-store-tool__hint{font-size:.75em;line-height:1.35;color:#CFD8E2;}',
+        '.extensions.' + skinClass + ' .alex-store-tool--manage .alex-store-tool__hint{color:#D2E2D8;}',
         '.extensions.' + skinClass + ' .alex-installed-grid .extensions__item{height:auto!important;min-height:11.5em;box-sizing:border-box;}',
         '.extensions.' + skinClass + ' .alex-installed-grid .extensions__item.alex-installed-own{background:#E5D49E!important;background-image:none!important;color:#2C2A24!important;}',
         '.extensions.' + skinClass + ' .alex-installed-grid .extensions__item.alex-installed-own .extensions__item-author{color:#695B3E!important;}',
@@ -1486,7 +1523,7 @@
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version{font-size:.77em;line-height:1.35;margin-top:.45em;margin-bottom:.3em;color:#B4C7E6;overflow-wrap:anywhere;}',
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version--update{color:#EDC37C;font-weight:700;}',
 
-        "@media(max-width:640px){.extensions.alexgood321-skin-v302 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
+        "@media(max-width:640px){.extensions.alexgood321-skin-v310 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{color:#3E4A5B!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-name{color:#17212F!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-descr{color:#283548!important;}',
@@ -1540,16 +1577,6 @@
     if (!menu || !menu.length) return;
     menu.off('hover:enter.alexgood321_personal_store');
     menu.on('hover:enter.alexgood321_personal_store', openStore);
-    var device = body.find('[data-component="alexgood321_store_device"]');
-    if (device && device.length) {
-      device.off('hover:enter.alexgood321_store_device');
-      device.on('hover:enter.alexgood321_store_device',function(){showThisDevice(true)});
-    }
-    var updates = body.find('[data-component="alexgood321_store_updates"]');
-    if (updates && updates.length) {
-      updates.off('hover:enter.alexgood321_store_updates');
-      updates.on('hover:enter.alexgood321_store_updates', function () { showUpdateCenter(true); });
-    }
   }
 
   function ready() {
