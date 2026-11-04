@@ -7,6 +7,7 @@ Only content changes cause an output change; no checked_at timestamps are writte
 from __future__ import annotations
 
 import copy
+import datetime
 import json
 import os
 import re
@@ -82,7 +83,11 @@ def sync() -> int:
 
     catalog = copy.deepcopy(seed)
     tracked = {}
-    old_tracked = previous.get("meta", {}).get("tracked", {})
+    old_meta = previous.get("meta", {})
+    old_tracked = old_meta.get("tracked", {})
+    critical_ok = True
+    critical_names = {name for name, item in config["tracked"].items()
+                      if item.get("owned") or name == "My Store"}
     names = {p.get("name") for group in catalog["results"] for p in group.get("results", [])}
     for name, item in config["tracked"].items():
         if name not in names:
@@ -128,6 +133,8 @@ def sync() -> int:
                              "published_at": published_at}
             print(name + ": " + version + " @ " + sha[:12])
         except (ValueError, UnicodeError, OSError, urllib.error.HTTPError) as exc:
+            if name in critical_names:
+                critical_ok = False
             if old.get("sha") and old.get("link"):
                 tracked[name] = old
                 print("WARNING: " + name + ": retained previous version (" + str(exc) + ")", file=sys.stderr)
@@ -142,6 +149,28 @@ def sync() -> int:
                 plugin["version"] = info["version"]
     catalog["schema"] = 2
     catalog["meta"] = {"tracked": tracked, "auto_update_installed": False}
+    # Heartbeat only after all first-party sources were verified by an
+    # authenticated Action. Don't produce hundreds of meaningless commits.
+    # If scheduling stops, the last_checked_at value becomes stale on clients.
+    last_checked = old_meta.get("last_checked_at", "")
+    try:
+        last_time = datetime.datetime.strptime(last_checked, "%Y-%m-%dT%H:%M:%SZ").replace(
+            tzinfo=datetime.timezone.utc)
+    except (ValueError, TypeError):
+        last_time = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
+    now = datetime.datetime.now(datetime.timezone.utc)
+    previous_revisions = {name: item.get("sha") for name, item in old_tracked.items()}
+    updated_revisions = {name: item.get("sha") for name, item in tracked.items()}
+    changed_critical = any(
+        previous_revisions.get(name) != updated_revisions.get(name)
+        for name in critical_names)
+    if critical_ok and (changed_critical or (now - last_time).total_seconds() >= 1800):
+        last_checked = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    if last_checked:
+        catalog["meta"]["last_checked_at"] = last_checked
+    if not critical_ok:
+        print("WARNING: critical first-party check incomplete; keeping last verified timestamp",
+              file=sys.stderr)
 
     output = json.dumps(catalog, ensure_ascii=False, indent=2) + "\n"
     target = ROOT / "live_catalog.json"
