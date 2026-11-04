@@ -8,11 +8,11 @@
 
   var REPO = 'Alexgood321/store';
   var RUNTIME_PATH = 'my_store_runtime.js';
-  var INITIAL_SHA = '207a8689835759ce145ebb62e9b8d37f62a818f0';
+  var INITIAL_SHA = '2301bef4065000cf4cb71ab2502fcc4e368091e3';
   var LAST_GOOD_KEY = 'alexgood321_store_boot_last_good_v1';
   var PRIOR_GOOD_KEY = 'alexgood321_store_boot_prior_good_v1';
-  var state = {loader_version:'1.0.0',status:'starting',sha:'',version:'',
-    source:'',checked_at:0,last_error:''};
+  var state = {loader_version:'1.1.0',status:'starting',sha:'',version:'',
+    source:'',checked_at:0,last_error:'',catalog_fresh:false,catalog_checked_at:''};
   var active = null;
   var attemptID = 0;
   var completed = false;
@@ -76,12 +76,24 @@
 
   function latestCommit(done) {
     state.checked_at = Date.now();
-    var url = 'https://api.github.com/repos/' + REPO +
-      '/commits?sha=main&path=' + encodeURIComponent(RUNTIME_PATH) +
-      '&per_page=1&_v=' + Date.now();
+    // This is a plain JSON fetch, not an unauthenticated GitHub REST call.
+    // All devices share the same server-generated version catalog.
+    var url = 'https://raw.githubusercontent.com/' + REPO +
+      '/main/live_catalog.json?_v=' + Date.now();
     requestJSON(url, function (body) {
-      var sha = body && body[0] && body[0].sha;
-      if (isSHA(sha)) return done({sha:sha.toLowerCase(),source:'github-api'});
+      var meta = body && body.meta;
+      var entry = meta && meta.tracked && meta.tracked['My Store'];
+      var sha = entry && entry.sha;
+      if (entry && entry.path === RUNTIME_PATH && isSHA(sha)) {
+        var checked = Date.parse(meta.last_checked_at || '');
+        var fresh = isFinite(checked) && checked > 0 &&
+          Date.now() >= checked && Date.now() - checked <= 2 * 60 * 60 * 1000;
+        // Keep working when Actions is delayed, but distinguish freshness.
+        state.catalog_fresh = fresh;
+        state.catalog_checked_at = meta.last_checked_at || '';
+        return done({sha:sha.toLowerCase(),source:fresh?'central-catalog':'stale-catalog',
+          version:entry.version || ''});
+      }
       manifestFallback(done);
     }, function () {manifestFallback(done);});
   }
@@ -92,6 +104,7 @@
     requestJSON(url, function (data) {
       var entry = data && data.runtime;
       if (entry && entry.path === RUNTIME_PATH && isSHA(entry.sha)) {
+        state.catalog_fresh = false;
         done({sha:entry.sha.toLowerCase(),source:'release-manifest',
           version:entry.version || ''});
       } else done(null);
@@ -234,9 +247,11 @@
       latestCommit(function (latest) {
         if (!showNotice) return;
         if (!latest) {
-          notify('My Store: GitHub недоступен, используется последняя проверенная сборка.');
+          notify('My Store: общий каталог недоступен, используется резервная сборка.');
         } else if (state.status === 'ready' && latest.sha === state.sha) {
-          notify('My Store ' + state.version + ': установлена последняя сборка.');
+          notify(state.catalog_fresh ?
+            'My Store ' + state.version + ': актуальная версия подтверждена каталогом.' :
+            'My Store ' + state.version + ': версия совпадает, но каталог устарел.');
         } else {
           notify('Доступна новая сборка My Store (' + latest.sha.slice(0,12) +
             '). Для её загрузки перезапустите Lampa.');
