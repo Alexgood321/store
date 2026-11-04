@@ -561,10 +561,17 @@
         var version=installedVersion(current.url,meta);
         var label=version===null?'проверяется':(version||'не определена');
         var isLoaded=loadedUrls().indexOf(current.url)!==-1;
+        var changes=localHistory().filter(function(e){
+          return e.plugin===name && e.event==='link_updated';
+        });
+        var lastChange=changes.length?changes[0]:null;
+        var published=meta.published_at ? Date.parse(meta.published_at) : 0;
         entries.push({title:name,
           subtitle:'Установлена: '+label+' · Доступна: '+meta.version+
             ' · '+(isUpdateAvailable(name)?'есть обновление':'ссылка актуальна')+
-            ' · '+(isLoaded?'URL загружен':'загрузка URL не подтверждена')});
+            ' · '+(isLoaded?'URL загружен':'загрузка URL не подтверждена')+
+            ' · GitHub: '+displayTime(published)+
+            ' · Изменено на устройстве: '+displayTime(lastChange && lastChange.time)});
       }
       entries.push({title:'Проверить актуальные версии сейчас',action:'refresh'});
       entries.push({title:'Обновить мои и перезапустить',action:'apply'});
