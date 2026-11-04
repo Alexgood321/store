@@ -2,6 +2,40 @@
   "secuses": true,
   "results": [
     {
+      "title": "Мои",
+      "hpu": "alex_owned",
+      "results": [
+        {
+          "name": "SURS Pro",
+          "author": "aviamovie / Lampa Community / Alexgood321",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@2c8e9d07ea5673b7fdd958eed1ea5e5637b48e3f/surs.js?v=3.7.2-sidfix",
+          "descr": "Настраиваемые подборки и полки главного экрана: порядок, скрытие, источники, редактор с пульта и сенсорного экрана. Исправлен сбой sid при создании главного экрана.",
+          "version": "3.7.2"
+        },
+        {
+          "name": "Home Categories Pro",
+          "author": "Lampa Community / Alexgood321",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@main/home_categories.js?v=2.0.0",
+          "descr": "Скрытие и изменение порядка категорий главного экрана Lampa. Управление с ТВ-пульта и сенсорного экрана.",
+          "version": "2.0.0"
+        },
+        {
+          "name": "NUM Series Pro",
+          "author": "Alexgood321",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@main/num_series.js?v=1.3.0",
+          "descr": "Навигация по сезонам и сериям в списке файлов торрента, управление просмотренными сериями и продолжением просмотра.",
+          "version": "1.3.0"
+        },
+        {
+          "name": "HDREZKA",
+          "author": "Alexgood321",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@main/rezka.js?v=1.4.0",
+          "descr": "Интеграция HDRezka: просмотр, озвучки, Premium-метки, коллекции, «Досмотреть» и прогресс. Синхронизация требует настроенного HTTPS-шлюза.",
+          "version": "1.4.0"
+        }
+      ]
+    },
+    {
       "title": "Главный экран",
       "hpu": "alex_home",
       "results": [
