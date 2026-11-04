@@ -8,6 +8,8 @@ const vm = require('node:vm');
 const root = path.join(__dirname, '..');
 const runtime = fs.readFileSync(path.join(root, 'my_store_runtime.js'), 'utf8');
 const catalog = JSON.parse(fs.readFileSync(path.join(root, 'live_catalog.json'), 'utf8'));
+// Simulate a successful recent central sync independent of CI execution date.
+catalog.meta.last_checked_at = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
 const marker = runtime.lastIndexOf('})();');
 assert.ok(marker > 0, 'runtime IIFE must exist');
 
@@ -59,15 +61,6 @@ const Lampa = {
     this.silent = function (url, resolve, reject) {
       requests.push(url);
       if (url.includes('live_catalog.json')) return resolve(catalog);
-      if (url.includes('/commits?')) {
-        const entry = Object.entries(catalog.meta.tracked).find(([name, meta]) =>
-          meta.owned && url.includes(meta.repo) &&
-          url.includes(encodeURIComponent(meta.path)));
-        if (!entry) return reject('Unknown repository');
-        return resolve([{sha:entry[1].sha, commit: {
-          committer: {date:entry[1].published_at}
-        }}]);
-      }
       reject('Unexpected network URL');
     };
   },
