@@ -4,8 +4,8 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const path = require('node:path');
 
-const source = fs.readFileSync(path.join(__dirname, '..', 'my_store_live.js'), 'utf8');
-new vm.Script(source, {filename:'my_store_live.js'});
+const source = fs.readFileSync(path.join(__dirname, '..', 'my_store_runtime.js'), 'utf8');
+new vm.Script(source, {filename:'my_store_runtime.js'});
 const marker = '})();';
 const last = source.lastIndexOf(marker);
 assert.ok(last > 0);
