@@ -61,7 +61,7 @@ assert.equal(fallback.source,'release-manifest');
 const outdated=loadBootScenario({stale:true});
 assert.equal(outdated.source,'stale-catalog');
 
-function loadRuntimeAutoUpdate() {
+function loadRuntimeAutoUpdate(installedVersion='1.7.2', expectedUpdate=true) {
   const origin=runtime.lastIndexOf('})();');
   assert.ok(origin>0);
   const injected=runtime.slice(0,origin)+
@@ -71,7 +71,12 @@ function loadRuntimeAutoUpdate() {
     url:'https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@1111111111111111111111111111111111111111/rezka.js',
     name:'HDREZKA',status:1
   }];
-  const storage={alexgood321_auto_own_v1:true};
+  const storage={
+    alexgood321_auto_own_v1:true,
+    alexgood321_installed_version_cache_v1:{
+      [installed[0].url]:{version:installedVersion,time:Date.now()}
+    }
+  };
   const app={
     Reguest:function(){this.silent=(url,success,fail)=>{
       requests.push(url);assert.ok(url.includes('live_catalog.json'));success(catalog);
@@ -89,12 +94,19 @@ function loadRuntimeAutoUpdate() {
   let callback;
   browser.__qa.load((url,applied)=>{callback={url,applied};},true,true);
   assert.ok(callback.url.includes('live_catalog.json'));
-  assert.ok(callback.applied.includes('HDREZKA'));
-  assert.equal(installed[0].url,catalog.meta.tracked.HDREZKA.link);
-  assert.equal(saved.length,1);
-  assert.ok(storage.alexgood321_device_history_v1);
+  if (expectedUpdate) {
+    assert.ok(callback.applied.includes('HDREZKA'));
+    assert.equal(installed[0].url,catalog.meta.tracked.HDREZKA.link);
+    assert.equal(saved.length,1);
+    assert.ok(storage.alexgood321_device_history_v1);
+  } else {
+    assert.equal(callback.applied.length,0);
+    assert.equal(saved.length,0);
+    assert.ok(installed[0].url.includes('@11111111111111111111'));
+  }
   assert.ok(requests.every(url=>!url.includes('api.github.com')));
   return requests.length;
 }
-const runtimeRequests=loadRuntimeAutoUpdate();
+const runtimeRequests=loadRuntimeAutoUpdate('1.7.2',true);
+loadRuntimeAutoUpdate('1.7.4',false);
 console.log('PASS centralized My Store: fresh/stale/fallback bootstrap, 0 client REST calls, automatic URL replacement; runtime catalog requests='+runtimeRequests);
