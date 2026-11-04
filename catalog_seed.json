@@ -36,9 +36,9 @@
         {
           "name": "My Store",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_live.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
           "descr": "Персональный магазин Lampa: установка расширений, проверка версий, обновления, журнал изменений и управление устройством.",
-          "version": "2.8.0"
+          "version": "3.0.1"
         }
       ]
     },
