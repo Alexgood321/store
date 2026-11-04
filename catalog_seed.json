@@ -29,16 +29,16 @@
         {
           "name": "HDREZKA",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@df85a7eb4d5a403a09eda34792fde0205327bf9b/rezka.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@1d76e6c0d5890a96e7d0c9cbdc63501d814fe1ac/rezka.js",
           "descr": "Интеграция HDRezka: просмотр, озвучки, Premium-метки, коллекции, «Досмотреть» и прогресс. Синхронизация требует настроенного HTTPS-шлюза.",
-          "version": "1.7.0"
+          "version": "1.7.2"
         },
         {
           "name": "My Store",
           "author": "Alexgood321",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_live.js",
           "descr": "Персональный магазин Lampa: установка расширений, проверка версий, обновления, журнал изменений и управление устройством.",
-          "version": "2.5.0"
+          "version": "2.7.0"
         }
       ]
     },
@@ -88,9 +88,9 @@
         {
           "name": "HDREZKA",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@df85a7eb4d5a403a09eda34792fde0205327bf9b/rezka.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@1d76e6c0d5890a96e7d0c9cbdc63501d814fe1ac/rezka.js",
           "descr": "Интеграция HDRezka: просмотр, озвучки, Premium-метки, коллекции, «Досмотреть» и прогресс. Синхронизация требует настроенного HTTPS-шлюза.",
-          "version": "1.7.0"
+          "version": "1.7.2"
         },
         {
           "name": "Онлайн Мод",
