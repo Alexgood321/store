@@ -31,15 +31,29 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 scripts/sync_catalog.py
-      - name: Commit only real changes
+      - name: Commit with retry against concurrent pushes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git add live_catalog.json
-          if git diff --cached --quiet; then
-            echo "No new plugin revisions"
-            exit 0
-          fi
+          set -eu
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "chore: synchronize tracked Lampa plugin revisions"
-          git pull --rebase origin main
-          git push origin HEAD:main
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git reset --hard origin/main
+            python3 scripts/sync_catalog.py
+            git add live_catalog.json
+            if git diff --cached --quiet; then
+              echo "No new plugin revisions"
+              exit 0
+            fi
+            git commit -m "chore: synchronize tracked Lampa plugin revisions"
+            if git push origin HEAD:main; then
+              echo "Catalog synchronized"
+              exit 0
+            fi
+            echo "Concurrent push detected (attempt $attempt); retrying"
+            sleep 3
+          done
+          echo "Unable to push after four attempts" >&2
+          exit 1
