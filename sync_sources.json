@@ -76,6 +76,6 @@
   },
   "policy": {
     "auto_update_installed": false,
-    "poll_interval_hours": 2
+    "poll_interval_minutes": 5
   }
 }
