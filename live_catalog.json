@@ -22,9 +22,9 @@
         {
           "name": "NUM Series Pro",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@916e028af9651e4f0a9befeead751934c0d94892/num_series.js",
-          "descr": "Компактная навигация по сезонам, умное продолжение просмотра, точные счётчики серий, управление прогрессом, настройки и поддержка пульта ТВ.",
-          "version": "2.0.0"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@9b61a41a474a69e9ea68a18c6ef1abd347ff5c5d/num_series.js",
+          "descr": "Компактная навигация по сезонам и сериям: счётчики 0/7, корректные статусы начала и продолжения просмотра, меню действий, отметки и настройки.",
+          "version": "2.0.1"
         },
         {
           "name": "HDREZKA",
@@ -76,9 +76,9 @@
         {
           "name": "NUM Series Pro",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@916e028af9651e4f0a9befeead751934c0d94892/num_series.js",
-          "descr": "Компактная навигация по сезонам, умное продолжение просмотра, точные счётчики серий, управление прогрессом, настройки и поддержка пульта ТВ.",
-          "version": "2.0.0"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@9b61a41a474a69e9ea68a18c6ef1abd347ff5c5d/num_series.js",
+          "descr": "Компактная навигация по сезонам и сериям: счётчики 0/7, корректные статусы начала и продолжения просмотра, меню действий, отметки и настройки.",
+          "version": "2.0.1"
         }
       ]
     },
@@ -233,10 +233,10 @@
         "path": "num_series.js",
         "ref": "main",
         "owned": true,
-        "sha": "916e028af9651e4f0a9befeead751934c0d94892",
-        "version": "2.0.0",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@916e028af9651e4f0a9befeead751934c0d94892/num_series.js",
-        "published_at": "2026-11-04T19:17:05Z"
+        "sha": "9b61a41a474a69e9ea68a18c6ef1abd347ff5c5d",
+        "version": "2.0.1",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@9b61a41a474a69e9ea68a18c6ef1abd347ff5c5d/num_series.js",
+        "published_at": "2026-11-04T19:35:00Z"
       },
       "HDREZKA": {
         "repo": "Alexgood321/lampa-hdrezka",
@@ -340,6 +340,6 @@
       }
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-04T19:22:20.549Z"
+    "last_checked_at": "2026-11-04T19:36:12.917Z"
   }
 }
