@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "tracked": {
+    "SURS Pro": {
+      "repo": "Alexgood321/lampa-plugins",
+      "path": "surs.js",
+      "ref": "main",
+      "owned": true
+    },
+    "Home Categories Pro": {
+      "repo": "Alexgood321/lampa-plugins",
+      "path": "home_categories.js",
+      "ref": "main",
+      "owned": true
+    },
+    "NUM Series Pro": {
+      "repo": "Alexgood321/lampa-plugins",
+      "path": "num_series.js",
+      "ref": "main",
+      "owned": true
+    },
+    "HDREZKA": {
+      "repo": "Alexgood321/lampa-hdrezka",
+      "path": "rezka.js",
+      "ref": "main",
+      "owned": true
+    },
+    "Torrent Styles": {
+      "repo": "Alexgood321/store",
+      "path": "torrent_styles_v2.js",
+      "ref": "main",
+      "owned": false
+    },
+    "Navigation Bar": {
+      "repo": "lampaplugins/store",
+      "path": "navigation_bar.js",
+      "ref": "main",
+      "owned": false
+    }
+  },
+  "policy": {
+    "auto_update_installed": false,
+    "poll_interval_hours": 2
+  }
+}
