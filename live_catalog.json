@@ -339,6 +339,7 @@
         "published_at": "2026-11-04T15:02:36Z"
       }
     },
-    "auto_update_installed": false
+    "auto_update_installed": false,
+    "last_checked_at": "2026-11-04T15:03:54Z"
   }
 }
