@@ -474,7 +474,7 @@
     var available = match && match.latest;
     var found = installedVersion(url, available);
     var guessed = found === null ? inferVersionFromURL(url) : '';
-    var installed = found === null ? (guessed ? 'проверяется…' : 'проверяется…') : (found || 'не определена');
+    var installed = found === null ? 'проверяется…' : (found || 'не определена');
     var text = 'Установлена: ' + installed;
     if (found === null && guessed) text += ' (в ссылке указано ' + guessed + ')';
     var newer = false;
