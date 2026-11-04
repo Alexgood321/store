@@ -5,15 +5,15 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '2.1.0',
+    version: '2.2.0',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
     emergency: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@76c6506aa50951e65b3b6edae5c4faf68490dfb8/my_extensions_v1_14.json'
   };
 
-  if (window.__alexgood321_personal_store_2100_loaded) return;
-  window.__alexgood321_personal_store_2100_loaded = true;
+  if (window.__alexgood321_personal_store_2200_loaded) return;
+  window.__alexgood321_personal_store_2200_loaded = true;
 
   var initialized = false;
 
@@ -94,7 +94,7 @@
 
   // UI v1.8: only the personal extension screen, never the global Lampa UI.
   var COLOR_MAP = {"Мои":"#91A8EA","Главный экран":"#98C6AE","Сериалы":"#B7A6DB","Онлайн-просмотр":"#93BCD8","Торренты":"#D5BA8C","Интерфейс":"#D9ACC1","Системные и ТВ":"#A9B9D0","Рейтинги и сервисы":"#A7C6C8","Архив и служебные":"#92959D"};
-  var LINK_MAP = {"SURS Pro":"https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@2c8e9d07ea5673b7fdd958eed1ea5e5637b48e3f/surs.js?v=3.7.2-sidfix","Home Categories Pro":"https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@main/home_categories.js?v=2.0.0","NUM Series Pro":"https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@main/num_series.js?v=1.3.0","HDREZKA":"https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@main/rezka.js?v=1.4.0","Продолжить просмотр":"https://arst113.github.io/lampa-watch-resume/watch_resume.js","Онлайн Мод":"https://nb557.github.io/plugins/online_mod.js","EasyTorrent":"https://darkestclouds.github.io/plugins/easytorrent/easytorrent.min.js","Torrent Styles":"https://cdn.jsdelivr.net/gh/Alexgood321/store@main/torrent_styles_v2.js?v=1.2.1","Приятные мелочи":"http://skaztv.online/js/tricks.js","TraktTV":"https://lampame.github.io/main/trakttv.js","Рейтинг КиноПоиск и IMDb":"https://nb557.github.io/plugins/rating.js","SURS (оригинальный, отключён)":"https://aviamovie.github.io/surs.js","Пиратские плагины (старый магазин)":"https://lampaplugins.github.io/store/store.js","Добавляет пункт \"Парсер\" в меню":"http://cub.red/plugin/etor","Скрытие элементов карточки":"http://skaz.tv/meta.js","Настройка шапки":"https://and7ey.github.io/lampa/head_filter.js","Navigation Bar":"https://lampaplugins.github.io/store/navigation_bar.js"};
+  var LINK_MAP = {"SURS Pro":"https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@02f879c9d18f05b9bee19baf09d1203bae5f0e18/surs.js","Home Categories Pro":"https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@0741ed1cba12c50c7acab47436577a27f8953335/home_categories.js","NUM Series Pro":"https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@b8a6411b3cf6c4d67de8e994635598d895e41952/num_series.js","HDREZKA":"https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@df85a7eb4d5a403a09eda34792fde0205327bf9b/rezka.js","Продолжить просмотр":"https://arst113.github.io/lampa-watch-resume/watch_resume.js","Онлайн Мод":"https://nb557.github.io/plugins/online_mod.js","EasyTorrent":"https://darkestclouds.github.io/plugins/easytorrent/easytorrent.min.js","Torrent Styles":"https://cdn.jsdelivr.net/gh/Alexgood321/store@main/torrent_styles_v2.js?v=1.2.1","Приятные мелочи":"http://skaztv.online/js/tricks.js","TraktTV":"https://lampame.github.io/main/trakttv.js","Рейтинг КиноПоиск и IMDb":"https://nb557.github.io/plugins/rating.js","SURS (оригинальный, отключён)":"https://aviamovie.github.io/surs.js","Пиратские плагины (старый магазин)":"https://lampaplugins.github.io/store/store.js","Добавляет пункт \"Парсер\" в меню":"http://cub.red/plugin/etor","Скрытие элементов карточки":"http://skaz.tv/meta.js","Настройка шапки":"https://and7ey.github.io/lampa/head_filter.js","Navigation Bar":"https://lampaplugins.github.io/store/navigation_bar.js"};
   var skinRoot = null, skinObserver = null, skinTimer = null;
   // The native installed row is a snapshot made when Extensions.show() opens.
   // Reopen the custom store after saving a catalog plugin to refresh that row.
@@ -104,7 +104,7 @@
   var installedGrid = null;
   var focusedGridCard = null;
   var patchedGridControllers = [];
-  var skinClass = 'alexgood321-skin-v210';
+  var skinClass = 'alexgood321-skin-v220';
 
 
   // Live manifest is fetched at each opening. Failed sources fall back safely.
@@ -464,12 +464,19 @@
     return false;
   }
 
+  function inferVersionFromURL(url) {
+    var match = String(url || '').match(/[?&]v=v?(\d+(?:\.\d+){1,3})(?:[&#]|$)/i);
+    return match ? match[1] : '';
+  }
+
   function versionText(url, label) {
     var match = metadataForURL(url);
     var available = match && match.latest;
     var found = installedVersion(url, available);
+    var guessed = found === null ? inferVersionFromURL(url) : '';
     var installed = found === null ? 'проверяется…' : (found || 'не определена');
     var text = 'Установлена: ' + installed;
+    if (found === null && guessed) text += ' (в ссылке указано ' + guessed + ')';
     var newer = false;
     if (available && available.version) {
       var pin = String(url).match(/@([a-f0-9]{7,40})\//i);
@@ -521,8 +528,8 @@
     refreshInstalledVersions();
     var cards = first.querySelectorAll('.scroll__body > .selector');
     for (var i = 0; i < cards.length; i++) {
-      if (cards[i].__alexGrid2100) continue;
-      cards[i].__alexGrid2100 = true;
+      if (cards[i].__alexGrid2200) continue;
+      cards[i].__alexGrid2200 = true;
       cards[i].addEventListener('hover:focus', function () {
         focusedGridCard = this;
         enableGridArrows();
@@ -538,10 +545,10 @@
     var controller = active && active.controller;
     if (!active || active.name !== 'extensions_line' || !controller ||
         !controller.link || controller.link.html !== installedGrid ||
-        controller.__alexGrid2100) return;
+        controller.__alexGrid2200) return;
     var originalUp = controller.up;
     var originalDown = controller.down;
-    controller.__alexGrid2100 = true;
+    controller.__alexGrid2200 = true;
     patchedGridControllers.push({value:controller, up:originalUp, down:originalDown});
     controller.up = function () {
       if (!moveGridRow(-1) && typeof originalUp === 'function') originalUp.apply(this, arguments);
@@ -723,7 +730,7 @@
       var patch = patchedGridControllers[i];
       patch.value.up = patch.up;
       patch.value.down = patch.down;
-      delete patch.value.__alexGrid2100;
+      delete patch.value.__alexGrid2200;
     }
     patchedGridControllers = [];
     if (installedGrid) installedGrid.classList.remove('alex-installed-grid');
@@ -751,10 +758,10 @@
     skinRoot = root;
     root.classList.add(skinClass);
     watchInstalls();
-    var css = document.getElementById('alexgood321-store-style-v210');
+    var css = document.getElementById('alexgood321-store-style-v220');
     if (!css) {
       css = document.createElement('style');
-      css.id = 'alexgood321-store-style-v210';
+      css.id = 'alexgood321-store-style-v220';
       css.textContent = [
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item{background-color:var(--alex-category-fill)!important;color:#17212F!important;box-sizing:border-box;padding:1.1em 1em 1em;transition:background-color .18s ease,box-shadow .18s ease;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{padding-right:2.4em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3;min-height:1.25em;}',
@@ -763,16 +770,16 @@
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-included{display:none!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item.focus{background-image:linear-gradient(rgba(255,255,255,.11),rgba(255,255,255,.11))!important;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);}',
         '.extensions.' + skinClass + ' .scroll--mask:not(.scroll--horizontal){-webkit-mask-image:none!important;mask-image:none!important;}',
-        ".extensions.alexgood321-skin-v210 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
-        ".extensions.alexgood321-skin-v210 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
-        ".extensions.alexgood321-skin-v210 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
-        ".extensions.alexgood321-skin-v210 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
+        ".extensions.alexgood321-skin-v220 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
+        ".extensions.alexgood321-skin-v220 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
+        ".extensions.alexgood321-skin-v220 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
+        ".extensions.alexgood321-skin-v220 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
 
         '.extensions.' + skinClass + ' .alex-installed-grid .extensions__item{height:auto!important;min-height:11.5em;box-sizing:border-box;}',
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version{font-size:.77em;line-height:1.35;margin-top:.45em;margin-bottom:.3em;color:#B4C7E6;overflow-wrap:anywhere;}',
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version--update{color:#EDC37C;font-weight:700;}',
 
-        "@media(max-width:640px){.extensions.alexgood321-skin-v210 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
+        "@media(max-width:640px){.extensions.alexgood321-skin-v220 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{color:#3E4A5B!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-name{color:#17212F!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-descr{color:#283548!important;}',
