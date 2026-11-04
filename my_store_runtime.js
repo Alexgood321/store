@@ -172,7 +172,8 @@
         applyLiveOverrides();
         for (var g = 0; g < data.results.length; g++) {
           var items = data.results[g].results || [];
-          for (var i = 0; i < items.length; i++) LINK_MAP[items[i].name] = items[i].link;
+          for (var entryIndex = 0; entryIndex < items.length; entryIndex++)
+            LINK_MAP[items[entryIndex].name] = items[entryIndex].link;
         }
         deviceGet();
         deviceSet({last_catalog_check:Date.now(),catalog_source:url,
