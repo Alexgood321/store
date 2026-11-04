@@ -23,7 +23,7 @@
           "name": "NUM Series Pro",
           "author": "Alexgood321",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@4f89dfab08b9a42df5504e8b53c8f5826a7b66c1/num_series.js",
-          "descr": "Менеджер сезонов и серий с навигацией свайпами и пультом. Исправлено исчезновение панели сезонов при прокрутке на Android TV; прогресс просмотра и настройки сохранены.",
+          "descr": "Навигация по сезонам и сериям в списке файлов торрента, управление просмотренными сериями и продолжением просмотра.",
           "version": "2.0.5"
         },
         {
@@ -38,7 +38,7 @@
           "author": "Alexgood321",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
           "descr": "Персональный магазин Lampa: установка расширений, проверка версий, обновления, журнал изменений и управление устройством.",
-          "version": "3.4.2"
+          "version": "3.4.3"
         }
       ]
     },
@@ -77,7 +77,7 @@
           "name": "NUM Series Pro",
           "author": "Alexgood321",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@4f89dfab08b9a42df5504e8b53c8f5826a7b66c1/num_series.js",
-          "descr": "Менеджер сезонов и серий с навигацией свайпами и пультом. Исправлено исчезновение панели сезонов при прокрутке на Android TV; прогресс просмотра и настройки сохранены.",
+          "descr": "Навигация по сезонам и сериям в списке файлов торрента, управление просмотренными сериями и продолжением просмотра.",
           "version": "2.0.5"
         }
       ]
@@ -333,13 +333,13 @@
         "path": "my_store_runtime.js",
         "ref": "main",
         "owned": false,
-        "sha": "20701b9bcd38ded883940c20323be78516960145",
-        "version": "3.4.2",
+        "sha": "41f56491d50bf3bdcc4eb469c8a71484231aad96",
+        "version": "3.4.3",
         "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
-        "published_at": "2026-11-04T21:37:26Z"
+        "published_at": "2026-11-04T22:01:39Z"
       }
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-04T21:56:02.547Z"
+    "last_checked_at": "2026-11-04T22:02:01Z"
   }
 }
