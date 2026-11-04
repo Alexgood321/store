@@ -6,8 +6,8 @@
     id: 'alexgood321_store',
     component: 'alexgood321_store',
     name: 'Alexgood321 Plugins',
-    version: '1.0.0',
-    catalog: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/alex_extensions.json'
+    version: '1.1.0',
+    catalog: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/alex_extensions.json?v=20261104-1'
   };
 
   if (window.__alexgood321_store_loaded) return;
