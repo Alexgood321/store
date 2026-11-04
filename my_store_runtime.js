@@ -177,7 +177,9 @@
         deviceGet();
         deviceSet({last_catalog_check:Date.now(),catalog_source:url,
           last_central_sync:data.meta.last_checked_at || ''});
-        var autoApplied = updateInstalledAutomatically(Boolean(quietAutoUpdate));
+        // Never silently apply a stale CDN fallback or unverified catalog.
+        var autoApplied = (i === 0 && catalogIsFresh()) ?
+          updateInstalledAutomatically(Boolean(quietAutoUpdate)) : [];
         if (skinRoot) refreshSkin();
         callback(url, autoApplied);
       }, function () { attempt(i+1); });
@@ -298,6 +300,16 @@
     return true;
   }
 
+  function automaticUpgradeIsSafe(name, meta) {
+    var item = findInstalled(name, meta);
+    if (!item || !item.url) return false;
+    var current = installedVersion(item.url, meta);
+    // Unknown versions and non-semantic revision strings require a manual
+    // decision. Avoid downgrades when a central manifest temporarily lags.
+    return typeof current === 'string' &&
+      isVersionNewer(current, meta.version);
+  }
+
   function updateInstalledAutomatically(quiet) {
     if (!Lampa.Storage) return [];
     var allEnabled = Lampa.Storage.get(AUTO_KEY, false);
@@ -307,7 +319,8 @@
     for (var name in LIVE_META) {
       if (Object.prototype.hasOwnProperty.call(LIVE_META,name) &&
           (allEnabled || (ownedEnabled && LIVE_META[name].owned)) &&
-          isUpdateAvailable(name) && replaceInstalled(name,quiet)) changed.push(name);
+          isUpdateAvailable(name) && automaticUpgradeIsSafe(name, LIVE_META[name]) &&
+          replaceInstalled(name,quiet)) changed.push(name);
     }
     if (changed.length && !quiet)
       notice('Ссылки обновлены: ' + changed.length + '. Нужен перезапуск Lampa.');
