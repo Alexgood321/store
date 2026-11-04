@@ -12,7 +12,8 @@ const ending=source.lastIndexOf('})();');
 assert.ok(ending>0);
 const code=source.slice(0,ending)+
   'window.__batchQA={sync:syncHeaderBatchButton,run:runHeaderBatch,'+
-  'plan:getSafeBatchPlan,rollback:rollbackOwnedBatch,show:showUpdateCenter};\n'+
+  'plan:getSafeBatchPlan,rollback:rollbackOwnedBatch,show:showUpdateCenter,'+
+  'periodic:periodicCatalogCheck};\n'+
   source.slice(ending);
 const KEY='alexgood321_store_header_batch_v1';
 
@@ -122,6 +123,18 @@ assert.equal(good.saveCount(),1);
 // Restore last bulk operation.
 assert.equal(good.browser.__batchQA.rollback(),true);
 assert.deepEqual(good.installed.map(x=>x.url),good.previous);
+
+// Pre-existing automatic URL updates must be visible on the header, and the
+// same single button should apply those already saved links by restarting.
+const automatic=scenario({enabled:true});
+automatic.local.alexgood321_auto_own_v1=true;
+automatic.browser.__batchQA.sync();
+automatic.browser.__batchQA.periodic();
+assert.equal(automatic.saveCount(),2);
+assert.equal(automatic.buttons[0].badge.value,'↻');
+automatic.buttons[0].action();
+automatic.flush();
+assert.equal(automatic.reloads(),1);
 
 // Active player: update saved URLs but never interrupt playback.
 const watching=scenario({enabled:true,playing:true});
