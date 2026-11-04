@@ -5,13 +5,13 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '1.6.0',
+    version: '1.7.0',
     name: 'Мои плагины',
-    catalog: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@a8dc03887bf30a48b294ea7c84c7d2a85f8392dc/my_extensions_v1_6.json'
+    catalog: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@cd94936db3f0b7b93f3a0c9670ce735948cd23f5/my_extensions_v1_7.json'
   };
 
-  if (window.__alexgood321_personal_store_160_loaded) return;
-  window.__alexgood321_personal_store_160_loaded = true;
+  if (window.__alexgood321_personal_store_170_loaded) return;
+  window.__alexgood321_personal_store_170_loaded = true;
 
   var initialized = false;
 
