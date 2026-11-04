@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.1.0',
+    version: '3.2.0',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -118,7 +118,7 @@
   var installedGrid = null;
   var focusedGridCard = null;
   var patchedGridControllers = [];
-  var skinClass = 'alexgood321-skin-v310';
+  var skinClass = 'alexgood321-skin-v320';
 
 
   // Live manifest is fetched at each opening. Failed sources fall back safely.
@@ -175,13 +175,23 @@
           for (var i = 0; i < items.length; i++) LINK_MAP[items[i].name] = items[i].link;
         }
         deviceGet();
-        deviceSet({last_catalog_check:Date.now(),catalog_source:url});
+        deviceSet({last_catalog_check:Date.now(),catalog_source:url,
+          last_central_sync:data.meta.last_checked_at || ''});
         var autoApplied = updateInstalledAutomatically(Boolean(quietAutoUpdate));
         if (skinRoot) refreshSkin();
         callback(url, autoApplied);
       }, function () { attempt(i+1); });
     }
     attempt(0);
+  }
+
+  function catalogIsFresh() {
+    if (!LIVE_DATA || !LIVE_DATA.meta) return false;
+    var stamp = Date.parse(LIVE_DATA.meta.last_checked_at || '');
+    // The central scheduler is configured for five minutes. Allow two hours
+    // for a delayed GitHub Actions run, but never silently claim freshness.
+    return isFinite(stamp) && stamp > 0 &&
+      Date.now() >= stamp && Date.now() - stamp <= 2 * 60 * 60 * 1000;
   }
 
   // An installed Lampa entry usually has url/status but no plugin name.
@@ -351,7 +361,7 @@
           visible.join(', ') + suffix + '. Для установки обновите ссылку.');
       }
     } else if (unknown) {
-      notice('Проверка GitHub завершена. Обновлений не обнаружено; ' +
+      notice('Каталог проверен. Обновлений не обнаружено; ' +
         'не удалось определить версию ' + unknown + ' плагинов.');
     } else {
       notice('Проверено. Новых версий не найдено.');
@@ -359,122 +369,19 @@
   }
 
 
-  // Manual live GitHub check (four first-party plugins). Unlike the generated
-  // manifest, this is independent of GitHub Actions' scheduler.
-  function checkOwnSourcesLive(finished) {
-    var names = [];
-    for (var name in LIVE_META) {
-      if (Object.prototype.hasOwnProperty.call(LIVE_META,name) && LIVE_META[name] &&
-          LIVE_META[name].owned && LIVE_META[name].repo && LIVE_META[name].path) {
-        names.push(name);
-      }
-    }
-    if (!names.length) return finished({checked:0,failed:[],changed:[]});
-    if (!Lampa.Reguest) return finished({checked:0,failed:names.slice(),changed:[]});
-
-    var cursor = 0, active = 0, checked = 0, failed = [], changed = [], completed = false;
-    function finishOne(name,failedOne) {
-      if (failedOne) failed.push(name);
-      else checked++;
-      active--;
-      next();
-    }
-    function next() {
-      if (completed) return;
-      while (active < 2 && cursor < names.length) {
-        (function(name) {
-          var meta = LIVE_META[name];
-          active++;
-          var api = 'https://api.github.com/repos/' + meta.repo +
-            '/commits?sha=' + encodeURIComponent(meta.ref || 'main') +
-            '&path=' + encodeURIComponent(meta.path) + '&per_page=1&_v=' + Date.now();
-          var req;
-          try {
-            req = new Lampa.Reguest();
-            req.silent(api, function(payload) {
-              try {
-                var list = typeof payload === 'string' ? JSON.parse(payload) : payload;
-                var latest = list && list[0];
-                var sha = latest && latest.sha;
-                if (!/^[a-f0-9]{40}$/i.test(String(sha || ''))) return finishOne(name,true);
-                if (sha.toLowerCase() === String(meta.sha || '').toLowerCase())
-                  return finishOne(name,false);
-
-                // Check actual source before offering to replace the installed URL.
-                var rawURL='https://raw.githubusercontent.com/' + meta.repo + '/' +
-                  sha + '/' + meta.path + '?_v=' + Date.now();
-                if (typeof req.native !== 'function') return finishOne(name,true);
-                req.native(rawURL, function(source) {
-                  try {
-                    var version = parseSourceVersion(source);
-                    if (!version) return finishOne(name,true);
-                    var oldSHA = meta.sha;
-                    var newLink = 'https://cdn.jsdelivr.net/gh/' + meta.repo +
-                      '@' + sha + '/' + meta.path;
-                    var stamp = latest.commit && latest.commit.committer &&
-                      latest.commit.committer.date;
-                    meta.sha = sha;
-                    meta.version = version;
-                    meta.link = newLink;
-                    if (stamp) meta.published_at = stamp;
-                    if (LIVE_DATA && Array.isArray(LIVE_DATA.results)) {
-                      for (var g=0;g<LIVE_DATA.results.length;g++) {
-                        var cards=LIVE_DATA.results[g].results || [];
-                        for (var c=0;c<cards.length;c++) if (cards[c].name === name) {
-                          cards[c].link=newLink;
-                          cards[c].version=version;
-                        }
-                      }
-                    }
-                    LINK_MAP[name] = newLink;
-                    LIVE_OVERRIDES[name] = {
-                      repo:meta.repo, path:meta.path, sha:sha, version:version,
-                      link:newLink, published_at:meta.published_at || ''
-                    };
-                    changed.push({name:name,version:version,from:oldSHA,to:sha});
-                    finishOne(name,false);
-                  } catch(e) { finishOne(name,true); }
-                }, function() { finishOne(name,true); },
-                false, {dataType:'text', timeout:9000});
-              } catch(e) { finishOne(name,true); }
-            }, function() { finishOne(name,true); });
-          } catch(e) { finishOne(name,true); }
-        })(names[cursor++]);
-      }
-      if (cursor >= names.length && active === 0 && !completed) {
-        completed = true;
-        finished({checked:checked,failed:failed,changed:changed});
-      }
-    }
-    next();
-  }
-
   function showUpdateCenter(forceRefresh, reportResult, reopenAfterCheck) {
     loadLive(function (resolvedUrl, autoApplied) {
       if (reportResult) {
         if (!resolvedUrl || resolvedUrl === CONFIG.emergency) {
-          notice('Не удалось проверить GitHub. Нет свежего каталога.');
-          if (reopenAfterCheck !== false) showUpdateCenter(false,false);
-          return;
+          notice('Не удалось получить каталог обновлений.');
+        } else if (resolvedUrl.indexOf(CONFIG.catalog + '?') !== 0) {
+          notice('Основной каталог недоступен. Резервная копия может быть устаревшей.');
+        } else if (!catalogIsFresh()) {
+          notice('Каталог обновлений устарел: центральная синхронизация не подтверждена.');
+        } else {
+          notifyGitHubCheck(autoApplied,0);
         }
-        checkOwnSourcesLive(function(result) {
-          var applied = Array.isArray(autoApplied) ? autoApplied.slice() : [];
-          // Auto-update remains opt-in; a live source check can discover
-          // revisions newer than those in the scheduled catalog.
-          var additionallyApplied = updateInstalledAutomatically(true);
-          if (additionallyApplied && additionallyApplied.length)
-            applied = applied.concat(additionallyApplied);
-          if (result.failed.length) {
-            var newInfo = result.changed.length ?
-              ' Найдено новых коммитов: ' +
-              result.changed.map(function(e) { return e.name + ' ' + e.version; }).join(', ') + '.' : '';
-            notice('Проверка GitHub неполная: ' + result.failed.join(', ') +
-              ' не проверены.' + newInfo);
-          } else {
-            notifyGitHubCheck(applied,0);
-          }
-          if (reopenAfterCheck !== false) showUpdateCenter(false,false);
-        });
+        if (reopenAfterCheck !== false) showUpdateCenter(false,false);
         return;
       }
       if (!Lampa.Select || typeof Lampa.Select.show !== 'function') {
@@ -798,7 +705,10 @@
       },
         {title:device.name + ' · ' + device.id.slice(0,8),
          subtitle:'Данные хранятся локально. Другие устройства пока не подключены.'},
-        {title:'Последняя проверка каталога',subtitle:displayTime(device.last_catalog_check)},
+        {title:'Последняя проверка каталога на устройстве',subtitle:displayTime(device.last_catalog_check)},
+        {title:'Центральная синхронизация',
+         subtitle:(catalogIsFresh() ? 'Актуальна · ' : 'Нет свежего подтверждения · ') +
+           displayTime(Date.parse(device.last_central_sync || '') || 0)},
         {title:'Последнее изменение ссылок',subtitle:displayTime(device.last_update_at)}
       ];
       var own=Object.keys(latest).filter(function(name){return latest[name].owned});
@@ -855,23 +765,17 @@
 
   function periodicCatalogCheck() {
     if (catalogRefreshBusy) return;
-    catalogRefreshBusy=true;
-    loadLive(function(url){
-      if (!url || url === CONFIG.emergency || !LIVE_META || !Object.keys(LIVE_META).length) {
-        catalogRefreshBusy=false;
-        return;
-      }
-      checkOwnSourcesLive(function(result) {
-        catalogRefreshBusy=false;
-        if (result && result.checked) {
-          var applied=updateInstalledAutomatically(true);
-          if (applied && applied.length)
-            notice('Обновлены ссылки ' + applied.length + ' плагинов. Новый код заработает после перезапуска Lampa.');
-          if (skinRoot) queueSkin();
-        }
-        snapshotThisDevice();
-      });
-    },true);
+    catalogRefreshBusy = true;
+    loadLive(function(url, applied) {
+      catalogRefreshBusy = false;
+      if (!url || url === CONFIG.emergency) return;
+      // No client-side GitHub API requests. loadLive already performs opt-in
+      // automatic URL replacement from the centrally generated catalog.
+      if (applied && applied.length)
+        notice('Ссылки обновлены (' + applied.length + '). Перезапустите Lampa для применения кода.');
+      if (skinRoot) queueSkin();
+      snapshotThisDevice();
+    }, true, true);
   }
 
   function normalized(url) {
@@ -1225,7 +1129,7 @@
       '<path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="currentColor"/>' +
       '<circle cx="15" cy="12" r="2" fill="currentColor"/></svg>';
     var check = storeTool('check', 'Проверить обновления',
-      'Проверка GitHub и уведомление о новых версиях', refreshGlyph,
+      'Проверка общего каталога и уведомление о новых версиях', refreshGlyph,
       function () { showUpdateCenter(true, true, false); });
     var manage = storeTool('manage', 'Управление обновлениями',
       'Версии, устройства, журнал, откат и перезапуск', manageGlyph,
@@ -1485,10 +1389,10 @@
     skinRoot = root;
     root.classList.add(skinClass);
     watchInstalls();
-    var css = document.getElementById('alexgood321-store-style-v310');
+    var css = document.getElementById('alexgood321-store-style-v320');
     if (!css) {
       css = document.createElement('style');
-      css.id = 'alexgood321-store-style-v310';
+      css.id = 'alexgood321-store-style-v320';
       css.textContent = [
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item{background-color:var(--alex-category-fill)!important;color:#17212F!important;box-sizing:border-box;padding:1.1em 1em 1em;transition:background-color .18s ease,box-shadow .18s ease;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{padding-right:2.4em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3;min-height:1.25em;}',
@@ -1497,12 +1401,12 @@
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-included{display:none!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item.focus{background-image:linear-gradient(rgba(255,255,255,.11),rgba(255,255,255,.11))!important;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);}',
         '.extensions.' + skinClass + ' .scroll--mask:not(.scroll--horizontal){-webkit-mask-image:none!important;mask-image:none!important;}',
-        ".extensions.alexgood321-skin-v310 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
-        ".extensions.alexgood321-skin-v310 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
-        ".extensions.alexgood321-skin-v310 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
-        ".extensions.alexgood321-skin-v310 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
+        ".extensions.alexgood321-skin-v320 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
+        ".extensions.alexgood321-skin-v320 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
+        ".extensions.alexgood321-skin-v320 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
+        ".extensions.alexgood321-skin-v320 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
 
-        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v3.1.0";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v3.2.0";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
         '.extensions.' + skinClass + ' .alex-store-tool{min-height:11.5em;box-sizing:border-box;padding:1.05em;border-radius:1em;background:#444D5B;color:#F0F5FA;border:2px solid transparent;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:.35em;cursor:pointer;}',
         '.extensions.' + skinClass + ' .alex-store-tool--manage{background:#47564E;}',
         '.extensions.' + skinClass + ' .alex-store-tool.focus{box-shadow:inset 0 0 0 2px #fff;border-color:#fff;background-image:linear-gradient(rgba(255,255,255,.1),rgba(255,255,255,.1));}',
@@ -1523,7 +1427,7 @@
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version{font-size:.77em;line-height:1.35;margin-top:.45em;margin-bottom:.3em;color:#B4C7E6;overflow-wrap:anywhere;}',
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version--update{color:#EDC37C;font-weight:700;}',
 
-        "@media(max-width:640px){.extensions.alexgood321-skin-v310 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
+        "@media(max-width:640px){.extensions.alexgood321-skin-v320 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{color:#3E4A5B!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-name{color:#17212F!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-descr{color:#283548!important;}',
