@@ -738,7 +738,17 @@
         return meta && meta.owned && item && item.status !== 0 && item.status !== false &&
           item.url !== meta.link;
       });
-      if (!candidates.length) return notice('Мои плагины уже используют актуальные ссылки.');
+      if (!candidates.length) {
+        var surs = LIVE_META['SURS Pro'];
+        var installedSurs = surs && findInstalled('SURS Pro', surs);
+        var runningSurs = runningVersion('SURS Pro');
+        var savedSurs = installedSurs ? installedVersion(installedSurs.url, surs) : '';
+        if (runningSurs && savedSurs && isVersionNewer(runningSurs, savedSurs)) {
+          notice('Ссылка SURS обновлена, но выполняется старая версия.');
+          return confirmReload();
+        }
+        return notice('Мои плагины уже используют актуальные ссылки.');
+      }
       Lampa.Select.show({
         title:'Обновить '+candidates.length+' и перезапустить?',
         items:[{title:'Применить и перезапустить',action:'apply'},
