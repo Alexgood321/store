@@ -72,6 +72,12 @@
       "path": "plugins/easytorrent/easytorrent.min.js",
       "ref": "main",
       "owned": false
+    },
+    "My Store": {
+      "repo": "Alexgood321/store",
+      "path": "my_store_live.js",
+      "ref": "main",
+      "owned": false
     }
   },
   "policy": {
