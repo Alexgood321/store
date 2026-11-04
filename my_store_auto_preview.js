@@ -448,8 +448,10 @@
             cards[j].appendChild(note);
           }
           if (note) {
-            note.textContent = available ? 'Обновление ' + (LIVE_META[name].version || '') : '';
-            note.style.display = available ? '' : 'none';
+            var newText = available ? 'Обновление ' + (LIVE_META[name].version || '') : '';
+            var visibility = available ? '' : 'none';
+            if (note.textContent !== newText) note.textContent = newText;
+            if (note.style.display !== visibility) note.style.display = visibility;
           }
         }
       }
