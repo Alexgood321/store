@@ -22,9 +22,9 @@
         {
           "name": "NUM Series Pro",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@b8a6411b3cf6c4d67de8e994635598d895e41952/num_series.js",
-          "descr": "Навигация по сезонам и сериям в списке файлов торрента, управление просмотренными сериями и продолжением просмотра.",
-          "version": "1.3.0"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@916e028af9651e4f0a9befeead751934c0d94892/num_series.js",
+          "descr": "Компактная навигация по сезонам, умное продолжение просмотра, точные счётчики серий, управление прогрессом, настройки и поддержка пульта ТВ.",
+          "version": "2.0.0"
         },
         {
           "name": "HDREZKA",
@@ -76,9 +76,9 @@
         {
           "name": "NUM Series Pro",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@b8a6411b3cf6c4d67de8e994635598d895e41952/num_series.js",
-          "descr": "Навигация по сезонам и сериям в списке файлов торрента, управление просмотренными сериями и продолжением просмотра.",
-          "version": "1.3.0"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@916e028af9651e4f0a9befeead751934c0d94892/num_series.js",
+          "descr": "Компактная навигация по сезонам, умное продолжение просмотра, точные счётчики серий, управление прогрессом, настройки и поддержка пульта ТВ.",
+          "version": "2.0.0"
         }
       ]
     },
@@ -233,10 +233,10 @@
         "path": "num_series.js",
         "ref": "main",
         "owned": true,
-        "sha": "b8a6411b3cf6c4d67de8e994635598d895e41952",
-        "version": "1.3.0",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@b8a6411b3cf6c4d67de8e994635598d895e41952/num_series.js",
-        "published_at": "2026-11-01T23:41:54Z"
+        "sha": "916e028af9651e4f0a9befeead751934c0d94892",
+        "version": "2.0.0",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@916e028af9651e4f0a9befeead751934c0d94892/num_series.js",
+        "published_at": "2026-11-04T19:17:05Z"
       },
       "HDREZKA": {
         "repo": "Alexgood321/lampa-hdrezka",
