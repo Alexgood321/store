@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "name": "My Store",
+  "runtime": {
+    "path": "my_store_runtime.js",
+    "version": "3.0.0",
+    "sha": "207a8689835759ce145ebb62e9b8d37f62a818f0"
+  },
+  "loader": {
+    "path": "my_store_loader.js",
+    "min_version": "1.0.0"
+  },
+  "policy": {
+    "activate": "on_next_launch",
+    "rollback": "last_successfully_initialized_runtime",
+    "clear_cache": false
+  },
+  "notes": "Runtime updates are discovered from the latest GitHub path commit at startup; this file is a fallback hint, not the sole update source."
+}
