@@ -11,7 +11,7 @@ Install this URL only once. Do not install the old `my_store_v1_XX.js` alongside
 - `catalog_seed.json` is the curated source catalog and category ordering.
 - `sync_sources.json` is an explicit allowlist of GitHub source repositories and JS paths.
 - `scripts/sync_catalog.py` checks the newest commit touching each tracked path and extracts a declared version or uses `rev-<short-sha>`.
-- `.github/workflows/sync_catalog.yml` runs on push, manually, and every two hours when scheduled workflows are enabled in GitHub.
+- `.github/workflows/sync_catalog.yml` runs on push, manually, and every five minutes when scheduled workflows are enabled in GitHub.
 - `live_catalog.json` is the generated catalog that Lampa reads each time the store opens. The loader fetches via GitHub raw with a cache-busting query, with jsDelivr and the last known version as fallbacks.
 - Sources owned by Alexgood321 are pinned to verified Git commits in the generated catalog. Third-party plugins retain their publisher URLs to avoid breaking origin assumptions, CORS, or relative asset paths.
 - A failed source check retains its previous known-good revision. The workflow commits only when content actually changes.
