@@ -116,6 +116,14 @@ assert.ok(good.network.every(x=>!x.includes('api.github.com')));
 good.flush();
 assert.equal(good.reloads(),1);
 
+// Simple refresh glyph: no visually overlapping download arrow.
+assert.ok(good.buttons[0].svg.includes('M3 12a9 9 0 0 1'));
+assert.ok(!good.buttons[0].svg.includes('M9 11v5m0 0'));
+assert.ok(source.includes('background-color:#186F68'));
+assert.ok(source.includes('background-color:#A96D25'));
+assert.ok(source.includes('background-color:#287D54'));
+assert.ok(source.includes('alex-store-header-batch.focus'));
+
 // A second tap within the same run must not apply the same batch twice.
 good.buttons[0].action();
 assert.equal(good.saveCount(),1);
@@ -131,7 +139,7 @@ automatic.local.alexgood321_auto_own_v1=true;
 automatic.browser.__batchQA.sync();
 automatic.browser.__batchQA.periodic();
 assert.equal(automatic.saveCount(),2);
-assert.equal(automatic.buttons[0].badge.value,'↻');
+assert.equal(automatic.buttons[0].badge.value,'✓');
 automatic.buttons[0].action();
 automatic.flush();
 assert.equal(automatic.reloads(),1);
