@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.3.0',
+    version: '3.4.0',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -118,7 +118,7 @@
   var installedGrid = null;
   var focusedGridCard = null;
   var patchedGridControllers = [];
-  var skinClass = 'alexgood321-skin-v330';
+  var skinClass = 'alexgood321-skin-v340';
 
 
   // Live manifest is fetched at each opening. Failed sources fall back safely.
@@ -128,6 +128,12 @@
   var LIVE_OVERRIDES = {};
   var UPDATE_BACKUP_KEY = 'alexgood321_store_update_backup';
   var AUTO_KEY = 'alexgood321_store_auto_update';
+  // Device-local opt-in; the button is never enabled automatically.
+  var HEADER_BATCH_KEY = 'alexgood321_store_header_batch_v1';
+  var headerBatchButton = null;
+  var headerBatchBusy = false;
+  var headerBatchPendingRestart = false;
+  var headerBatchLastClick = 0;
 
   // Keep newer data discovered manually if scheduled catalog sync has not run.
   function applyLiveOverrides() {
@@ -155,7 +161,7 @@
     }
   }
 
-  function loadLive(callback, force, quietAutoUpdate) {
+  function loadLive(callback, force, quietAutoUpdate, suppressAutomatic) {
     if (!force && LIVE_DATA && LAST_LIVE_URL) return callback(LAST_LIVE_URL);
     if (!Lampa.Reguest) return callback(CONFIG.emergency);
     var URLs = [CONFIG.catalog, CONFIG.fallback];
@@ -179,7 +185,7 @@
         deviceSet({last_catalog_check:Date.now(),catalog_source:url,
           last_central_sync:data.meta.last_checked_at || ''});
         // Never silently apply a stale CDN fallback or unverified catalog.
-        var autoApplied = (i === 0 && catalogIsFresh()) ?
+        var autoApplied = (i === 0 && catalogIsFresh() && !suppressAutomatic) ?
           updateInstalledAutomatically(Boolean(quietAutoUpdate)) : [];
         if (skinRoot) refreshSkin();
         callback(url, autoApplied);
@@ -547,8 +553,14 @@
       rows.push({title:'Автообновление ссылок: ' + (enabled ? 'включено' : 'выключено'),
         subtitle:'По умолчанию отключено. При включении требуется перезапуск Lampa.',
         action:'auto'});
+      var headerEnabled = isHeaderBatchEnabled();
+      rows.push({
+        title:'Кнопка обновления в шапке: ' + (headerEnabled ? 'включена' : 'выключена'),
+        subtitle:'Одно нажатие обновляет все подтверждённые ссылки. По умолчанию выключена.',
+        action:'header_batch_toggle'
+      });
       rows.push({title:'Откат последней замены ссылки',action:'rollback'});
-      rows.push({title:'Проверить GitHub повторно',action:'refresh'});
+      rows.push({title:'Проверить каталог повторно',action:'refresh'});
       rows.push({title:'Обновить мои и перезапустить',action:'apply_owned'});
       rows.push({title:'Данные этого устройства и журнал',action:'device'});
       rows.push({title:'Перезапустить Lampa без очистки кэша',action:'reload'});
@@ -560,6 +572,11 @@
             if (Lampa.Storage) Lampa.Storage.set(AUTO_KEY, !enabled);
             if (!enabled) updateInstalledAutomatically();
             notice('Автообновление ' + (!enabled ? 'включено' : 'выключено'));
+          } else if (row.action === 'header_batch_toggle') {
+            if (Lampa.Storage) Lampa.Storage.set(HEADER_BATCH_KEY, !headerEnabled);
+            syncHeaderBatchButton();
+            notice('Кнопка обновления в шапке ' + (!headerEnabled ? 'включена' : 'выключена'));
+            showUpdateCenter(false,false);
           } else if (row.action === 'rollback') {
             if (!rollbackUpdate()) notice('Нет ссылки для отката');
           } else if (row.action === 'refresh') {
@@ -777,6 +794,195 @@
     return true;
   }
 
+
+  function isHeaderBatchEnabled() {
+    try {
+      return Boolean(Lampa.Storage && Lampa.Storage.get(HEADER_BATCH_KEY,false));
+    } catch(e) { return false; }
+  }
+
+  function isPlayerOpened() {
+    try {
+      return Boolean(Lampa.Player && typeof Lampa.Player.opened === 'function' &&
+        Lampa.Player.opened());
+    } catch(e) { return true; }
+  }
+
+  function getSafeBatchPlan() {
+    var result = {items:[],skipped:[],already:0};
+    for (var name in LIVE_META) {
+      if (!Object.prototype.hasOwnProperty.call(LIVE_META,name)) continue;
+      var meta=LIVE_META[name];
+      if (!meta || !meta.link || !meta.sha) continue;
+      var installed=findInstalled(name,meta);
+      if (!installed || !installed.url || installed.status === 0 ||
+          installed.status === '0' || installed.status === false) continue;
+      if (installed.url === meta.link) {result.already++;continue;}
+      if (!isUpdateAvailable(name)) continue;
+      // All tracked installed plugins are eligible; missing/older semantic
+      // versions or unverifiable GitHub revisions are deliberately skipped.
+      if (!automaticUpgradeIsSafe(name,meta)) {
+        result.skipped.push(name);
+        continue;
+      }
+      result.items.push({name:name,item:installed,from:installed.url,to:meta.link});
+    }
+    return result;
+  }
+
+  function saveSafeBatch(plan) {
+    if (!plan || !plan.length || !Lampa.Plugins ||
+        typeof Lampa.Plugins.save !== 'function' || !Lampa.Storage) return 0;
+    var changed=[];
+    for (var i=0;i<plan.length;i++) {
+      var entry=plan[i], meta=LIVE_META[entry.name];
+      if (!meta || !entry.item || entry.item.url !== entry.from ||
+          entry.item.status === 0 || entry.item.status === '0' ||
+          entry.item.status === false || entry.to !== meta.link ||
+          !isUpdateAvailable(entry.name) ||
+          !automaticUpgradeIsSafe(entry.name,meta)) continue;
+      changed.push(entry);
+    }
+    if (!changed.length) return 0;
+    try {
+      for (var j=0;j<changed.length;j++) changed[j].item.url=changed[j].to;
+      Lampa.Plugins.save();
+      Lampa.Storage.set(BATCH_BACKUP_KEY,{at:Date.now(),
+        items:changed.map(function(e) {return {name:e.name,from:e.from,to:e.to};})});
+      for (var k=0;k<changed.length;k++)
+        historyAdd('link_updated',changed[k].name,changed[k].from,changed[k].to);
+      deviceSet({last_update_at:Date.now()});
+      return changed.length;
+    } catch(err) {
+      for (var n=0;n<changed.length;n++) changed[n].item.url=changed[n].from;
+      try {Lampa.Plugins.save();} catch(ignored) {}
+      console.warn('[My Store] Toolbar batch failed:',err);
+      return -1;
+    }
+  }
+
+  function refreshHeaderBatchBadge() {
+    if (!headerBatchButton || !isHeaderBatchEnabled()) return;
+    var count=0;
+    if (LAST_LIVE_URL && LAST_LIVE_URL.indexOf(CONFIG.catalog + '?')===0 &&
+        catalogIsFresh()) count=getSafeBatchPlan().items.length;
+    var bubble=headerBatchButton.find('.alex-store-header-batch-count');
+    if (bubble && bubble.length) {
+      bubble.text(count>0?String(count>9?'9+':count):'');
+      bubble.toggle(count>0 && !headerBatchPendingRestart);
+    }
+    headerBatchButton.toggleClass('alex-store-header-batch-update',count>0);
+    headerBatchButton.toggleClass('alex-store-header-batch-restart',headerBatchPendingRestart);
+    headerBatchButton.attr('title',headerBatchPendingRestart ?
+      'Ссылки обновлены. Перезапустите Lampa.' :
+      (count ? 'Обновить плагины: '+count : 'Проверить и обновить плагины'));
+    headerBatchButton.attr('aria-label','My Store: '+
+      (count ? count+' обновлений' : 'проверить все обновления'));
+  }
+
+  function syncHeaderBatchButton() {
+    if (!isHeaderBatchEnabled()) {
+      if (headerBatchButton) {
+        headerBatchButton.remove();
+        headerBatchButton=null;
+      }
+      return;
+    }
+    if (headerBatchButton) {refreshHeaderBatchBadge();return;}
+    if (!Lampa.Head || typeof Lampa.Head.addIcon !== 'function') return;
+    var svg='<svg viewBox="0 0 24 24" width="24" height="24" '+
+      'fill="none" stroke="currentColor" stroke-width="1.8" '+
+      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+
+      '<path d="M20 10a8 8 0 1 0-2.8 6.4"/>'+
+      '<path d="M20 4v6h-6"/>'+
+      '<path d="M9 11v5m0 0 2-2m-2 2-2-2"/>'+
+      '</svg><span class="alex-store-header-batch-count"></span>';
+    headerBatchButton=Lampa.Head.addIcon(svg,function(){runHeaderBatch();});
+    if (!headerBatchButton) return;
+    headerBatchButton.addClass('alex-store-header-batch');
+    headerBatchButton.css({'position':'relative','flex-shrink':'0'});
+    var bubble=headerBatchButton.find('.alex-store-header-batch-count');
+    if (bubble && bubble.length) bubble.css({
+      'position':'absolute','top':'0','right':'0',
+      'display':'none','background':'#d9a34e','color':'#191919',
+      'border-radius':'999px','min-width':'1.4em','height':'1.4em',
+      'line-height':'1.4em','font-size':'.53em','font-weight':'bold',
+      'text-align':'center','padding':'0 .16em','pointer-events':'none'
+    });
+    // Native Lampa selector dispatches hover:enter. Also support pointer
+    // click when a web shell does not synthesize the hover event.
+    headerBatchButton.on('click.alex_store_batch',function(){runHeaderBatch();});
+    refreshHeaderBatchBadge();
+  }
+
+  function waitForBatchVersions(callback, attempt) {
+    var tasks=Object.keys(versionRequests);
+    if (!tasks.length || attempt >= 16) return callback();
+    setTimeout(function(){waitForBatchVersions(callback,attempt+1);},250);
+  }
+
+  function runHeaderBatch() {
+    if (!isHeaderBatchEnabled() || headerBatchBusy) return;
+    if (Date.now()-headerBatchLastClick < 850) return;
+    headerBatchLastClick=Date.now();
+    headerBatchBusy=true;
+    if (headerBatchButton) headerBatchButton.addClass('alex-store-header-batch-busy');
+    loadLive(function(url) {
+      function done() {
+        headerBatchBusy=false;
+        if (headerBatchButton) headerBatchButton.removeClass('alex-store-header-batch-busy');
+        refreshHeaderBatchBadge();
+      }
+      if (!url || url.indexOf(CONFIG.catalog + '?')!==0 || !catalogIsFresh()) {
+        done();
+        notice('Массовое обновление отменено: нет свежего подтверждённого каталога.');
+        return;
+      }
+      // First pass may request JS headers for unknown installed versions.
+      // Wait briefly for those checks rather than silently skipping them.
+      getSafeBatchPlan();
+      waitForBatchVersions(function() {
+        if (!catalogIsFresh()) {
+          done();
+          notice('Массовое обновление отменено: каталог устарел.');
+          return;
+        }
+        var plan=getSafeBatchPlan();
+        if (!plan.items.length) {
+          done();
+          notice('Подтверждённых обновлений нет.'+
+            (plan.skipped.length?' Пропущено без проверки версии: '+plan.skipped.length+'.':''));
+          return;
+        }
+        var saved=saveSafeBatch(plan.items);
+        if (saved<0) {
+          done();
+          notice('Не удалось сохранить массовое обновление. Ссылки восстановлены.');
+          return;
+        }
+        if (saved===0) {
+          done();
+          notice('Не найдено подтверждённых новых ссылок.');
+          return;
+        }
+        headerBatchPendingRestart=true;
+        done();
+        var description='Обновлено ссылок: '+saved+
+          (plan.skipped.length?'. Пропущено: '+plan.skipped.length:'')+'.';
+        if (isPlayerOpened()) {
+          notice(description+' Просмотр не прерывается; перезапустите Lampa позже.');
+        } else {
+          if (window.location && typeof window.location.reload === 'function') {
+            notice(description+' Lampa перезапустится для применения обновлений.');
+            setTimeout(function(){rebootLampa();},1600);
+          } else {
+            notice(description+' Для применения перезапустите Lampa.');
+          }
+        }
+      },0);
+    },true,true,true);
+  }
+
   function applyOwnedAndReload() {
     loadLive(function(url) {
       if (url === CONFIG.emergency) return notice('Нет актуального каталога. Обновление отменено.');
@@ -908,6 +1114,7 @@
       if (applied && applied.length)
         notice('Ссылки обновлены (' + applied.length + '). Перезапустите Lampa для применения кода.');
       if (skinRoot) queueSkin();
+      refreshHeaderBatchBadge();
       snapshotThisDevice();
     }, true, true);
   }
@@ -1523,10 +1730,10 @@
     skinRoot = root;
     root.classList.add(skinClass);
     watchInstalls();
-    var css = document.getElementById('alexgood321-store-style-v330');
+    var css = document.getElementById('alexgood321-store-style-v340');
     if (!css) {
       css = document.createElement('style');
-      css.id = 'alexgood321-store-style-v330';
+      css.id = 'alexgood321-store-style-v340';
       css.textContent = [
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item{background-color:var(--alex-category-fill)!important;color:#17212F!important;box-sizing:border-box;padding:1.1em 1em 1em;transition:background-color .18s ease,box-shadow .18s ease;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{padding-right:2.4em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3;min-height:1.25em;}',
@@ -1535,12 +1742,12 @@
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-included{display:none!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item.focus{background-image:linear-gradient(rgba(255,255,255,.11),rgba(255,255,255,.11))!important;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);}',
         '.extensions.' + skinClass + ' .scroll--mask:not(.scroll--horizontal){-webkit-mask-image:none!important;mask-image:none!important;}',
-        ".extensions.alexgood321-skin-v330 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
-        ".extensions.alexgood321-skin-v330 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
-        ".extensions.alexgood321-skin-v330 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
-        ".extensions.alexgood321-skin-v330 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
+        ".extensions.alexgood321-skin-v340 .alex-installed-grid .scroll--horizontal{overflow:visible!important;mask-image:none!important;-webkit-mask-image:none!important;}",
+        ".extensions.alexgood321-skin-v340 .alex-installed-grid .scroll--horizontal>.scroll__content{width:100%!important;max-width:100%!important;box-sizing:border-box;}",
+        ".extensions.alexgood321-skin-v340 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
+        ".extensions.alexgood321-skin-v340 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
 
-        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v3.3.0";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v3.4.0";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
         '.extensions.' + skinClass + ' .alex-store-tool{min-height:11.5em;box-sizing:border-box;padding:1.05em;border-radius:1em;background:#444D5B;color:#F0F5FA;border:2px solid transparent;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:.35em;cursor:pointer;}',
         '.extensions.' + skinClass + ' .alex-store-tool--manage{background:#47564E;}',
         '.extensions.' + skinClass + ' .alex-store-tool.focus{box-shadow:inset 0 0 0 2px #fff;border-color:#fff;background-image:linear-gradient(rgba(255,255,255,.1),rgba(255,255,255,.1));}',
@@ -1561,7 +1768,7 @@
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version{font-size:.77em;line-height:1.35;margin-top:.45em;margin-bottom:.3em;color:#B4C7E6;overflow-wrap:anywhere;}',
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version--update{color:#EDC37C;font-weight:700;}',
 
-        "@media(max-width:640px){.extensions.alexgood321-skin-v330 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
+        "@media(max-width:640px){.extensions.alexgood321-skin-v340 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{color:#3E4A5B!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-name{color:#17212F!important;}',
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-descr{color:#283548!important;}',
@@ -1613,6 +1820,7 @@
     if (!body || typeof body.find !== 'function') return;
     var menu = body.find('[data-component="' + CONFIG.component + '"]');
     if (!menu || !menu.length) return;
+    syncHeaderBatchButton();
     menu.off('hover:enter.alexgood321_personal_store');
     menu.on('hover:enter.alexgood321_personal_store', openStore);
   }
@@ -1623,6 +1831,10 @@
     register();
     addMenu();
     deviceGet();
+    syncHeaderBatchButton();
+    // Some Lampa builds create Head after appready; retry without touching
+    // the global toolbar unless this device has opted in.
+    if (isHeaderBatchEnabled()) setTimeout(syncHeaderBatchButton,1200);
     setTimeout(snapshotThisDevice,5000);
     setTimeout(periodicCatalogCheck,12000);
     if (typeof setInterval === 'function') setInterval(periodicCatalogCheck,5*60*1000);
