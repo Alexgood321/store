@@ -22,16 +22,9 @@
       ]
     },
     {
-      "title": "Просмотр и сериалы",
-      "hpu": "alex_video",
+      "title": "Сериалы",
+      "hpu": "alex_series",
       "results": [
-        {
-          "name": "HDREZKA",
-          "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@main/rezka.js?v=1.4.0",
-          "descr": "Интеграция HDRezka: просмотр, озвучки, Premium-метки, коллекции, «Досмотреть» и прогресс. Синхронизация требует настроенного HTTPS-шлюза.",
-          "version": "1.4.0"
-        },
         {
           "name": "NUM Series Pro",
           "author": "Alexgood321",
@@ -42,57 +35,15 @@
       ]
     },
     {
-      "title": "Торренты",
-      "hpu": "alex_torrent",
+      "title": "Онлайн-просмотр",
+      "hpu": "alex_online",
       "results": [
         {
-          "name": "EasyTorrent",
-          "author": "darkestclouds",
-          "link": "https://darkestclouds.github.io/plugins/easytorrent/easytorrent.min.js",
-          "descr": "Умный подбор и сортировка торрент-раздач. Экспериментальный сторонний плагин."
-        },
-        {
-          "name": "Torrent Styles",
-          "author": "@pavelpikta",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/torrent_styles_v2.js?v=1.2.1",
-          "descr": "Цветовая индикация сидов, пиров, битрейта и размера; файл из твоего форка.",
-          "version": "1.2.1"
-        }
-      ]
-    },
-    {
-      "title": "Онлайн и интерфейс",
-      "hpu": "alex_interface",
-      "results": [
-        {
-          "name": "Онлайн Мод",
-          "author": "@t_anton / nb557",
-          "link": "https://nb557.github.io/plugins/online_mod.js",
-          "descr": "Онлайн-источники просмотра фильмов и сериалов. Сторонний плагин."
-        },
-        {
-          "name": "Tweaks & Tricks",
-          "author": "andreyurl54",
-          "link": "https://andreyurl54.github.io/diesel5/tricks.js",
-          "descr": "Дополнительные настройки интерфейса и пунктов главного меню Lampa."
-        }
-      ]
-    },
-    {
-      "title": "Системные и магазины",
-      "hpu": "alex_system",
-      "results": [
-        {
-          "name": "Пиратские плагины",
-          "author": "lampaplugins / @pavelpikta",
-          "link": "https://lampaplugins.github.io/store/store.js",
-          "descr": "Оригинальный сторонний магазин расширений Lampa. Откроет отдельный каталог."
-        },
-        {
-          "name": "Shots",
-          "author": "Lampa / CUB",
-          "link": "https://cub.best/plugin/shots",
-          "descr": "Системное расширение Shots от CUB. В обычных сборках Lampa загружается автоматически, повторная установка обычно не нужна."
+          "name": "HDREZKA",
+          "author": "Alexgood321",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@main/rezka.js?v=1.4.0",
+          "descr": "Интеграция HDRezka: просмотр, озвучки, Premium-метки, коллекции, «Досмотреть» и прогресс. Синхронизация требует настроенного HTTPS-шлюза.",
+          "version": "1.4.0"
         }
       ]
     }
