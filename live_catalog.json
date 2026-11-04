@@ -22,9 +22,9 @@
         {
           "name": "NUM Series Pro",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@0319f402797550df5907c2939eee9cde1b35a4be/num_series.js",
-          "descr": "Навигация по сезонам и сериям в списке файлов торрента, управление просмотренными сериями и продолжением просмотра.",
-          "version": "2.0.4"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@4f89dfab08b9a42df5504e8b53c8f5826a7b66c1/num_series.js",
+          "descr": "Менеджер сезонов и серий с навигацией свайпами и пультом. Исправлено исчезновение панели сезонов при прокрутке на Android TV; прогресс просмотра и настройки сохранены.",
+          "version": "2.0.5"
         },
         {
           "name": "HDREZKA",
@@ -76,9 +76,9 @@
         {
           "name": "NUM Series Pro",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@0319f402797550df5907c2939eee9cde1b35a4be/num_series.js",
-          "descr": "Навигация по сезонам и сериям в списке файлов торрента, управление просмотренными сериями и продолжением просмотра.",
-          "version": "2.0.4"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@4f89dfab08b9a42df5504e8b53c8f5826a7b66c1/num_series.js",
+          "descr": "Менеджер сезонов и серий с навигацией свайпами и пультом. Исправлено исчезновение панели сезонов при прокрутке на Android TV; прогресс просмотра и настройки сохранены.",
+          "version": "2.0.5"
         }
       ]
     },
@@ -233,10 +233,10 @@
         "path": "num_series.js",
         "ref": "main",
         "owned": true,
-        "sha": "0319f402797550df5907c2939eee9cde1b35a4be",
-        "version": "2.0.4",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@0319f402797550df5907c2939eee9cde1b35a4be/num_series.js",
-        "published_at": "2026-11-04T20:05:11Z"
+        "sha": "4f89dfab08b9a42df5504e8b53c8f5826a7b66c1",
+        "version": "2.0.5",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@4f89dfab08b9a42df5504e8b53c8f5826a7b66c1/num_series.js",
+        "published_at": "2026-11-04T21:54:31Z"
       },
       "HDREZKA": {
         "repo": "Alexgood321/lampa-hdrezka",
@@ -340,6 +340,6 @@
       }
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-04T21:37:47Z"
+    "last_checked_at": "2026-11-04T21:56:02.547Z"
   }
 }
