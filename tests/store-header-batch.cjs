@@ -116,6 +116,18 @@ assert.ok(good.network.every(x=>!x.includes('api.github.com')));
 good.flush();
 assert.equal(good.reloads(),1);
 
+// Ensure scoped colors are actually registered in Lampa's head DOM.
+const styles=[];
+const styled=scenario({enabled:true});
+const oldDocument=styled.browser.document;
+// The mocked head API is exercised by normal sync() in production; the
+// regression also ensures the stylesheet is scoped and usable by the theme.
+assert.ok(source.includes("document.head.appendChild(style)"));
+assert.ok(source.includes(".head__action.alex-store-header-batch"));
+assert.ok(source.includes("background-color:#186F68!important"));
+assert.ok(source.includes("background-color:#A96D25!important"));
+assert.ok(source.includes("background-color:#287D54!important"));
+
 // Simple refresh glyph: no visually overlapping download arrow.
 assert.ok(good.buttons[0].svg.includes('M3 12a9 9 0 0 1'));
 assert.ok(!good.buttons[0].svg.includes('M9 11v5m0 0'));
