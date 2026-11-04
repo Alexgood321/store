@@ -333,13 +333,13 @@
         "path": "my_store_runtime.js",
         "ref": "main",
         "owned": false,
-        "sha": "7e0b9015acf79dffc9339123235f460f7bd12d29",
+        "sha": "f5c56f1bc9a59fa26ef5b6582a16cd5c52d6fb4b",
         "version": "3.4.0",
         "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
-        "published_at": "2026-11-04T15:46:18Z"
+        "published_at": "2026-11-04T15:47:50Z"
       }
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-04T15:46:33Z"
+    "last_checked_at": "2026-11-04T15:48:01Z"
   }
 }
