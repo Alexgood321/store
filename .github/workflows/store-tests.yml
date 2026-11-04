@@ -10,6 +10,7 @@ on:
       - 'live_catalog.json'
       - 'tests/store-versions.cjs'
       - 'tests/store-menu.cjs'
+      - 'tests/store-central.cjs'
       - '.github/workflows/store-tests.yml'
   pull_request:
     paths:
@@ -19,6 +20,7 @@ on:
       - 'live_catalog.json'
       - 'tests/store-versions.cjs'
       - 'tests/store-menu.cjs'
+      - 'tests/store-central.cjs'
       - '.github/workflows/store-tests.yml'
 
 jobs:
@@ -35,5 +37,7 @@ jobs:
       - run: node tests/store-versions.cjs
       - run: node --check tests/store-menu.cjs
       - run: node tests/store-menu.cjs
+      - run: node --check tests/store-central.cjs
+      - run: node tests/store-central.cjs
       - run: python3 -m json.tool live_catalog.json > /dev/null
       - run: python3 -m json.tool my_store_release.json > /dev/null
