@@ -3,17 +3,17 @@
   "name": "My Store",
   "runtime": {
     "path": "my_store_runtime.js",
-    "version": "3.1.0",
-    "sha": "2301bef4065000cf4cb71ab2502fcc4e368091e3"
+    "version": "3.2.0",
+    "sha": "4b4f3067e717d34d623159c95d5695110284ecad"
   },
   "loader": {
     "path": "my_store_loader.js",
-    "min_version": "1.0.0"
+    "min_version": "1.1.0"
   },
   "policy": {
     "activate": "on_next_launch",
     "rollback": "last_successfully_initialized_runtime",
     "clear_cache": false
   },
-  "notes": "Runtime updates are discovered from the latest GitHub path commit at startup; this file is a fallback hint, not the sole update source."
+  "notes": "Client reads centrally refreshed live_catalog.json; release manifest is fallback when the catalog cannot be reached. GitHub Actions, not client devices, contacts GitHub REST API."
 }
