@@ -335,9 +335,14 @@
       var visible = available.slice(0,4);
       var remainder = available.length - visible.length;
       var suffix = remainder ? ' и ещё ' + remainder : '';
-      var autoMessage = applied.length ? ' · ссылки обновлены автоматически, нужен перезапуск Lampa' : '';
-      notice('Найдены обновления (' + available.length + '): ' +
-        visible.join(', ') + suffix + autoMessage);
+      if (applied.length) {
+        notice('Ссылки обновлены (' + applied.length + '): ' +
+          visible.join(', ') + suffix +
+          '. Запущенные версии не изменились; перезапустите Lampa.');
+      } else {
+        notice('Найдены обновления (' + available.length + '): ' +
+          visible.join(', ') + suffix + '. Для установки обновите ссылку.');
+      }
     } else if (unknown) {
       notice('Проверка GitHub завершена. Обновлений не обнаружено; ' +
         'не удалось определить версию ' + unknown + ' плагинов.');
