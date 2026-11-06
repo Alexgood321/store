@@ -364,6 +364,106 @@
       }
     },
     "registered": {},
+    "history": {
+      "SURS Pro": [
+        {
+          "sha": "c75990458ec1753a3853b14b732e3807f470ae69",
+          "version": "3.9.10",
+          "published_at": "2026-11-06T23:49:56Z"
+        }
+      ],
+      "Home Categories Pro": [
+        {
+          "sha": "a6093718983306adc2202a8812aa5c02adc0b1f4",
+          "version": "2.0.1",
+          "published_at": "2026-11-06T23:49:06Z"
+        }
+      ],
+      "NUM Series Pro": [
+        {
+          "sha": "4f89dfab08b9a42df5504e8b53c8f5826a7b66c1",
+          "version": "2.0.5",
+          "published_at": "2026-11-04T21:54:31Z"
+        }
+      ],
+      "HDREZKA": [
+        {
+          "sha": "cc4b591463edd083fe3c1ef610b1c4ed56411dd2",
+          "version": "1.7.6",
+          "published_at": "2026-11-06T22:54:28Z"
+        }
+      ],
+      "Torrent Styles": [
+        {
+          "sha": "ae5c00323ea355d2370b8dc36046f8a2618c87d1",
+          "version": "1.2.1",
+          "published_at": "2026-09-29T06:48:51Z"
+        }
+      ],
+      "Navigation Bar": [
+        {
+          "sha": "536bc3d7d641826a3f2e14c7bdd5b633f9b47be6",
+          "version": "1.0.0",
+          "published_at": "2026-03-02T05:28:56Z"
+        }
+      ],
+      "Продолжить просмотр": [
+        {
+          "sha": "e40d9d8f7afe1c96f34ca84167e9359943190cf8",
+          "version": "rev-e40d9d8f",
+          "published_at": "2026-09-08T22:36:43Z"
+        }
+      ],
+      "Онлайн Мод": [
+        {
+          "sha": "cde2cf057e6634df43553fe8deeaef5030f95945",
+          "version": "rev-cde2cf05",
+          "published_at": "2026-10-25T21:55:46Z"
+        }
+      ],
+      "Рейтинг КиноПоиск и IMDb": [
+        {
+          "sha": "9935415e8eeb95ecbe48462232cd97130c07d96c",
+          "version": "rev-9935415e",
+          "published_at": "2026-02-07T19:58:54Z"
+        }
+      ],
+      "Настройка шапки": [
+        {
+          "sha": "36988adf6314916f85cbced5e46c343cf9831180",
+          "version": "0.2.1",
+          "published_at": "2026-01-18T12:43:59Z"
+        }
+      ],
+      "TraktTV": [
+        {
+          "sha": "57a95c5f34d8568180c905a1005f3b0277fcb2be",
+          "version": "rev-57a95c5f",
+          "published_at": "2025-11-16T08:59:42Z"
+        }
+      ],
+      "EasyTorrent": [
+        {
+          "sha": "fedbce76bafcb9746c8866cf7e58fcbb92f9e4ea",
+          "version": "2.0",
+          "published_at": "2025-12-28T22:45:48Z"
+        }
+      ],
+      "My Store": [
+        {
+          "sha": "78f217e936105a3efbd5999896ff8808f84be39d",
+          "version": "3.5.0",
+          "published_at": "2026-11-06T13:55:06Z"
+        }
+      ],
+      "Lampa Shield Ads": [
+        {
+          "sha": "708f014d5fe9db2d02b97a9d481a2fdefbd5060d",
+          "version": "1.1.1",
+          "published_at": "2026-11-06T13:56:45Z"
+        }
+      ]
+    },
     "auto_update_installed": false,
     "last_checked_at": "2026-11-06T23:50:16Z"
   }
