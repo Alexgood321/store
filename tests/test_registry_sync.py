@@ -49,7 +49,7 @@ try:
                     return '{"schema":1,"plugins":[]}'
                 return manifest
             if url.endswith("/future/sample.js"):
-                return "/* Version: " + current["version"] + " */\nfunction demo(){ return Lampa; }"
+                return "/*\n * Version: " + current["version"] + "\n */\nfunction demo(){ return Lampa; }"
             raise AssertionError("Unexpected HTTP request " + url)
         syncer.latest_path_commit = fake_commit
         syncer.fetch_text = fake_fetch
