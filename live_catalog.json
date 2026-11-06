@@ -36,9 +36,9 @@
         {
           "name": "Lampa Shield Ads",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@278fe45426f888d48900b0dccd21e7ae398e54f9/shield-ads/lampa-shield-ads.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@708f014d5fe9db2d02b97a9d481a2fdefbd5060d/shield-ads/lampa-shield-ads.js",
           "descr": "Блокировка рекламных запросов Lampa и VAST в плеере. Переключатель и статистика в настройках.",
-          "version": "1.1.0"
+          "version": "1.1.1"
         },
         {
           "name": "My Store",
@@ -136,9 +136,9 @@
         {
           "name": "Lampa Shield Ads",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@278fe45426f888d48900b0dccd21e7ae398e54f9/shield-ads/lampa-shield-ads.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@708f014d5fe9db2d02b97a9d481a2fdefbd5060d/shield-ads/lampa-shield-ads.js",
           "descr": "Блокировка рекламных запросов Lampa и VAST в плеере. Переключатель и статистика в настройках.",
-          "version": "1.1.0"
+          "version": "1.1.1"
         },
         {
           "name": "Добавляет пункт \"Парсер\" в меню",
@@ -357,10 +357,10 @@
         "path": "shield-ads/lampa-shield-ads.js",
         "ref": "main",
         "owned": true,
-        "sha": "278fe45426f888d48900b0dccd21e7ae398e54f9",
-        "version": "1.1.0",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@278fe45426f888d48900b0dccd21e7ae398e54f9/shield-ads/lampa-shield-ads.js",
-        "published_at": "2026-11-06T13:03:01Z"
+        "sha": "708f014d5fe9db2d02b97a9d481a2fdefbd5060d",
+        "version": "1.1.1",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@708f014d5fe9db2d02b97a9d481a2fdefbd5060d/shield-ads/lampa-shield-ads.js",
+        "published_at": "2026-11-06T13:56:45Z"
       }
     },
     "registered": {},
