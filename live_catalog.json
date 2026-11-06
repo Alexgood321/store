@@ -8,7 +8,7 @@
         {
           "name": "SURS Pro",
           "author": "aviamovie / Lampa Community / Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@e0540437387fe073129b7ebc9483f07005fbddab/surs.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@31c279fcac9b6187a7bf8b3809892015b32390bf/surs.js",
           "descr": "Настраиваемые подборки и полки главного экрана: порядок, скрытие, источники, редактор с пульта и сенсорного экрана. Исправлен сбой sid при создании главного экрана.",
           "version": "3.9.6"
         },
@@ -56,7 +56,7 @@
         {
           "name": "SURS Pro",
           "author": "aviamovie / Lampa Community / Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@e0540437387fe073129b7ebc9483f07005fbddab/surs.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@31c279fcac9b6187a7bf8b3809892015b32390bf/surs.js",
           "descr": "Настраиваемые подборки и полки главного экрана: порядок, скрытие, источники, редактор с пульта и сенсорного экрана. Исправлен сбой sid при создании главного экрана.",
           "version": "3.9.6"
         },
@@ -227,10 +227,10 @@
         "path": "surs.js",
         "ref": "main",
         "owned": true,
-        "sha": "e0540437387fe073129b7ebc9483f07005fbddab",
+        "sha": "31c279fcac9b6187a7bf8b3809892015b32390bf",
         "version": "3.9.6",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@e0540437387fe073129b7ebc9483f07005fbddab/surs.js",
-        "published_at": "2026-11-06T22:27:49Z"
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@31c279fcac9b6187a7bf8b3809892015b32390bf/surs.js",
+        "published_at": "2026-11-06T22:28:51Z"
       },
       "Home Categories Pro": {
         "repo": "Alexgood321/lampa-plugins",
@@ -365,6 +365,6 @@
     },
     "registered": {},
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-06T22:28:08Z"
+    "last_checked_at": "2026-11-06T22:29:08Z"
   }
 }
