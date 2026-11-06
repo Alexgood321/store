@@ -45,7 +45,7 @@
           "author": "Alexgood321",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
           "descr": "Персональный магазин Lampa: установка расширений, проверка версий, обновления, журнал изменений и управление устройством.",
-          "version": "3.6.0"
+          "version": "3.6.1"
         }
       ]
     },
@@ -347,10 +347,10 @@
         "path": "my_store_runtime.js",
         "ref": "main",
         "owned": false,
-        "sha": "49b57143da5f95eb8bb2fff1f7da23e2e1c60ed2",
-        "version": "3.6.0",
+        "sha": "b0c068c26374db40354505f2a5a0fe1ae8bb44ec",
+        "version": "3.6.1",
         "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
-        "published_at": "2026-11-06T23:54:37Z"
+        "published_at": "2026-11-06T23:57:12Z"
       },
       "Lampa Shield Ads": {
         "repo": "Alexgood321/lampa-plugins",
@@ -459,6 +459,11 @@
           "sha": "49b57143da5f95eb8bb2fff1f7da23e2e1c60ed2",
           "version": "3.6.0",
           "published_at": "2026-11-06T23:54:37Z"
+        },
+        {
+          "sha": "b0c068c26374db40354505f2a5a0fe1ae8bb44ec",
+          "version": "3.6.1",
+          "published_at": "2026-11-06T23:57:12Z"
         }
       ],
       "Lampa Shield Ads": [
@@ -470,6 +475,6 @@
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-06T23:54:48Z"
+    "last_checked_at": "2026-11-06T23:57:25Z"
   }
 }
