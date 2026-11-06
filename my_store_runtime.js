@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.4.5',
+    version: '3.5.0',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -237,6 +237,16 @@
   }
 
   function runningVersion(name) {
+    // Shared first-party runtime declaration, indexed by stable repo/path.
+    // A saved URL is NOT evidence that JavaScript actually executed.
+    var meta = LIVE_META[name];
+    var key = meta && meta.repo && meta.path ?
+      (meta.repo + '/' + meta.path).toLowerCase() : '';
+    var states = window.__AlexgoodPluginRuntime;
+    var running = key && states && states[key];
+    if (running && running.ready === true &&
+        /^\d+(?:\.\d+){1,3}$/.test(String(running.version || '')))
+      return String(running.version);
     if (name === 'My Store' && window.__AlexgoodStoreRuntime &&
         window.__AlexgoodStoreRuntime.ready)
       return String(window.__AlexgoodStoreRuntime.version);
@@ -1215,6 +1225,7 @@
         entries.push({title:name,
           subtitle:'Установлена: '+label+' · Доступна: '+meta.version+
             ' · '+(isUpdateAvailable(name)?'есть обновление':'ссылка актуальна')+
+            ' · Запущена: '+(runningVersion(name) || 'не подтверждена')+
             ' · '+(isLoaded?'URL загружен':'загрузка URL не подтверждена')+
             ' · GitHub: '+displayTime(published)+
             ' · Изменено на устройстве: '+displayTime(lastChange && lastChange.time)});
@@ -1395,6 +1406,17 @@
           delete versionRequests[url];
           versionActive--;
           putVersion(url, version);
+          // Version fetching is asynchronous. Re-check opt-in updates as soon
+          // as an old installed SHA has been verified, not five minutes later.
+          if (catalogIsFresh() && LAST_LIVE_URL &&
+              LAST_LIVE_URL.indexOf(CONFIG.catalog + '?') === 0) {
+            var updated = updateInstalledAutomatically(true);
+            if (updated.length) {
+              headerBatchPendingRestart = true;
+              notice('Ссылки обновлены (' + updated.length +
+                '). Перезапустите Lampa для применения кода.');
+            }
+          }
           if (skinRoot) queueSkin();
           runVersionTasks();
         }
@@ -1480,7 +1502,10 @@
     var guessed = found === null ? inferVersionFromURL(url) : '';
     var installed = found === null ? 'проверяется…' : (found || 'не определена');
     var text = 'Сохранённая ссылка: ' + installed;
+    if (available) text += ' · В каталоге: ' + (available.version || 'не определена');
     text += runtimeSuffix(match ? match.name : label, found || '');
+    if (available && !runningVersion(match.name))
+      text += ' · Запущена: не подтверждена';
     if (found === null && guessed) text += ' (в ссылке указано ' + guessed + ')';
     var newer = false;
     if (available && available.version) {

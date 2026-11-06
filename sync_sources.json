@@ -89,5 +89,17 @@
   "policy": {
     "auto_update_installed": false,
     "poll_interval_minutes": 5
-  }
+  },
+  "registries": [
+    {
+      "repo": "Alexgood321/lampa-plugins",
+      "ref": "main",
+      "manifest": "lampa-plugins.json"
+    },
+    {
+      "repo": "Alexgood321/lampa-hdrezka",
+      "ref": "main",
+      "manifest": "lampa-plugins.json"
+    }
+  ]
 }

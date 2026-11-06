@@ -46,6 +46,22 @@ state=qa.display('HDREZKA','1.7.3','1.7.3',false);
 assert.deepEqual(Array.from(state.badges,x=>x.status),['current','catalog','newer']);
 assert.match(state.hint,/Перезапустите Lampa/);
 
+// Every future first-party plugin uses the same runtime registry contract.
+const custom = open({},false);
+custom.running('NONEXISTENT');
+const genericMeta = {repo:'Alexgood321/lampa-plugins',path:'new/demo.js'};
+const genericWindow = {appready:false,__AlexgoodPluginRuntime:{
+  'alexgood321/lampa-plugins/new/demo.js':{version:'1.2.3',ready:true}
+}};
+const registered = instrumented.replace('window.__versionQA =',
+  'LIVE_META["Demo"] = '+JSON.stringify(genericMeta)+'; window.__versionQA =');
+vm.runInNewContext(registered, {window:genericWindow,
+  Lampa:{Storage:{get:(k,d)=>d},Plugins:{get:()=>[],loaded:()=>[]},Listener:{follow(){}}},
+  document:{createElement:node},console,setTimeout(){return 1;},setInterval(){return 1;}});
+assert.equal(genericWindow.__versionQA.running('Demo'),'1.2.3');
+genericWindow.__AlexgoodPluginRuntime['alexgood321/lampa-plugins/new/demo.js'].ready=false;
+assert.equal(genericWindow.__versionQA.running('Demo'),'');
+
 // Unconfirmed execution does not inherit the saved version.
 const absent=open({},false);
 state=absent.display('HDREZKA','1.7.3','1.7.3',false);

@@ -16,6 +16,8 @@ on:
       - 'tests/store-back.cjs'
       - 'tests/store-diagnostics.cjs'
       - 'tests/store-shield-ads.cjs'
+      - 'tests/test_registry_sync.py'
+      - 'tests/test_registry_sync.py'
       - 'sync_sources.json'
       - 'catalog_seed.json'
       - 'scripts/sync_catalog.py'
@@ -65,6 +67,7 @@ jobs:
       - run: node tests/store-diagnostics.cjs
       - run: node --check tests/store-shield-ads.cjs
       - run: node tests/store-shield-ads.cjs
+      - run: python3 tests/test_registry_sync.py
       - run: python3 -m json.tool sync_sources.json > /dev/null
       - run: python3 -m json.tool catalog_seed.json > /dev/null
       - run: python3 -m json.tool live_catalog.json > /dev/null

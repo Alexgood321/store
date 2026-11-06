@@ -74,6 +74,91 @@ def extract_version(js: str) -> str | None:
     return None
 
 
+
+def expand_registries(config: dict, catalog: dict, previous: dict) -> tuple[dict, dict, bool]:
+    """Allowlisted per-repository manifests: register a plugin once, track forever.
+
+    On temporary GitHub failures retain last-known registered cards and pinned code.
+    No arbitrary third-party repositories or client-side GitHub API calls.
+    """
+    tracked = copy.deepcopy(config["tracked"])
+    remembered = previous.get("meta", {}).get("registered", {})
+    registered = {}
+    verified = True
+    categories = {group["title"]: group for group in catalog["results"]}
+    names = {item["name"] for group in catalog["results"] for item in group.get("results", [])}
+    registries = config.get("registries", [])
+    if not isinstance(registries, list):
+        raise ValueError("registries must be a list")
+
+    for source in registries:
+        repo = source["repo"]
+        ref = source.get("ref", "main")
+        manifest = source["manifest"]
+        if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repo) or (
+            not re.fullmatch(r"[A-Za-z0-9_./-]+\.json", manifest)
+            or ".." in manifest or not re.fullmatch(r"[A-Za-z0-9_.-]+", ref)
+        ):
+            raise ValueError("Invalid registry source: " + str(source))
+        try:
+            raw = fetch_text("https://raw.githubusercontent.com/" + repo + "/" + ref +
+                             "/" + manifest, 300_000)
+            data = json.loads(raw)
+            if data.get("schema") != 1 or not isinstance(data.get("plugins"), list) or (
+                len(data["plugins"]) > 50
+            ):
+                raise ValueError("Invalid plugin manifest in " + repo)
+            plugins = data["plugins"]
+        except (ValueError, KeyError, TypeError, OSError, UnicodeError,
+                urllib.error.HTTPError, json.JSONDecodeError) as exc:
+            verified = False
+            plugins = [item for item in remembered.values() if item.get("repo") == repo]
+            print("WARNING: " + repo + ": using previous registry (" + str(exc) + ")",
+                  file=sys.stderr)
+
+        seen = set()
+        for plugin in plugins:
+            name = plugin.get("name")
+            path = plugin.get("path")
+            groups = plugin.get("categories", ["Мои"])
+            if not isinstance(name, str) or not 1 <= len(name) <= 80 or (
+                re.search(r"[<>]", name)
+            ) or not isinstance(path, str) or not re.fullmatch(
+                r"[A-Za-z0-9_./-]+\.js", path
+            ) or ".." in path or not isinstance(groups, list) or not groups or (
+                len(groups) > 5
+            ) or any(c not in categories for c in groups) or "Мои" not in groups:
+                raise ValueError("Invalid plugin registration in " + repo + ": " + str(name))
+            if name in seen:
+                raise ValueError("Duplicate registry name: " + name)
+            seen.add(name)
+            # Already listed legacy plugins remain canonical in catalog_seed.json.
+            if name in tracked:
+                old = tracked[name]
+                if old.get("repo") != repo or old.get("path") != path:
+                    raise ValueError("Conflicting tracked plugin identity: " + name)
+                continue
+            if name in names or name in registered:
+                raise ValueError("Duplicate catalog plugin: " + name)
+            author = plugin.get("author", "Alexgood321")
+            descr = plugin.get("descr", "Плагин Lampa")
+            if not isinstance(author, str) or len(author) > 100 or not isinstance(
+                descr, str
+            ) or len(descr) > 500 or re.search(r"[<>]", author + descr):
+                raise ValueError("Invalid plugin description: " + name)
+            record = {"name": name, "repo": repo, "path": path, "ref": ref,
+                      "author": author, "descr": descr, "categories": groups}
+            registered[name] = record
+            tracked[name] = {"repo": repo, "path": path, "ref": ref,
+                             "owned": True, "strict_version": True}
+            link = "https://cdn.jsdelivr.net/gh/" + repo + "@" + ref + "/" + path
+            for category in groups:
+                categories[category]["results"].append({
+                    "name": name, "author": author, "descr": descr, "link": link
+                })
+            names.add(name)
+    return tracked, registered, verified
+
 def sync() -> int:
     config = read_json("sync_sources.json")
     seed = read_json("catalog_seed.json")
@@ -84,14 +169,15 @@ def sync() -> int:
         raise ValueError("Invalid canonical catalog")
 
     catalog = copy.deepcopy(seed)
+    tracking, registered, registry_verified = expand_registries(config, catalog, previous)
     tracked = {}
     old_meta = previous.get("meta", {})
     old_tracked = old_meta.get("tracked", {})
-    critical_ok = True
-    critical_names = {name for name, item in config["tracked"].items()
+    critical_ok = registry_verified
+    critical_names = {name for name, item in tracking.items()
                       if item.get("owned") or name == "My Store"}
     names = {p.get("name") for group in catalog["results"] for p in group.get("results", [])}
-    for name, item in config["tracked"].items():
+    for name, item in tracking.items():
         if name not in names:
             raise ValueError("Tracked plugin missing from catalog: " + name)
         repo, path, ref = item["repo"], item["path"], item.get("ref", "main")
@@ -121,7 +207,10 @@ def sync() -> int:
             raw = fetch_text("https://raw.githubusercontent.com/" + repo + "/" + sha + "/" + path)
             if len(raw) < 30 or not re.search(r"\b(function|const|var|let|Lampa)\b", raw):
                 raise ValueError("Remote source is not recognizable JavaScript")
-            version = extract_version(raw) or ("rev-" + sha[:8])
+            version = extract_version(raw)
+            if not version and item.get("strict_version"):
+                raise ValueError("Registered plugins must declare a semantic JS version: " + name)
+            version = version or ("rev-" + sha[:8])
             # Keep original publisher URLs for third-party plugins: origin,
             # CORS, and relative asset paths may be significant to their JS.
             # Our own plugins get immutable links to the verified Git commit.
@@ -150,7 +239,8 @@ def sync() -> int:
                 plugin["link"] = info["link"]
                 plugin["version"] = info["version"]
     catalog["schema"] = 2
-    catalog["meta"] = {"tracked": tracked, "auto_update_installed": False}
+    catalog["meta"] = {"tracked": tracked, "registered": registered,
+                       "auto_update_installed": False}
     # Heartbeat only after all first-party sources were verified by an
     # authenticated Action. Don't produce hundreds of meaningless commits.
     # If scheduling stops, the last_checked_at value becomes stale on clients.
