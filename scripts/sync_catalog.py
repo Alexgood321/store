@@ -7,11 +7,13 @@ Only content changes cause an output change; no checked_at timestamps are writte
 from __future__ import annotations
 
 import copy
+import concurrent.futures
 import datetime
 import json
 import os
 import re
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -160,6 +162,7 @@ def expand_registries(config: dict, catalog: dict, previous: dict) -> tuple[dict
     return tracked, registered, verified
 
 def sync() -> int:
+    started = time.monotonic()
     config = read_json("sync_sources.json")
     seed = read_json("catalog_seed.json")
     previous = read_json("live_catalog.json")
@@ -177,6 +180,21 @@ def sync() -> int:
     critical_names = {name for name, item in tracking.items()
                       if item.get("owned") or name == "My Store"}
     names = {p.get("name") for group in catalog["results"] for p in group.get("results", [])}
+    # Resolve independent repository/path commits concurrently, but preserve
+    # deterministic output order and known-good fallback for individual errors.
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+        commit_futures = {
+            name: executor.submit(latest_path_commit, item["repo"],
+                                  item["ref"] if "ref" in item else "main",
+                                  item["path"])
+            for name, item in tracking.items()
+        }
+        latest = {}
+        for name, future in commit_futures.items():
+            try:
+                latest[name] = (future.result(), None)
+            except Exception as error:
+                latest[name] = (None, error)
     for name, item in tracking.items():
         if name not in names:
             raise ValueError("Tracked plugin missing from catalog: " + name)
@@ -188,7 +206,10 @@ def sync() -> int:
             (p["link"] for g in seed["results"] for p in g.get("results", [])
              if p.get("name") == name), None)
         try:
-            sha, published_at = latest_path_commit(repo, ref, path)
+            result, failure = latest[name]
+            if failure is not None:
+                raise failure
+            sha, published_at = result
             unchanged = (
                 sha == old.get("sha")
                 and old.get("repo") == repo
@@ -239,8 +260,26 @@ def sync() -> int:
                 plugin["link"] = info["link"]
                 plugin["version"] = info["version"]
     catalog["schema"] = 2
+    # Keep a bounded semantic history to identify previously installed SHA pins
+    # without downloading old JavaScript on each device.
+    history = {}
+    old_history = old_meta.get("history", {})
+    for name, entry in tracked.items():
+        versions = list(old_history.get(name, []))[-11:]
+        old_entry = old_tracked.get(name)
+        if old_entry and old_entry.get("sha") and old_entry.get("version"):
+            versions.append({"sha": old_entry["sha"], "version": old_entry["version"],
+                             "published_at": old_entry.get("published_at", "")})
+        if entry.get("sha") and entry.get("version"):
+            versions.append({"sha": entry["sha"], "version": entry["version"],
+                             "published_at": entry.get("published_at", "")})
+        by_sha = {}
+        for version in versions:
+            if re.fullmatch(r"[a-f0-9]{40}", str(version.get("sha", ""))):
+                by_sha[version["sha"]] = version
+        history[name] = list(by_sha.values())[-12:]
     catalog["meta"] = {"tracked": tracked, "registered": registered,
-                       "auto_update_installed": False}
+                       "history": history, "auto_update_installed": False}
     # Heartbeat only after all first-party sources were verified by an
     # authenticated Action. Don't produce hundreds of meaningless commits.
     # If scheduling stops, the last_checked_at value becomes stale on clients.
@@ -267,10 +306,10 @@ def sync() -> int:
     output = json.dumps(catalog, ensure_ascii=False, indent=2) + "\n"
     target = ROOT / "live_catalog.json"
     if output == target.read_text(encoding="utf-8"):
-        print("No changes")
+        print("No changes; sync elapsed %.2fs" % (time.monotonic() - started))
         return 0
     target.write_text(output, encoding="utf-8")
-    print("Updated live_catalog.json")
+    print("Updated live_catalog.json; sync elapsed %.2fs" % (time.monotonic() - started))
     return 0
 
 

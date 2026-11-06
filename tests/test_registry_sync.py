@@ -66,6 +66,11 @@ try:
         second = json.loads((root / "live_catalog.json").read_text())
         assert second["meta"]["tracked"][plugin["name"]]["version"] == "1.2.4"
         assert "@" + ("b" * 40) in second["meta"]["tracked"][plugin["name"]]["link"]
+        history = second["meta"]["history"][plugin["name"]]
+        assert history[-2]["sha"] == "a" * 40
+        assert history[-2]["version"] == "1.2.3"
+        assert history[-1]["sha"] == "b" * 40
+        assert history[-1]["version"] == "1.2.4"
         before = second["meta"]["last_checked_at"]
         current["offline"] = True
         assert syncer.sync() == 0
