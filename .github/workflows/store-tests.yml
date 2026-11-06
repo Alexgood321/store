@@ -14,6 +14,7 @@ on:
       - 'tests/store-version-colors.cjs'
       - 'tests/store-header-batch.cjs'
       - 'tests/store-back.cjs'
+      - 'tests/store-diagnostics.cjs'
       - '.github/workflows/store-tests.yml'
   pull_request:
     paths:
@@ -27,6 +28,7 @@ on:
       - 'tests/store-version-colors.cjs'
       - 'tests/store-header-batch.cjs'
       - 'tests/store-back.cjs'
+      - 'tests/store-diagnostics.cjs'
       - '.github/workflows/store-tests.yml'
 
 jobs:
@@ -51,5 +53,7 @@ jobs:
       - run: node tests/store-header-batch.cjs
       - run: node --check tests/store-back.cjs
       - run: node tests/store-back.cjs
+      - run: node --check tests/store-diagnostics.cjs
+      - run: node tests/store-diagnostics.cjs
       - run: python3 -m json.tool live_catalog.json > /dev/null
       - run: python3 -m json.tool my_store_release.json > /dev/null

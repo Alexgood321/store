@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.4.3',
+    version: '3.4.4',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -571,6 +571,10 @@
         subtitle:'Быстрый переход в магазин с верхней панели. Настраивается отдельно для этого устройства.',
         action:'header_store_toggle'
       });
+      var diagnostics=installedDiagnostics();
+      rows.push({title:'Диагностика плагинов'+(diagnostics.length?' ('+diagnostics.length+')':''),
+        subtitle:'Что означают красные значки, ошибки запуска и проверки 200/500',
+        action:'diagnostics'});
       rows.push({title:'Откат последней замены ссылки',action:'rollback'});
       rows.push({title:'Проверить каталог повторно',action:'refresh'});
       rows.push({title:'Обновить мои и перезапустить',action:'apply_owned'});
@@ -594,6 +598,8 @@
             syncHeaderStoreShortcut();
             notice('Иконка «Мои плагины» в шапке ' + (!storeHeaderEnabled ? 'включена' : 'выключена'));
             showUpdateCenter(false,false);
+          } else if (row.action === 'diagnostics') {
+            showPluginDiagnostics();
           } else if (row.action === 'rollback') {
             if (!rollbackUpdate()) notice('Нет ссылки для отката');
           } else if (row.action === 'refresh') {
@@ -1542,6 +1548,132 @@
     return false;
   }
 
+
+  // Lampa.Plugins.errors() contains only URLs of scripts that failed during
+  // startup. The native 200/500 badge is a separate, later text inspection:
+  // 200 means the response contains "Lampa.", NOT a runtime success signal.
+  function sameDiagnosticURL(first,second) {
+    if (!first || !second) return false;
+    var a=String(first).trim().replace(/^http:\/\//i,'https://');
+    var b=String(second).trim().replace(/^http:\/\//i,'https://');
+    return a===b;
+  }
+
+  function pluginURLList(method) {
+    try {
+      if (!Lampa.Plugins || typeof Lampa.Plugins[method]!=='function') return [];
+      var list=Lampa.Plugins[method]();
+      return Array.isArray(list)?list:[];
+    } catch(error) {return [];}
+  }
+
+  function nativePluginCheck(card) {
+    if (!card || typeof card.querySelector!=='function') return '';
+    var badge=card.querySelector('.extensions__item-code');
+    if (!badge || (badge.classList && badge.classList.contains('hide'))) return '';
+    var code=String(badge.textContent || badge.innerText || '').trim();
+    return /^\d{3}$/.test(code)?code:'';
+  }
+
+  function pluginDiagnostic(url,card) {
+    var failed=pluginURLList('errors').some(function(item){return sameDiagnosticURL(url,item);});
+    var laterLoaded=pluginURLList('loaded').some(function(item){return sameDiagnosticURL(url,item);});
+    var code=nativePluginCheck(card);
+    var checked=code==='200'?'Проверка кода сейчас: 200 (файл распознан).':
+      code==='500'?'Проверка кода сейчас: 500 (содержимое не распознано как плагин).':
+      code?'Проверка кода сейчас: '+code+' (запрос завершился ошибкой).':
+      'Повторная проверка кода ещё не завершена.';
+    var summary='',detail='';
+    if (failed) {
+      summary=laterLoaded?
+        '⚠ Был сбой загрузки при старте; позже загрузка отмечена Lampa.':
+        '⚠ Не удалось загрузить JS при запуске Lampa.';
+      detail='Lampa сохранила адрес не загрузившегося скрипта, но не сохранила причину сбоя или стек ошибки. '+
+        (laterLoaded?'Позднее Lampa отметила загрузку файла. Это не доказывает работу всех функций плагина. ':
+          'Нет подтверждения его успешной загрузки в этом сеансе. ');
+    } else if (code && code!=='200') {
+      summary='⚠ Проверка файла не пройдена ('+code+').';
+      detail='Ошибка первоначальной загрузки не зафиксирована. Результат относится только к текущей проверке файла, а не к работе функций плагина. ';
+    }
+    if (!summary) return {problem:false,failed:false,loaded:laterLoaded,code:code,summary:'',detail:''};
+    if (failed && code) summary+=' Проверка: '+code+'.';
+    detail+=checked+' ';
+    detail+='Число 200 в Lampa означает, что в полученном тексте найден шаблон «Lampa.», а не подтверждение запуска. ';
+    if (failed) detail+='Точная причина первоначальной ошибки по этим данным неизвестна.';
+    return {problem:true,failed:failed,loaded:laterLoaded,code:code,summary:summary,detail:detail};
+  }
+
+  function diagnosticPluginName(record) {
+    if (record && record.name) return String(record.name);
+    var url=record && record.url || '';
+    if (LIVE_DATA && Array.isArray(LIVE_DATA.results)) {
+      for(var i=0;i<LIVE_DATA.results.length;i++){
+        var items=LIVE_DATA.results[i].results || [];
+        for(var j=0;j<items.length;j++){
+          if (items[j] && sameDiagnosticURL(url,items[j].link)) return items[j].name;
+          if (items[j] && normalized(url)===normalized(items[j].link)) return items[j].name;
+        }
+      }
+    }
+    var path=String(url).replace(/[?#].*$/,'').split('/').pop();
+    return path || 'Плагин без названия';
+  }
+
+  function installedDiagnostics() {
+    var installed=pluginURLList('get').slice().reverse();
+    var cards=installedGrid && typeof installedGrid.querySelectorAll==='function'?
+      installedGrid.querySelectorAll('.extensions__item'):[];
+    var matched=cards.length===installed.length;
+    var problems=[];
+    for (var i=0;i<installed.length;i++) {
+      var item=installed[i];
+      if (!item || !item.url || item.status===0 || item.status==='0' || item.status===false) continue;
+      var card=matched?cards[i]:null;
+      var diagnostic=pluginDiagnostic(item.url,card);
+      if (diagnostic.problem) problems.push({name:diagnosticPluginName(item),url:item.url,diagnostic:diagnostic});
+    }
+    return problems;
+  }
+
+  function showPluginDiagnosticDetail(item) {
+    if (!Lampa.Select || typeof Lampa.Select.show!=='function') return;
+    Lampa.Select.show({
+      title:'Диагностика: '+item.name,
+      items:[
+        {title:item.diagnostic.failed?'Ошибка загрузки при запуске':'Ошибка проверки файла',
+          subtitle:item.diagnostic.detail,action:'info'},
+        {title:'Адрес плагина',subtitle:String(item.url),action:'url'},
+        {title:'Что означает проверка 200?',
+          subtitle:'В тексте JS найдено «Lampa.». Это не тест выполнения плагина.',action:'code'}
+      ],
+      onSelect:function(){}
+    });
+  }
+
+  function showPluginDiagnostics() {
+    if (!Lampa.Select || typeof Lampa.Select.show!=='function') return;
+    var problems=installedDiagnostics();
+    var rows=problems.map(function(item){
+      return {title:item.name,subtitle:item.diagnostic.summary,problem:item};
+    });
+    if (!rows.length)
+      rows.push({title:'Зафиксированных ошибок нет',
+        subtitle:'Это не означает, что все функции плагинов проверены.',action:'none'});
+    rows.push({title:'О проверках Lampa',
+      subtitle:'Красный !: не удалось загрузить JS при запуске. 200: код распознан при повторной проверке. Достоверная причина первоначального сбоя не сохраняется.',action:'help'});
+    Lampa.Select.show({
+      title:'Диагностика плагинов'+(problems.length?' ('+problems.length+')':''),
+      items:rows,
+      onSelect:function(row) {
+        if (row.problem) showPluginDiagnosticDetail(row.problem);
+        else if (row.action==='help') showPluginDiagnosticDetail({
+          name:'Проверка Lampa',url:'Не применяется',
+          diagnostic:{failed:false,detail:'Красный !: Lampa не смогла загрузить JS при старте. Результаты 200 и 500 относятся к отдельной проверке содержимого файла, не к исполнению JS.'}
+        });
+      }
+    });
+  }
+
   function refreshInstalledVersions() {
     if (!installedGrid) return;
     var cards = installedGrid.querySelectorAll('.extensions__item');
@@ -1578,6 +1710,18 @@
       }
       if (mark.textContent !== info.text) mark.textContent = info.text;
       mark.classList.toggle('alex-installed-version--update', Boolean(info.update));
+      var check=pluginDiagnostic(installed.url,card);
+      var note=card.querySelector('.alex-installed-diagnostic');
+      if (check.problem) {
+        if (!note) {
+          note=document.createElement('div');
+          note.className='alex-installed-diagnostic';
+          var beforeFooter=card.querySelector('.extensions__item-footer');
+          if (beforeFooter) card.insertBefore(note,beforeFooter);
+          else card.appendChild(note);
+        }
+        if (note.textContent!==check.summary) note.textContent=check.summary;
+      } else if (note && typeof note.remove==='function') note.remove();
     }
   }
 
@@ -1966,7 +2110,7 @@
         ".extensions.alexgood321-skin-v341 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
         ".extensions.alexgood321-skin-v341 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
 
-        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v3.4.3";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v3.4.4";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
         '.extensions.' + skinClass + ' .alex-store-tool{min-height:11.5em;box-sizing:border-box;padding:1.05em;border-radius:1em;background:#444D5B;color:#F0F5FA;border:2px solid transparent;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:.35em;cursor:pointer;}',
         '.extensions.' + skinClass + ' .alex-store-tool--manage{background:#47564E;}',
         '.extensions.' + skinClass + ' .alex-store-tool.focus{box-shadow:inset 0 0 0 2px #fff;border-color:#fff;background-image:linear-gradient(rgba(255,255,255,.1),rgba(255,255,255,.1));}',
@@ -1986,6 +2130,8 @@
         '.extensions.' + skinClass + ' .alex-installed-grid .extensions__item.alex-installed-own.focus{box-shadow:inset 0 0 0 2px rgba(255,255,255,.4);}',
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version{font-size:.77em;line-height:1.35;margin-top:.45em;margin-bottom:.3em;color:#B4C7E6;overflow-wrap:anywhere;}',
         '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-version--update{color:#EDC37C;font-weight:700;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .alex-installed-diagnostic{font-size:.78em;line-height:1.4;margin:.35em 0 .45em;color:#FFC9A7;overflow-wrap:anywhere;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__item.alex-installed-own .alex-installed-diagnostic{color:#8C4027;}',
 
         "@media(max-width:640px){.extensions.alexgood321-skin-v341 .alex-installed-grid .scroll__body>.selector{flex:1 1 100%!important;width:100%!important;}}",
         '.extensions.' + skinClass + ' .alex-colored-category .extensions__item-author{color:#3E4A5B!important;}',
