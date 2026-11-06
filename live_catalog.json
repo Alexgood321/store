@@ -29,9 +29,9 @@
         {
           "name": "HDREZKA",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@b9caa426e7de3dcd8b546939de03a52cb7683536/rezka.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@cc4b591463edd083fe3c1ef610b1c4ed56411dd2/rezka.js",
           "descr": "Интеграция HDRezka: просмотр, озвучки, Premium-метки, коллекции, «Досмотреть» и прогресс. Синхронизация требует настроенного HTTPS-шлюза.",
-          "version": "1.7.5"
+          "version": "1.7.6"
         },
         {
           "name": "Lampa Shield Ads",
@@ -96,9 +96,9 @@
         {
           "name": "HDREZKA",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@b9caa426e7de3dcd8b546939de03a52cb7683536/rezka.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@cc4b591463edd083fe3c1ef610b1c4ed56411dd2/rezka.js",
           "descr": "Интеграция HDRezka: просмотр, озвучки, Premium-метки, коллекции, «Досмотреть» и прогресс. Синхронизация требует настроенного HTTPS-шлюза.",
-          "version": "1.7.5"
+          "version": "1.7.6"
         },
         {
           "name": "Онлайн Мод",
@@ -257,10 +257,10 @@
         "path": "rezka.js",
         "ref": "main",
         "owned": true,
-        "sha": "b9caa426e7de3dcd8b546939de03a52cb7683536",
-        "version": "1.7.5",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@b9caa426e7de3dcd8b546939de03a52cb7683536/rezka.js",
-        "published_at": "2026-11-06T22:30:37Z"
+        "sha": "cc4b591463edd083fe3c1ef610b1c4ed56411dd2",
+        "version": "1.7.6",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@cc4b591463edd083fe3c1ef610b1c4ed56411dd2/rezka.js",
+        "published_at": "2026-11-06T22:54:28Z"
       },
       "Torrent Styles": {
         "repo": "Alexgood321/store",
@@ -365,6 +365,6 @@
     },
     "registered": {},
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-06T22:53:04Z"
+    "last_checked_at": "2026-11-06T22:55:33Z"
   }
 }
