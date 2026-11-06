@@ -11,8 +11,11 @@
   var INITIAL_SHA = '2301bef4065000cf4cb71ab2502fcc4e368091e3';
   var LAST_GOOD_KEY = 'alexgood321_store_boot_last_good_v1';
   var PRIOR_GOOD_KEY = 'alexgood321_store_boot_prior_good_v1';
+  var NEXT_RELEASE_KEY = 'alexgood321_store_boot_checked_release_v1';
   var state = {loader_version:'1.1.0',status:'starting',sha:'',version:'',
-    source:'',checked_at:0,last_error:'',catalog_fresh:false,catalog_checked_at:''};
+    source:'',checked_at:0,last_error:'',catalog_fresh:false,catalog_checked_at:'',
+    available_sha:'',available_version:'',
+    metrics:{started_at:Date.now(),catalog_ms:0,runtime_ms:0,boot_ms:0,fallback_attempts:0}};
   var active = null;
   var attemptID = 0;
   var completed = false;
@@ -76,15 +79,21 @@
 
   function latestCommit(done) {
     state.checked_at = Date.now();
+    var catalogStart = Date.now();
     // This is a plain JSON fetch, not an unauthenticated GitHub REST call.
     // All devices share the same server-generated version catalog.
     var url = 'https://raw.githubusercontent.com/' + REPO +
       '/main/live_catalog.json?_v=' + Date.now();
     requestJSON(url, function (body) {
+      state.metrics.catalog_ms = Date.now() - catalogStart;
       var meta = body && body.meta;
       var entry = meta && meta.tracked && meta.tracked['My Store'];
       var sha = entry && entry.sha;
       if (entry && entry.path === RUNTIME_PATH && isSHA(sha)) {
+        // Reuse the verified JSON in runtime: no second request at startup.
+        window.__AlexgoodStoreCatalogSnapshot = {
+          data:body, url:url, received_at:Date.now()
+        };
         var checked = Date.parse(meta.last_checked_at || '');
         var fresh = isFinite(checked) && checked > 0 &&
           Date.now() >= checked && Date.now() - checked <= 2 * 60 * 60 * 1000;
@@ -95,7 +104,7 @@
           version:entry.version || ''});
       }
       manifestFallback(done);
-    }, function () {manifestFallback(done);});
+    }, function () {state.metrics.catalog_ms = Date.now() - catalogStart; manifestFallback(done);});
   }
 
   function manifestFallback(done) {
@@ -132,6 +141,8 @@
     if (completed || !active || runtime.sha !== active.sha ||
         runtime.ready !== true) return;
     completed = true;
+    state.metrics.runtime_ms = Date.now() - (state.metrics.runtime_started_at || Date.now());
+    state.metrics.boot_ms = Date.now() - state.metrics.started_at;
     state.status = 'ready';
     state.sha = runtime.sha;
     state.version = runtime.version || '';
@@ -168,6 +179,8 @@
     var run = ++attemptID;
     active = {sha:candidate.sha,source:candidate.source};
     state.status = 'loading';
+    state.metrics.runtime_started_at = Date.now();
+    if (alternative || position > 0) state.metrics.fallback_attempts++;
     window.__AlexgoodStoreBootCandidate = {sha:candidate.sha};
     var script = document.createElement('script');
     script.type = 'text/javascript';
@@ -233,11 +246,54 @@
       return;
     }
     state.status = 'checking';
-    latestCommit(function (latest) {
-      if (completed) return;
-      var candidates = listCandidates(latest);
-      loadCandidate(candidates,0,false);
-    });
+    var latestCached = storageGet(NEXT_RELEASE_KEY);
+    var lastGood = storageGet(LAST_GOOD_KEY);
+    var primary = null;
+    // A previously confirmed release is tried before last-good, with a
+    // fallback to the last successfully initialized build.
+    if (latestCached && isSHA(latestCached.sha) &&
+        (!lastGood || !lastGood.version || !latestCached.version ||
+         !/^\d+(?:\.\d+){1,3}$/.test(String(lastGood.version)) ||
+         !/^\d+(?:\.\d+){1,3}$/.test(String(latestCached.version)) ||
+         compareVersions(latestCached.version,lastGood.version) >= 0))
+      primary = {sha:latestCached.sha,source:'cached-verified-catalog',
+        version:latestCached.version || ''};
+    else if (lastGood && isSHA(lastGood.sha))
+      primary = {sha:lastGood.sha,source:'cached-last-good',
+        version:lastGood.version || ''};
+
+    function rememberLatest(latest) {
+      if (!latest || !isSHA(latest.sha)) return;
+      // A cached newer version is applied on next app launch, never injected
+      // over a currently executing store runtime.
+      var runtime = window.__AlexgoodStoreRuntime;
+      var current = runtime && runtime.ready ? runtime : storageGet(LAST_GOOD_KEY);
+      if (current && current.version && latest.version &&
+          compareVersions(latest.version,current.version) < 0) return;
+      storageSet(NEXT_RELEASE_KEY,{sha:latest.sha,version:latest.version});
+      state.available_sha = latest.sha;
+      state.available_version = latest.version || '';
+    }
+
+    if (primary) {
+      loadCandidate(listCandidates(primary),0,false);
+      latestCommit(function (latest) { rememberLatest(latest); });
+    } else {
+      latestCommit(function (latest) {
+        rememberLatest(latest);
+        if (!completed) loadCandidate(listCandidates(latest),0,false);
+      });
+    }
+  }
+
+  function compareVersions(a,b) {
+    var aa=String(a || '').split('.'), bb=String(b || '').split('.');
+    for (var i=0;i<4;i++) {
+      var left=Number(aa[i] || 0), right=Number(bb[i] || 0);
+      if (left > right) return 1;
+      if (left < right) return -1;
+    }
+    return 0;
   }
 
   window.AlexgoodStoreBootstrap = {

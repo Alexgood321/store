@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.5.0',
+    version: '3.6.0',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -32,6 +32,14 @@
     started_at: null
   };
 
+  var PERF_STARTED = Date.now();
+  var STORE_PERF = window.__AlexgoodStorePerf = {
+    version: CONFIG.version, started_at: PERF_STARTED, ready_ms: 0,
+    catalog_requests: 0, catalog_request_ms: 0, catalog_cache_hits: 0,
+    catalog_fallbacks: 0, version_requests: 0, version_bytes: 0,
+    dom_scans: 0, dom_scan_ms: 0, dom_max_ms: 0,
+    observer_records: 0, observer_ignored: 0, observer_scheduled: 0
+  };
   var initialized = false;
 
   function title() {
@@ -127,6 +135,8 @@
   var LIVE_META = {};
   var LIVE_DATA = null;
   var LAST_LIVE_URL = null;
+  var lastLiveLoadAt = 0;
+  var LIVE_CACHE_MS = 30000;
   var LIVE_OVERRIDES = {};
   var UPDATE_BACKUP_KEY = 'alexgood321_store_update_backup';
   var AUTO_KEY = 'alexgood321_store_auto_update';
@@ -167,37 +177,71 @@
   }
 
   function loadLive(callback, force, quietAutoUpdate, suppressAutomatic) {
-    if (!force && LIVE_DATA && LAST_LIVE_URL) return callback(LAST_LIVE_URL);
-    if (!Lampa.Reguest) return callback(CONFIG.emergency);
+    if (!force && LIVE_DATA && LAST_LIVE_URL &&
+        Date.now() - lastLiveLoadAt < LIVE_CACHE_MS) {
+      STORE_PERF.catalog_cache_hits++;
+      return callback(LAST_LIVE_URL, []);
+    }
+    function accept(data, url, i) {
+      if (!data || !Array.isArray(data.results) || !data.results.length ||
+          !data.meta || !data.meta.tracked) return false;
+      LIVE_DATA = data;
+      LAST_LIVE_URL = url;
+      lastLiveLoadAt = Date.now();
+      LIVE_META = data.meta.tracked;
+      applyLiveOverrides();
+      for (var g = 0; g < data.results.length; g++) {
+        var items = data.results[g].results || [];
+        for (var entryIndex = 0; entryIndex < items.length; entryIndex++)
+          LINK_MAP[items[entryIndex].name] = items[entryIndex].link;
+      }
+      deviceGet();
+      deviceSet({last_catalog_check:Date.now(),catalog_source:url,
+        last_central_sync:data.meta.last_checked_at || ''});
+      // Never silently apply a stale CDN fallback or unverified catalog.
+      var autoApplied = (i === 0 && catalogIsFresh() && !suppressAutomatic) ?
+        updateInstalledAutomatically(Boolean(quietAutoUpdate)) : [];
+      if (autoApplied.length) headerBatchPendingRestart=true;
+      if (skinRoot) refreshSkin();
+      callback(url, autoApplied);
+      return true;
+    }
+    // The bootstrap already downloaded this exact catalog. Avoid a second
+    // startup request while still honoring explicit forced refresh actions.
+    var snapshot = window.__AlexgoodStoreCatalogSnapshot;
+    if (!force && snapshot && snapshot.data &&
+        Date.now() - snapshot.received_at >= 0 &&
+        Date.now() - snapshot.received_at < LIVE_CACHE_MS) {
+      if (accept(snapshot.data, snapshot.url || CONFIG.catalog + '?_bootstrap=1', 0)) {
+        STORE_PERF.catalog_cache_hits++;
+        return;
+      }
+    }
+    if (!Lampa.Reguest) return callback(CONFIG.emergency, []);
     var URLs = [CONFIG.catalog, CONFIG.fallback];
     var request = new Lampa.Reguest();
     function attempt(i) {
-      if (i >= URLs.length) return callback(CONFIG.emergency);
+      if (i >= URLs.length) return callback(CONFIG.emergency, []);
+      if (i > 0) STORE_PERF.catalog_fallbacks++;
       var url = URLs[i] + '?_v=' + Date.now();
+      var started = Date.now();
+      STORE_PERF.catalog_requests++;
       request.silent(url, function (data) {
-        if (!data || !Array.isArray(data.results) || !data.results.length ||
-            !data.meta || !data.meta.tracked) return attempt(i+1);
-        LIVE_DATA = data;
-        LAST_LIVE_URL = url;
-        LIVE_META = data.meta.tracked;
-        applyLiveOverrides();
-        for (var g = 0; g < data.results.length; g++) {
-          var items = data.results[g].results || [];
-          for (var entryIndex = 0; entryIndex < items.length; entryIndex++)
-            LINK_MAP[items[entryIndex].name] = items[entryIndex].link;
-        }
-        deviceGet();
-        deviceSet({last_catalog_check:Date.now(),catalog_source:url,
-          last_central_sync:data.meta.last_checked_at || ''});
-        // Never silently apply a stale CDN fallback or unverified catalog.
-        var autoApplied = (i === 0 && catalogIsFresh() && !suppressAutomatic) ?
-          updateInstalledAutomatically(Boolean(quietAutoUpdate)) : [];
-        if (autoApplied.length) headerBatchPendingRestart=true;
-        if (skinRoot) refreshSkin();
-        callback(url, autoApplied);
-      }, function () { attempt(i+1); });
+        STORE_PERF.catalog_request_ms += Date.now() - started;
+        if (!accept(data, url, i)) attempt(i+1);
+      }, function () {
+        STORE_PERF.catalog_request_ms += Date.now() - started;
+        attempt(i+1);
+      });
     }
     attempt(0);
+  }
+
+  function catalogIsKnownGood() {
+    if (!LIVE_DATA || !LIVE_DATA.meta) return false;
+    var stamp = Date.parse(LIVE_DATA.meta.last_checked_at || '');
+    return isFinite(stamp) && stamp > 0 && Date.now() >= stamp &&
+      Date.now() - stamp <= 30 * 24 * 60 * 60 * 1000;
   }
 
   function catalogIsFresh() {
@@ -648,6 +692,7 @@
   var AUTO_OWN_KEY = 'alexgood321_auto_own_v1';
   var deviceCache = null;
   var catalogRefreshBusy = false;
+  var firstCatalogPoll = true;
 
   function deviceGet() {
     if (deviceCache) return deviceCache;
@@ -907,7 +952,7 @@
     if (!headerBatchButton || !isHeaderBatchEnabled()) return;
     var count=0;
     if (LAST_LIVE_URL && LAST_LIVE_URL.indexOf(CONFIG.catalog + '?')===0 &&
-        catalogIsFresh()) count=getSafeBatchPlan().items.length+(needsCoreReload()?1:0);
+        catalogIsKnownGood()) count=getSafeBatchPlan().items.length+(needsCoreReload()?1:0);
     var bubble=headerBatchButton.find('.alex-store-header-batch-count');
     if (bubble && bubble.length) {
       bubble.text(headerBatchPendingRestart ? '✓' :
@@ -1087,7 +1132,7 @@
         if (headerBatchButton) headerBatchButton.removeClass('alex-store-header-batch-busy');
         refreshHeaderBatchBadge();
       }
-      if (!url || url.indexOf(CONFIG.catalog + '?')!==0 || !catalogIsFresh()) {
+      if (!url || url.indexOf(CONFIG.catalog + '?')!==0 || !catalogIsKnownGood()) {
         done();
         notice('Массовое обновление отменено: нет свежего подтверждённого каталога.');
         return;
@@ -1096,9 +1141,9 @@
       // Wait briefly for those checks rather than silently skipping them.
       getSafeBatchPlan();
       waitForBatchVersions(function() {
-        if (!catalogIsFresh()) {
+        if (!catalogIsKnownGood()) {
           done();
-          notice('Массовое обновление отменено: каталог устарел.');
+          notice('Массовое обновление отменено: отсутствует проверенная версия каталога.');
           return;
         }
         var plan=getSafeBatchPlan();
@@ -1176,6 +1221,35 @@
     },true);
   }
 
+  function showPerformance() {
+    if (!Lampa.Select || typeof Lampa.Select.show !== 'function') return;
+    var boot = window.AlexgoodStoreBootstrap && window.AlexgoodStoreBootstrap.state || {};
+    var bootPerf = boot.metrics || {};
+    var hc = window.__LampaPluginPerf && window.__LampaPluginPerf.home_categories || {};
+    var surs = window.SURS_PERFORMANCE || {};
+    var rows = [
+      {title:'My Store',subtitle:'Инициализация: ' + STORE_PERF.ready_ms + ' мс · запросов каталога: ' +
+        STORE_PERF.catalog_requests + ' · суммарное ожидание: ' + STORE_PERF.catalog_request_ms + ' мс'},
+      {title:'Кэш каталога',subtitle:'Попаданий: ' + STORE_PERF.catalog_cache_hits +
+        ' · резервных запросов: ' + STORE_PERF.catalog_fallbacks +
+        ' · загрузчик: ' + (bootPerf.catalog_ms || 0) + ' мс'},
+      {title:'Обновления версий',subtitle:'Дополнительных JS-запросов: ' +
+        STORE_PERF.version_requests + ' · прочитано JS: ' + STORE_PERF.version_bytes + ' символов'},
+      {title:'Интерфейс My Store',subtitle:'Обходов: ' + STORE_PERF.dom_scans +
+        ' · сумма: ' + STORE_PERF.dom_scan_ms + ' мс · максимум: ' +
+        STORE_PERF.dom_max_ms + ' мс'},
+      {title:'Наблюдатель DOM',subtitle:'Событий: ' + STORE_PERF.observer_records +
+        ' · проигнорировано: ' + STORE_PERF.observer_ignored +
+        ' · обновлений назначено: ' + STORE_PERF.observer_scheduled},
+      {title:'Home Categories',subtitle:'Обходов: ' + (hc.scans || 0) +
+        ' · сумма: ' + (hc.total_ms || 0) + ' мс · максимум: ' +
+        (hc.max_ms || 0) + ' мс'},
+      {title:'SURS',subtitle:'Инициализация: ' + (surs.init_ms || 0) +
+        ' мс · версия: ' + (window.LampaShelfManager && window.LampaShelfManager.version || 'неизвестна')}
+    ];
+    Lampa.Select.show({title:'My Store · производительность',items:rows,onSelect:function(){}});
+  }
+
   function showLocalHistory() {
     if (!Lampa.Select || !Lampa.Select.show) return;
     var names = {
@@ -1233,6 +1307,7 @@
       entries.push({title:'Проверить актуальные версии сейчас',action:'refresh'});
       entries.push({title:'Обновить мои и перезапустить',action:'apply'});
       entries.push({title:'Перезапустить Lampa без очистки кэша',action:'reload'});
+      entries.push({title:'Производительность устройства',action:'performance'});
       entries.push({title:'Журнал изменений',action:'history'});
       entries.push({title:'Откатить последнее групповое обновление',action:'rollback'});
       var ownAuto=Boolean(Lampa.Storage && Lampa.Storage.get(AUTO_OWN_KEY,false));
@@ -1250,6 +1325,7 @@
           if (option.action==='apply') applyOwnedAndReload();
           if (option.action==='reload') confirmReload();
           if (option.action==='history') showLocalHistory();
+          if (option.action==='performance') showPerformance();
           if (option.action==='rollback') {
             if (rollbackOwnedBatch()) notice('Ссылки восстановлены. Перезапустите Lampa.');
             else notice('Доступного группового отката нет');
@@ -1266,6 +1342,8 @@
   function periodicCatalogCheck() {
     if (catalogRefreshBusy) return;
     catalogRefreshBusy = true;
+    var force = !firstCatalogPoll;
+    firstCatalogPoll = false;
     loadLive(function(url, applied) {
       catalogRefreshBusy = false;
       if (!url || url === CONFIG.emergency) return;
@@ -1276,7 +1354,7 @@
       if (skinRoot) queueSkin();
       refreshHeaderBatchBadge();
       snapshotThisDevice();
-    }, true, true);
+    }, force, true);
   }
 
   function normalized(url) {
@@ -1399,6 +1477,7 @@
     while (versionActive < versionLimit && versionTasks.length) {
       (function (url) {
         versionActive++;
+        STORE_PERF.version_requests++;
         var finished = false;
         function finish(version) {
           if (finished) return;
@@ -1424,6 +1503,7 @@
           var request = new Lampa.Reguest();
           if (!request || typeof request.native !== 'function') return finish('');
           request.native(url, function (body) {
+            if (typeof body === 'string') STORE_PERF.version_bytes += body.length;
             finish(parseSourceVersion(body));
           }, function () { finish(''); }, false, {dataType:'text', timeout:7500});
         } catch (e) { finish(''); }
@@ -1464,13 +1544,34 @@
   }
 
   function installedVersion(url, info) {
+    // Resolve old pinned revisions via central history, no JS request needed.
+    var pin = String(url || '').match(/@([a-f0-9]{7,40})\//i);
+    var keyForHistory = installedGithubKey(url);
+    var history = LIVE_DATA && LIVE_DATA.meta && LIVE_DATA.meta.history;
+    if (pin && keyForHistory && history) {
+      for (var historyName in LIVE_META) {
+        if (!Object.prototype.hasOwnProperty.call(LIVE_META, historyName)) continue;
+        var historicalMeta = LIVE_META[historyName];
+        if (!historicalMeta || !historicalMeta.repo || !historicalMeta.path ||
+            (historicalMeta.repo + '/' + historicalMeta.path).toLowerCase() !== keyForHistory)
+          continue;
+        var revisions = history[historyName] || [];
+        for (var h = revisions.length - 1; h >= 0; h--) {
+          if (revisions[h].sha &&
+              revisions[h].sha.indexOf(pin[1].toLowerCase()) === 0 &&
+              /^\d+(?:\.\d+){1,3}$/.test(String(revisions[h].version || '')))
+            return String(revisions[h].version);
+        }
+        break;
+      }
+    }
     var key = installedGithubKey(url);
     if (key === 'alexgood321/store/my_store_loader.js' ||
         key === 'alexgood321/store/my_store_live.js') {
       var running=window.__AlexgoodStoreRuntime;
       if (running && running.ready===true && running.version) return running.version;
     }
-    var sha = String(url || '').match(/@([a-f0-9]{7,40})\//i);
+    var sha = pin;
     if (info && info.sha && sha && info.sha.indexOf(sha[1].toLowerCase()) === 0)
       return info.version || '';
     var cached = cachedSourceVersion(url);
@@ -1897,6 +1998,8 @@
 
   function refreshSkin() {
     if (!skinRoot || !skinRoot.parentNode) return;
+    var domStarted = Date.now();
+    STORE_PERF.dom_scans++;
     markInstalledGrid();
     var groups = skinRoot.querySelectorAll('.extensions__block');
     for (var i = 0; i < groups.length; i++) {
@@ -1935,6 +2038,9 @@
         }
       }
     }
+    var elapsed = Date.now() - domStarted;
+    STORE_PERF.dom_scan_ms += elapsed;
+    if (elapsed > STORE_PERF.dom_max_ms) STORE_PERF.dom_max_ms = elapsed;
   }
 
   function hasCatalogUrl(url) {
@@ -2137,7 +2243,7 @@
         ".extensions.alexgood321-skin-v341 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
         ".extensions.alexgood321-skin-v341 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
 
-        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v3.4.5";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v' + CONFIG.version + '";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
         '.extensions.' + skinClass + ' .alex-store-tool{min-height:11.5em;box-sizing:border-box;padding:1.05em;border-radius:1em;background:#444D5B;color:#F0F5FA;border:2px solid transparent;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:.35em;cursor:pointer;}',
         '.extensions.' + skinClass + ' .alex-store-tool--manage{background:#47564E;}',
         '.extensions.' + skinClass + ' .alex-store-tool.focus{box-shadow:inset 0 0 0 2px #fff;border-color:#fff;background-image:linear-gradient(rgba(255,255,255,.1),rgba(255,255,255,.1));}',
@@ -2182,8 +2288,49 @@
     }
     refreshSkin();
     if (typeof MutationObserver !== 'undefined') {
-      skinObserver = new MutationObserver(queueSkin);
-      skinObserver.observe(root, {subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class']});
+      skinObserver = new MutationObserver(function (mutations) {
+        STORE_PERF.observer_records += mutations.length;
+        for (var m = 0; m < mutations.length; m++) {
+          var mutation = mutations[m];
+          if (mutation.type !== 'childList') continue;
+          var trigger = false;
+          var target = mutation.target;
+          // Ignore our own labels and tools; updating them must not trigger
+          // another full traversal of all native Lampa cards.
+          if (target && target.closest && target.closest(
+              '.alex-installed-version, .alex-installed-diagnostic, .alex-update-label, .alex-store-tool')) {
+            STORE_PERF.observer_ignored++;
+            continue;
+          }
+          var added = mutation.addedNodes || [];
+          for (var n = 0; n < added.length; n++) {
+            var node = added[n];
+            if (node.nodeType === 1) {
+              if (node.classList && (
+                  node.classList.contains('alex-installed-version') ||
+                  node.classList.contains('alex-installed-diagnostic') ||
+                  node.classList.contains('alex-update-label') ||
+                  node.classList.contains('alex-store-tool'))) continue;
+              if ((node.matches && node.matches('.extensions__item, .extensions__block, .extensions__item-name, .extensions__item-descr')) ||
+                  (node.querySelector && node.querySelector('.extensions__item, .extensions__block'))) {
+                trigger = true;
+                break;
+              }
+            } else if (node.nodeType === 3 && target && target.closest &&
+                       target.closest('.extensions__item-name, .extensions__item-descr')) {
+              trigger = true;
+              break;
+            }
+          }
+          if (trigger) {
+            STORE_PERF.observer_scheduled++;
+            queueSkin();
+            return;
+          }
+          STORE_PERF.observer_ignored++;
+        }
+      });
+      skinObserver.observe(root, {subtree:true,childList:true});
     }
     setTimeout(refreshSkin, 300);
     setTimeout(refreshSkin, 1100);
@@ -2215,7 +2362,7 @@
         } catch (error) {
           console.warn('[My Store] Unable to open store:', error);
         }
-      }, true);
+      }, false);
     } catch (error) {
       storeOpenPending = false;
       console.warn('[My Store] Unable to fetch store:', error);
@@ -2265,6 +2412,7 @@
         console.warn('[Alexgood321 Store] Bootstrap acknowledgment failed:', error);
       }
     }
+    STORE_PERF.ready_ms = Date.now() - PERF_STARTED;
     console.log('[Alexgood321 Store] ready v' + CONFIG.version);
   }
 
