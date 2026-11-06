@@ -110,5 +110,5 @@ function loadRuntimeAutoUpdate(installedVersion='1.7.2', expectedUpdate=true) {
   return requests.length;
 }
 const runtimeRequests=loadRuntimeAutoUpdate('1.7.2',true);
-loadRuntimeAutoUpdate('1.7.4',false);
+loadRuntimeAutoUpdate(catalog.meta.tracked.HDREZKA.version,false);
 console.log('PASS centralized My Store: fresh/stale/fallback bootstrap, 0 client REST calls, automatic URL replacement; runtime catalog requests='+runtimeRequests);
