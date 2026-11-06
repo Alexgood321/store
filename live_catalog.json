@@ -15,9 +15,9 @@
         {
           "name": "Home Categories Pro",
           "author": "Lampa Community / Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@0741ed1cba12c50c7acab47436577a27f8953335/home_categories.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@a6093718983306adc2202a8812aa5c02adc0b1f4/home_categories.js",
           "descr": "Скрытие и изменение порядка категорий главного экрана Lampa. Управление с ТВ-пульта и сенсорного экрана.",
-          "version": "2.0.0"
+          "version": "2.0.1"
         },
         {
           "name": "NUM Series Pro",
@@ -63,9 +63,9 @@
         {
           "name": "Home Categories Pro",
           "author": "Lampa Community / Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@0741ed1cba12c50c7acab47436577a27f8953335/home_categories.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@a6093718983306adc2202a8812aa5c02adc0b1f4/home_categories.js",
           "descr": "Скрытие и изменение порядка категорий главного экрана Lampa. Управление с ТВ-пульта и сенсорного экрана.",
-          "version": "2.0.0"
+          "version": "2.0.1"
         },
         {
           "name": "Продолжить просмотр",
@@ -237,10 +237,10 @@
         "path": "home_categories.js",
         "ref": "main",
         "owned": true,
-        "sha": "0741ed1cba12c50c7acab47436577a27f8953335",
-        "version": "2.0.0",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@0741ed1cba12c50c7acab47436577a27f8953335/home_categories.js",
-        "published_at": "2026-11-02T00:45:08Z"
+        "sha": "a6093718983306adc2202a8812aa5c02adc0b1f4",
+        "version": "2.0.1",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@a6093718983306adc2202a8812aa5c02adc0b1f4/home_categories.js",
+        "published_at": "2026-11-06T23:49:06Z"
       },
       "NUM Series Pro": {
         "repo": "Alexgood321/lampa-plugins",
@@ -365,6 +365,6 @@
     },
     "registered": {},
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-06T23:33:01Z"
+    "last_checked_at": "2026-11-06T23:49:25Z"
   }
 }
