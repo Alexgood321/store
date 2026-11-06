@@ -34,11 +34,18 @@
           "version": "1.7.4"
         },
         {
+          "name": "Lampa Shield Ads",
+          "author": "Alexgood321",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@01d210fef0c4db2aed584674274007dfc9ee4cff/shield-ads/lampa-shield-ads.js",
+          "descr": "Блокировка рекламных запросов Lampa и VAST в плеере. Переключатель и статистика в настройках.",
+          "version": "1.0.0"
+        },
+        {
           "name": "My Store",
           "author": "Alexgood321",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
           "descr": "Персональный магазин Lampa: установка расширений, проверка версий, обновления, журнал изменений и управление устройством.",
-          "version": "3.4.4"
+          "version": "3.4.5"
         }
       ]
     },
@@ -126,6 +133,13 @@
       "title": "Системные и ТВ",
       "hpu": "alex_system_tv",
       "results": [
+        {
+          "name": "Lampa Shield Ads",
+          "author": "Alexgood321",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@01d210fef0c4db2aed584674274007dfc9ee4cff/shield-ads/lampa-shield-ads.js",
+          "descr": "Блокировка рекламных запросов Lampa и VAST в плеере. Переключатель и статистика в настройках.",
+          "version": "1.0.0"
+        },
         {
           "name": "Добавляет пункт \"Парсер\" в меню",
           "author": "@lampa",
@@ -333,13 +347,23 @@
         "path": "my_store_runtime.js",
         "ref": "main",
         "owned": false,
-        "sha": "8835c50a881338238cfa36475f78edde0d0e277f",
-        "version": "3.4.4",
+        "sha": "c3be4a49ff9b13403e81c46f81c06131d1070513",
+        "version": "3.4.5",
         "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
-        "published_at": "2026-11-06T11:23:19Z"
+        "published_at": "2026-11-06T12:55:04Z"
+      },
+      "Lampa Shield Ads": {
+        "repo": "Alexgood321/lampa-plugins",
+        "path": "shield-ads/lampa-shield-ads.js",
+        "ref": "main",
+        "owned": true,
+        "sha": "01d210fef0c4db2aed584674274007dfc9ee4cff",
+        "version": "1.0.0",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@01d210fef0c4db2aed584674274007dfc9ee4cff/shield-ads/lampa-shield-ads.js",
+        "published_at": "2026-11-06T12:50:24Z"
       }
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-06T11:23:34Z"
+    "last_checked_at": "2026-11-06T12:55:21Z"
   }
 }
