@@ -9,6 +9,8 @@ const root = path.join(__dirname, '..');
 const loader = fs.readFileSync(path.join(root, 'my_store_loader.js'), 'utf8');
 const runtime = fs.readFileSync(path.join(root, 'my_store_runtime.js'), 'utf8');
 const catalog = JSON.parse(fs.readFileSync(path.join(root, 'live_catalog.json'), 'utf8'));
+// Keep the test independent of the last scheduled GitHub Actions run.
+catalog.meta.last_checked_at = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
 
 assert.ok(!loader.includes('api.github.com'), 'bootstrap must never call GitHub API');
 assert.ok(!runtime.includes('api.github.com'), 'runtime must never call GitHub API');
