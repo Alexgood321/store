@@ -57,6 +57,8 @@ def latest_path_commit(repo: str, ref: str, path: str) -> tuple[str, str]:
 
 
 VERSION_PATTERNS = [
+    # Shield Ads uses a named version in the opening JS comment.
+    re.compile(r"(?im)^\s*\*\s*Lampa Shield Ads\s+v(\d+(?:\.\d+){1,3})\b"),
     re.compile(r"(?im)^\s*\*?\s*(?:версия|version)\s*:\s*v?(\d+(?:\.\d+){1,3})\b"),
     re.compile(r"(?im)^\s*(?:(?:var|const|let)\s+)?VERSION\s*=\s*['\"](\d+(?:\.\d+){1,3})['\"]"),
     re.compile(r"(?im)\bversion\s*:\s*['\"](\d+(?:\.\d+){1,3})['\"]"),

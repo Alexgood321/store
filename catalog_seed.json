@@ -34,6 +34,13 @@
           "version": "1.7.2"
         },
         {
+          "name": "Lampa Shield Ads",
+          "author": "Alexgood321",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@main/shield-ads/lampa-shield-ads.js",
+          "descr": "Блокировка рекламных запросов Lampa и VAST в плеере. Переключатель и статистика в настройках.",
+          "version": "1.0.0"
+        },
+        {
           "name": "My Store",
           "author": "Alexgood321",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
@@ -123,6 +130,13 @@
       "title": "Системные и ТВ",
       "hpu": "alex_system_tv",
       "results": [
+        {
+          "name": "Lampa Shield Ads",
+          "author": "Alexgood321",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@main/shield-ads/lampa-shield-ads.js",
+          "descr": "Блокировка рекламных запросов Lampa и VAST в плеере. Переключатель и статистика в настройках.",
+          "version": "1.0.0"
+        },
         {
           "name": "Добавляет пункт \"Парсер\" в меню",
           "author": "@lampa",

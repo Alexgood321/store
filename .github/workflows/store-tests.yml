@@ -15,6 +15,10 @@ on:
       - 'tests/store-header-batch.cjs'
       - 'tests/store-back.cjs'
       - 'tests/store-diagnostics.cjs'
+      - 'tests/store-shield-ads.cjs'
+      - 'sync_sources.json'
+      - 'catalog_seed.json'
+      - 'scripts/sync_catalog.py'
       - '.github/workflows/store-tests.yml'
   pull_request:
     paths:
@@ -29,6 +33,10 @@ on:
       - 'tests/store-header-batch.cjs'
       - 'tests/store-back.cjs'
       - 'tests/store-diagnostics.cjs'
+      - 'tests/store-shield-ads.cjs'
+      - 'sync_sources.json'
+      - 'catalog_seed.json'
+      - 'scripts/sync_catalog.py'
       - '.github/workflows/store-tests.yml'
 
 jobs:
@@ -55,5 +63,9 @@ jobs:
       - run: node tests/store-back.cjs
       - run: node --check tests/store-diagnostics.cjs
       - run: node tests/store-diagnostics.cjs
+      - run: node --check tests/store-shield-ads.cjs
+      - run: node tests/store-shield-ads.cjs
+      - run: python3 -m json.tool sync_sources.json > /dev/null
+      - run: python3 -m json.tool catalog_seed.json > /dev/null
       - run: python3 -m json.tool live_catalog.json > /dev/null
       - run: python3 -m json.tool my_store_release.json > /dev/null

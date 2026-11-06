@@ -78,6 +78,12 @@
       "path": "my_store_runtime.js",
       "ref": "main",
       "owned": false
+    },
+    "Lampa Shield Ads": {
+      "repo": "Alexgood321/lampa-plugins",
+      "path": "shield-ads/lampa-shield-ads.js",
+      "ref": "main",
+      "owned": true
     }
   },
   "policy": {

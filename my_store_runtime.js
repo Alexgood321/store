@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.4.4',
+    version: '3.4.5',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -1364,7 +1364,8 @@
       /(?:^|\n)\s*(?:\/\*+\s*)?(?:\*\s*)?(?:Версия|Version)\s*:\s*v?(\d+(?:\.\d+){1,3})\b/im,
       /\b(?:var|const|let)\s+VERSION\s*=\s*['"]v?(\d+(?:\.\d+){1,3})['"]/i,
       /\bversion\s*:\s*['"]v?(\d+(?:\.\d+){1,3})['"]/i,
-      /\bversion\s*=\s*['"]v?(\d+(?:\.\d+){1,3})['"]/i
+      /\bversion\s*=\s*['"]v?(\d+(?:\.\d+){1,3})['"]/i,
+      /^\s*\*\s*Lampa Shield Ads\s+v(\d+(?:\.\d+){1,3})\b/im
     ];
     for (var i=0; i<rules.length; i++) {
       var found = header.match(rules[i]);
@@ -1516,6 +1517,7 @@
       'alexgood321/lampa-plugins/surs.js':1,
       'alexgood321/lampa-plugins/home_categories.js':1,
       'alexgood321/lampa-plugins/num_series.js':1,
+      'alexgood321/lampa-plugins/shield-ads/lampa-shield-ads.js':1,
       'alexgood321/lampa-hdrezka/rezka.js':1
     };
     if (key && known[key]) return true;
@@ -2110,7 +2112,7 @@
         ".extensions.alexgood321-skin-v341 .alex-installed-grid .scroll--horizontal>.scroll__content>.scroll__body{display:flex!important;flex-wrap:wrap!important;gap:1em!important;align-items:stretch!important;width:100%!important;-webkit-transform:none!important;transform:none!important;transition:none!important;}",
         ".extensions.alexgood321-skin-v341 .alex-installed-grid .scroll__body>.selector{flex:0 1 20em!important;max-width:100%!important;box-sizing:border-box;margin:0!important;}",
 
-        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v3.4.4";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
+        '.extensions.' + skinClass + ' .alex-installed-grid .extensions__block-title:after{content:"  ·  My Store v3.4.5";font-size:.63em;font-weight:400;color:#A5B4C9;white-space:nowrap;margin-left:.5em;}',
         '.extensions.' + skinClass + ' .alex-store-tool{min-height:11.5em;box-sizing:border-box;padding:1.05em;border-radius:1em;background:#444D5B;color:#F0F5FA;border:2px solid transparent;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:.35em;cursor:pointer;}',
         '.extensions.' + skinClass + ' .alex-store-tool--manage{background:#47564E;}',
         '.extensions.' + skinClass + ' .alex-store-tool.focus{box-shadow:inset 0 0 0 2px #fff;border-color:#fff;background-image:linear-gradient(rgba(255,255,255,.1),rgba(255,255,255,.1));}',
