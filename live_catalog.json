@@ -36,9 +36,9 @@
         {
           "name": "Lampa Shield Ads",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@01d210fef0c4db2aed584674274007dfc9ee4cff/shield-ads/lampa-shield-ads.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@278fe45426f888d48900b0dccd21e7ae398e54f9/shield-ads/lampa-shield-ads.js",
           "descr": "Блокировка рекламных запросов Lampa и VAST в плеере. Переключатель и статистика в настройках.",
-          "version": "1.0.0"
+          "version": "1.1.0"
         },
         {
           "name": "My Store",
@@ -136,9 +136,9 @@
         {
           "name": "Lampa Shield Ads",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@01d210fef0c4db2aed584674274007dfc9ee4cff/shield-ads/lampa-shield-ads.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@278fe45426f888d48900b0dccd21e7ae398e54f9/shield-ads/lampa-shield-ads.js",
           "descr": "Блокировка рекламных запросов Lampa и VAST в плеере. Переключатель и статистика в настройках.",
-          "version": "1.0.0"
+          "version": "1.1.0"
         },
         {
           "name": "Добавляет пункт \"Парсер\" в меню",
@@ -357,13 +357,13 @@
         "path": "shield-ads/lampa-shield-ads.js",
         "ref": "main",
         "owned": true,
-        "sha": "01d210fef0c4db2aed584674274007dfc9ee4cff",
-        "version": "1.0.0",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@01d210fef0c4db2aed584674274007dfc9ee4cff/shield-ads/lampa-shield-ads.js",
-        "published_at": "2026-11-06T12:50:24Z"
+        "sha": "278fe45426f888d48900b0dccd21e7ae398e54f9",
+        "version": "1.1.0",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@278fe45426f888d48900b0dccd21e7ae398e54f9/shield-ads/lampa-shield-ads.js",
+        "published_at": "2026-11-06T13:03:01Z"
       }
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-06T12:55:21Z"
+    "last_checked_at": "2026-11-06T13:30:23Z"
   }
 }
