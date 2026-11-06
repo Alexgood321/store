@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.6.0',
+    version: '3.6.1',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -190,6 +190,23 @@
       lastLiveLoadAt = Date.now();
       LIVE_META = data.meta.tracked;
       applyLiveOverrides();
+      // Prepare an already-verified next runtime for the fast cached-first
+      // loader. No in-session JavaScript replacement is attempted.
+      var storeRevision = LIVE_META['My Store'];
+      var currentRuntime = window.__AlexgoodStoreRuntime;
+      if (i === 0 && catalogIsKnownGood() && storeRevision &&
+          /^[a-f0-9]{40}$/i.test(String(storeRevision.sha || '')) &&
+          currentRuntime && currentRuntime.ready &&
+          storeRevision.version && (
+            isVersionNewer(currentRuntime.version,storeRevision.version) ||
+            (storeRevision.version === currentRuntime.version &&
+              storeRevision.sha !== currentRuntime.sha))) {
+        try {
+          if (Lampa.Storage && typeof Lampa.Storage.set === 'function')
+            Lampa.Storage.set('alexgood321_store_boot_checked_release_v1',
+              {sha:storeRevision.sha,version:storeRevision.version});
+        } catch (error) {console.warn('[My Store] Cache next runtime:',error);}
+      }
       for (var g = 0; g < data.results.length; g++) {
         var items = data.results[g].results || [];
         for (var entryIndex = 0; entryIndex < items.length; entryIndex++)
@@ -1340,6 +1357,10 @@
   }
 
   function periodicCatalogCheck() {
+    // Avoid network work while the app is backgrounded or a video is playing.
+    // The next foreground/idle check catches up with the central catalog.
+    if (typeof document !== 'undefined' && document.hidden) return;
+    if (isPlayerOpened()) return;
     if (catalogRefreshBusy) return;
     catalogRefreshBusy = true;
     var force = !firstCatalogPoll;
@@ -2398,6 +2419,12 @@
     setTimeout(snapshotThisDevice,5000);
     setTimeout(periodicCatalogCheck,12000);
     if (typeof setInterval === 'function') setInterval(periodicCatalogCheck,5*60*1000);
+    if (typeof document !== 'undefined' &&
+        typeof document.addEventListener === 'function')
+      document.addEventListener('visibilitychange', function () {
+        if (!document.hidden && Date.now() - lastLiveLoadAt > 5*60*1000)
+          periodicCatalogCheck();
+      });
     if (Lampa.Settings && Lampa.Settings.listener && typeof Lampa.Settings.listener.follow === 'function') {
       Lampa.Settings.listener.follow('open', onSettingsOpen);
     }
