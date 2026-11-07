@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.6.4',
+    version: '3.6.5',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -125,6 +125,9 @@
   var reopenAfterInstall = false;
   var storeOpenPending = false;
   var backButton = null, backClick = null, backKey = null;
+  // Keep the native Extensions.onBack for this exact screen. Lampa can move
+  // the global Controller focus to Head/Settings while the store stays open.
+  var storeNativeBack = null, storeBackClosing = false;
   var installedGrid = null;
   var focusedGridCard = null;
   var patchedGridControllers = [];
@@ -2165,15 +2168,89 @@
     reopenAfterInstall = false;
     storeOpenPending = false;
     releaseSkin();
+    storeNativeBack = null;
+    storeBackClosing = false;
     releaseNativeStoreURL();
     if (reopen) setTimeout(openStore, 0);
   }
 
 
-  // Native Lampa Back is bound to whichever controller currently owns focus.
-  // Restore the extensions controller only if the store is still visible.
+  // Native Lampa Back is bound to the currently focused controller, not to
+  // the visible screen. Preserve Extensions.onBack and use it only when focus
+  // drifts away from our still-mounted store. Native Select/Modal stay first.
   function storeVisible() {
     return Boolean(skinRoot && skinRoot.parentNode);
+  }
+
+  function captureStoreBack() {
+    try {
+      var active = Lampa.Controller && Lampa.Controller.enabled &&
+        Lampa.Controller.enabled();
+      if (active && (active.name === 'extensions' ||
+          active.name === 'extensions_line') &&
+          active.controller && typeof active.controller.back === 'function')
+        storeNativeBack = active.controller.back;
+    } catch (error) {
+      console.warn('[My Store] Could not capture native store Back:',error);
+    }
+  }
+
+  function nativeStoreHasFocus(active) {
+    if (!active || !active.controller ||
+        typeof active.controller.back !== 'function') return false;
+    if (active.name === 'extensions')
+      return !storeNativeBack || active.controller.back === storeNativeBack;
+    if (active.name !== 'extensions_line') return false;
+    // Lampa registers a new extensions_line controller for every category.
+    // Reject a stale controller from another already-destroyed screen.
+    var line = active.controller.link;
+    if (line && typeof line.render === 'function' && skinRoot &&
+        typeof skinRoot.contains === 'function') {
+      try {return skinRoot.contains(line.render());}
+      catch (error) {return false;}
+    }
+    return true;
+  }
+
+  function overlayTop() {
+    try {
+      return Lampa.Controller && typeof Lampa.Controller.windowTop === 'function' ?
+        Lampa.Controller.windowTop() : false;
+    } catch (error) {return false;}
+  }
+
+  function tryNativeStoreRescue(event) {
+    if (!storeVisible() || storeBackClosing ||
+        typeof storeNativeBack !== 'function' || overlayTop()) return false;
+    var active = null;
+    try {
+      active = Lampa.Controller && Lampa.Controller.enabled &&
+        Lampa.Controller.enabled();
+    } catch (error) {}
+    var name = active && active.name;
+    // Do not bypass any popup, player or input even if it is missing from
+    // the native window stack.
+    if (name === 'select' || name === 'modal' || name === 'keyboard' ||
+        name === 'search' || name === 'player') return false;
+    if (nativeStoreHasFocus(active)) return false;
+    if (event) {
+      if (typeof event.preventDefault === 'function') event.preventDefault();
+      if (typeof event.stopImmediatePropagation === 'function')
+        event.stopImmediatePropagation();
+      else if (typeof event.stopPropagation === 'function')
+        event.stopPropagation();
+    }
+    storeBackClosing = true;
+    try {
+      // This is the same callback registered by Lampa.Extensions.show().
+      // It destroys the native screen, restores the previous controller and
+      // runs our onClose cleanup, unlike Activity.backward() on Head.
+      storeNativeBack();
+    } catch (error) {
+      console.warn('[My Store] Native store Back rescue failed:',error);
+    }
+    if (storeVisible()) storeBackClosing = false;
+    return true;
   }
 
   function repairStoreBack() {
@@ -2182,10 +2259,16 @@
     try {
       var active = Lampa.Controller.enabled() || {};
       var name = active.name, current = active.controller;
-      if ((name === 'extensions' || name === 'extensions_line') &&
-          current && typeof current.back === 'function') return;
-      if (typeof Lampa.Controller.windowTop === 'function' &&
-          Lampa.Controller.windowTop()) return;
+      var top = overlayTop();
+      // An open Select/Modal must close before the store. If its focus was
+      // stolen, restore it instead of accidentally closing the store behind it.
+      if (top) {
+        if (top.name && top.name !== name &&
+            typeof Lampa.Controller.toggle === 'function')
+          Lampa.Controller.toggle(top.name, true);
+        return;
+      }
+      if (nativeStoreHasFocus(active)) return;
       if (name === 'select' || name === 'modal' || name === 'player' ||
           name === 'keyboard' || name === 'search') return;
       if (!name || name === 'content' || name === 'head' ||
@@ -2210,6 +2293,7 @@
       else if (typeof event.stopPropagation === 'function')
         event.stopPropagation();
     }
+    if (tryNativeStoreRescue()) return;
     repairStoreBack();
     if (Lampa.Controller && typeof Lampa.Controller.back === 'function')
       Lampa.Controller.back();
@@ -2217,9 +2301,15 @@
 
   function onStoreBackKey(event) {
     var code = event && (event.keyCode || event.which);
-    if (code === 8 || code === 27 || code === 461 ||
-        code === 10009 || code === 88) repairStoreBack();
-    // Never consume a hardware Back key; native Lampa closes the view.
+    if (code !== 8 && code !== 27 && code !== 461 &&
+        code !== 10009 && code !== 88) return;
+    // Backspace inside editing controls is text editing, not store navigation.
+    var target = event && event.target;
+    if (target && (target.isContentEditable ||
+        /^(INPUT|TEXTAREA)$/i.test(String(target.tagName || '')))) return;
+    if (tryNativeStoreRescue(event)) return;
+    repairStoreBack();
+    // Normal keypresses continue to Lampa's own Keypad handler.
   }
 
   function bindStoreBack() {
@@ -2450,6 +2540,7 @@
             onClose: onStoreClose
           });
           attachSkin();
+          captureStoreBack();
         } catch (error) {
           releaseNativeStoreURL();
           console.warn('[My Store] Unable to open store:', error);
