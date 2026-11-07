@@ -34,7 +34,7 @@ jobs:
           SOURCE_REPOSITORY: ${{ github.event.client_payload.repository }}
         run: |
           case "$SOURCE_REPOSITORY" in
-            Alexgood321/lampa-plugins|Alexgood321/lampa-hdrezka)
+            Alexgood321/lampa-plugins|Alexgood321/lampa-hdrezka|Alexgood321/lampa-sync-pro)
               echo "Accepted update from $SOURCE_REPOSITORY" ;;
             *)
               echo "Unknown source repository" >&2

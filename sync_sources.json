@@ -100,6 +100,11 @@
       "repo": "Alexgood321/lampa-hdrezka",
       "ref": "main",
       "manifest": "lampa-plugins.json"
+    },
+    {
+      "repo": "Alexgood321/lampa-sync-pro",
+      "ref": "main",
+      "manifest": "lampa-plugins.json"
     }
   ]
 }

@@ -32,6 +32,10 @@ try:
                   "categories": ["Мои", "Системные и ТВ"],
                   "author": "Alexgood321", "descr": "Тестовое расширение"}
         manifest = json.dumps({"schema": 1, "plugins": [plugin]})
+        registries = json.loads((root / "sync_sources.json").read_text())["registries"]
+        assert any(x["repo"] == "Alexgood321/lampa-sync-pro" and
+                   x["manifest"] == "lampa-plugins.json" for x in registries)
+
         old_meta = json.loads((root / "live_catalog.json").read_text())["meta"]["tracked"]
         current = {"sha": "a" * 40, "version": "1.2.3", "offline": False}
         def fake_commit(remote, ref, path):
@@ -45,7 +49,7 @@ try:
             if url.endswith("/lampa-plugins.json"):
                 if current["offline"]:
                     raise OSError("simulated network failure")
-                if "/lampa-hdrezka/" in url:
+                if "/lampa-plugins/" not in url:
                     return '{"schema":1,"plugins":[]}'
                 return manifest
             if url.endswith("/future/sample.js"):
