@@ -124,7 +124,8 @@
   var installRefreshTimer = null;
   var reopenAfterInstall = false;
   var storeOpenPending = false;
-  var backButton = null, backClick = null, backKey = null;
+  var backButton = null, backClick = null, backSelector = null,
+    backEnter = null, backKey = null;
   // Keep the native Extensions.onBack for this exact screen. Lampa can move
   // the global Controller focus to Head/Settings while the store stays open.
   var storeNativeBack = null, storeBackClosing = false;
@@ -2320,6 +2321,14 @@
       backClick = closeStoreFromArrow;
       button.addEventListener('click', backClick, true);
     }
+    // Lampa's focusable .head-backward selector dispatches hover:enter when
+    // confirmed with a TV remote or via touch, not necessarily a child click.
+    var selector = skinRoot.querySelector('.head-backward.selector');
+    if (selector && typeof selector.addEventListener === 'function') {
+      backSelector = selector;
+      backEnter = closeStoreFromArrow;
+      selector.addEventListener('hover:enter',backEnter);
+    }
     if (typeof document !== 'undefined' &&
         typeof document.addEventListener === 'function') {
       backKey = onStoreBackKey;
@@ -2335,10 +2344,12 @@
   function releaseSkin() {
     if (backButton && backClick && typeof backButton.removeEventListener === 'function')
       backButton.removeEventListener('click', backClick, true);
+    if (backSelector && backEnter && typeof backSelector.removeEventListener === 'function')
+      backSelector.removeEventListener('hover:enter',backEnter);
     if (backKey && typeof document !== 'undefined' &&
         typeof document.removeEventListener === 'function')
       document.removeEventListener('keydown', backKey, true);
-    backButton = backClick = backKey = null;
+    backButton = backClick = backSelector = backEnter = backKey = null;
     for (var i = 0; i < patchedGridControllers.length; i++) {
       var patch = patchedGridControllers[i];
       patch.value.up = patch.up;
