@@ -50,7 +50,7 @@
         {
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
-          "descr": "Тестовая альфа: «Продолжить SxxExx» первая на карточке даже после закрепления источника Lampa, штатная Play вторая. Торренты открываются списком файлов на сохранённой серии без автозапуска. Realtime, Lampac, NUM Series Pro. HDRezka, CUB и Trakt не изменяются.",
+          "descr": "Тестовая альфа: зелёная кнопка «Продолжить SxxExx» с увеличенной SVG-иконкой первая на карточке, штатная Play вторая. Торренты открываются списком файлов на сохранённой серии без автозапуска. Realtime, Lampac, NUM Series Pro. HDRezka, CUB и Trakt не изменяются.",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@708d43e7a58bf8e6bbd2a185d6983c25ff30b503/lampa-sync-pro.js",
           "version": "0.1.13"
         }
@@ -208,7 +208,7 @@
         {
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
-          "descr": "Тестовая альфа: «Продолжить SxxExx» первая на карточке даже после закрепления источника Lampa, штатная Play вторая. Торренты открываются списком файлов на сохранённой серии без автозапуска. Realtime, Lampac, NUM Series Pro. HDRezka, CUB и Trakt не изменяются.",
+          "descr": "Тестовая альфа: зелёная кнопка «Продолжить SxxExx» с увеличенной SVG-иконкой первая на карточке, штатная Play вторая. Торренты открываются списком файлов на сохранённой серии без автозапуска. Realtime, Lampac, NUM Series Pro. HDRezka, CUB и Trakt не изменяются.",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@708d43e7a58bf8e6bbd2a185d6983c25ff30b503/lampa-sync-pro.js",
           "version": "0.1.13"
         }
@@ -394,7 +394,7 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "author": "Alexgood321",
-        "descr": "Тестовая альфа: «Продолжить SxxExx» первая на карточке даже после закрепления источника Lampa, штатная Play вторая. Торренты открываются списком файлов на сохранённой серии без автозапуска. Realtime, Lampac, NUM Series Pro. HDRezka, CUB и Trakt не изменяются.",
+        "descr": "Тестовая альфа: зелёная кнопка «Продолжить SxxExx» с увеличенной SVG-иконкой первая на карточке, штатная Play вторая. Торренты открываются списком файлов на сохранённой серии без автозапуска. Realtime, Lampac, NUM Series Pro. HDRezka, CUB и Trakt не изменяются.",
         "categories": [
           "Мои",
           "Рейтинги и сервисы"
