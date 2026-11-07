@@ -51,8 +51,8 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: кнопка «Продолжить» на карточке, синхронизация торрентов и Lampac онлайн через Supabase Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@dea136c090eb52e6c3a7c4080277b699e9cfe5ae/lampa-sync-pro.js",
-          "version": "0.1.7"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@86582b1f32e97bf72613240af6b02f16c63adc5b/lampa-sync-pro.js",
+          "version": "0.1.8"
         }
       ]
     },
@@ -209,8 +209,8 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: кнопка «Продолжить» на карточке, синхронизация торрентов и Lampac онлайн через Supabase Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@dea136c090eb52e6c3a7c4080277b699e9cfe5ae/lampa-sync-pro.js",
-          "version": "0.1.7"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@86582b1f32e97bf72613240af6b02f16c63adc5b/lampa-sync-pro.js",
+          "version": "0.1.8"
         }
       ]
     },
@@ -381,10 +381,10 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "owned": true,
-        "sha": "dea136c090eb52e6c3a7c4080277b699e9cfe5ae",
-        "version": "0.1.7",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@dea136c090eb52e6c3a7c4080277b699e9cfe5ae/lampa-sync-pro.js",
-        "published_at": "2026-11-07T08:35:22Z"
+        "sha": "86582b1f32e97bf72613240af6b02f16c63adc5b",
+        "version": "0.1.8",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@86582b1f32e97bf72613240af6b02f16c63adc5b/lampa-sync-pro.js",
+        "published_at": "2026-11-07T08:41:02Z"
       }
     },
     "registered": {
@@ -605,10 +605,15 @@
           "sha": "dea136c090eb52e6c3a7c4080277b699e9cfe5ae",
           "version": "0.1.7",
           "published_at": "2026-11-07T08:35:22Z"
+        },
+        {
+          "sha": "86582b1f32e97bf72613240af6b02f16c63adc5b",
+          "version": "0.1.8",
+          "published_at": "2026-11-07T08:41:02Z"
         }
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-07T08:35:37Z"
+    "last_checked_at": "2026-11-07T08:41:17Z"
   }
 }
