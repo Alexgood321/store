@@ -50,7 +50,7 @@
         {
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
-          "descr": "Тестовая альфа: синхронизация торрент-прогресса между устройствами через Supabase. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
+          "descr": "Тестовая альфа: кнопка «Продолжить» на карточке, синхронизация торрентов и Lampac онлайн через Supabase Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@dea136c090eb52e6c3a7c4080277b699e9cfe5ae/lampa-sync-pro.js",
           "version": "0.1.7"
         }
@@ -208,7 +208,7 @@
         {
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
-          "descr": "Тестовая альфа: синхронизация торрент-прогресса между устройствами через Supabase. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
+          "descr": "Тестовая альфа: кнопка «Продолжить» на карточке, синхронизация торрентов и Lampac онлайн через Supabase Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@dea136c090eb52e6c3a7c4080277b699e9cfe5ae/lampa-sync-pro.js",
           "version": "0.1.7"
         }
@@ -394,7 +394,7 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "author": "Alexgood321",
-        "descr": "Тестовая альфа: синхронизация торрент-прогресса между устройствами через Supabase. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
+        "descr": "Тестовая альфа: кнопка «Продолжить» на карточке, синхронизация торрентов и Lampac онлайн через Supabase Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
         "categories": [
           "Мои",
           "Рейтинги и сервисы"
