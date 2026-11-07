@@ -48,6 +48,9 @@ const newMeta = {
 let passed=0;
 function check(label,fn){fn();process.stdout.write('✓ '+label+'\n');passed++;}
 
+db.set('alexgood321_installed_version_cache_v1', {
+  [oldUrl]:{version:'3.8.2',time:Date.now()}
+});
 t.setMeta({'SURS Pro':newMeta});
 check('old commit is found by stable repository/path without installed name',()=>{
   assert.equal(t.findInstalled('SURS Pro',newMeta),records[0]);
