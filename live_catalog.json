@@ -15,16 +15,16 @@
         {
           "name": "Home Categories Pro",
           "author": "Lampa Community / Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@a6093718983306adc2202a8812aa5c02adc0b1f4/home_categories.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@e0f1f562a527a6e248efc933fab25066e428c776/home_categories.js",
           "descr": "Скрытие и изменение порядка категорий главного экрана Lampa. Управление с ТВ-пульта и сенсорного экрана.",
-          "version": "2.0.1"
+          "version": "2.0.2"
         },
         {
           "name": "NUM Series Pro",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@4f89dfab08b9a42df5504e8b53c8f5826a7b66c1/num_series.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@e0f1f562a527a6e248efc933fab25066e428c776/num_series.js",
           "descr": "Навигация по сезонам и сериям в списке файлов торрента, управление просмотренными сериями и продолжением просмотра.",
-          "version": "2.0.5"
+          "version": "2.0.6"
         },
         {
           "name": "HDREZKA",
@@ -63,9 +63,9 @@
         {
           "name": "Home Categories Pro",
           "author": "Lampa Community / Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@a6093718983306adc2202a8812aa5c02adc0b1f4/home_categories.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@e0f1f562a527a6e248efc933fab25066e428c776/home_categories.js",
           "descr": "Скрытие и изменение порядка категорий главного экрана Lampa. Управление с ТВ-пульта и сенсорного экрана.",
-          "version": "2.0.1"
+          "version": "2.0.2"
         },
         {
           "name": "Продолжить просмотр",
@@ -83,9 +83,9 @@
         {
           "name": "NUM Series Pro",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@4f89dfab08b9a42df5504e8b53c8f5826a7b66c1/num_series.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@e0f1f562a527a6e248efc933fab25066e428c776/num_series.js",
           "descr": "Навигация по сезонам и сериям в списке файлов торрента, управление просмотренными сериями и продолжением просмотра.",
-          "version": "2.0.5"
+          "version": "2.0.6"
         }
       ]
     },
@@ -237,20 +237,20 @@
         "path": "home_categories.js",
         "ref": "main",
         "owned": true,
-        "sha": "a6093718983306adc2202a8812aa5c02adc0b1f4",
-        "version": "2.0.1",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@a6093718983306adc2202a8812aa5c02adc0b1f4/home_categories.js",
-        "published_at": "2026-11-06T23:49:06Z"
+        "sha": "e0f1f562a527a6e248efc933fab25066e428c776",
+        "version": "2.0.2",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@e0f1f562a527a6e248efc933fab25066e428c776/home_categories.js",
+        "published_at": "2026-11-07T00:01:12Z"
       },
       "NUM Series Pro": {
         "repo": "Alexgood321/lampa-plugins",
         "path": "num_series.js",
         "ref": "main",
         "owned": true,
-        "sha": "4f89dfab08b9a42df5504e8b53c8f5826a7b66c1",
-        "version": "2.0.5",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@4f89dfab08b9a42df5504e8b53c8f5826a7b66c1/num_series.js",
-        "published_at": "2026-11-04T21:54:31Z"
+        "sha": "e0f1f562a527a6e248efc933fab25066e428c776",
+        "version": "2.0.6",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@e0f1f562a527a6e248efc933fab25066e428c776/num_series.js",
+        "published_at": "2026-11-07T00:01:12Z"
       },
       "HDREZKA": {
         "repo": "Alexgood321/lampa-hdrezka",
@@ -382,6 +382,11 @@
           "sha": "a6093718983306adc2202a8812aa5c02adc0b1f4",
           "version": "2.0.1",
           "published_at": "2026-11-06T23:49:06Z"
+        },
+        {
+          "sha": "e0f1f562a527a6e248efc933fab25066e428c776",
+          "version": "2.0.2",
+          "published_at": "2026-11-07T00:01:12Z"
         }
       ],
       "NUM Series Pro": [
@@ -389,6 +394,11 @@
           "sha": "4f89dfab08b9a42df5504e8b53c8f5826a7b66c1",
           "version": "2.0.5",
           "published_at": "2026-11-04T21:54:31Z"
+        },
+        {
+          "sha": "e0f1f562a527a6e248efc933fab25066e428c776",
+          "version": "2.0.6",
+          "published_at": "2026-11-07T00:01:12Z"
         }
       ],
       "HDREZKA": [
@@ -480,6 +490,6 @@
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-06T23:59:58Z"
+    "last_checked_at": "2026-11-07T00:01:30Z"
   }
 }
