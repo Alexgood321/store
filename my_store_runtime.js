@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.6.5',
+    version: '3.6.6',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -128,7 +128,7 @@
     backEnter = null, backKey = null;
   // Keep the native Extensions.onBack for this exact screen. Lampa can move
   // the global Controller focus to Head/Settings while the store stays open.
-  var storeNativeBack = null, storeBackClosing = false;
+  var storeNativeBack = null, storeBackClosing = false, activeStoreDOM = null;
   var installedGrid = null;
   var focusedGridCard = null;
   var patchedGridControllers = [];
@@ -862,6 +862,7 @@
     notice('Автоматический перезапуск в этой сборке Lampa недоступен');
     return false;
   }
+
 
   function confirmReload() {
     if (!Lampa.Select || !Lampa.Select.show) return rebootLampa();
@@ -1648,6 +1649,7 @@
     return false;
   }
 
+
   function inferVersionFromURL(url) {
     var match = String(url || '').match(/[?&]v=v?(\d+(?:\.\d+){1,3})(?:[&#]|$)/i);
     return match ? match[1] : '';
@@ -1734,6 +1736,7 @@
     }
     return false;
   }
+
 
 
   // Lampa.Plugins.errors() contains only URLs of scripts that failed during
@@ -2111,6 +2114,7 @@
     return false;
   }
 
+
   function refreshInstalledRow(attempt) {
     if (!skinRoot || !skinRoot.parentNode) return;
     if (!Lampa.Controller || typeof Lampa.Controller.enabled !== 'function' ||
@@ -2176,11 +2180,25 @@
   }
 
 
-  // Native Lampa Back is bound to the currently focused controller, not to
-  // the visible screen. Preserve Extensions.onBack and use it only when focus
-  // drifts away from our still-mounted store. Native Select/Modal stay first.
+  // Persistent reference to the store DOM element.
+  // Verified strictly via document.body.contains(activeStoreDOM) without any fallback
+  // to generic class selectors, ensuring we only track our own store instance.
+  function isStoreMounted() {
+    if (!activeStoreDOM) return false;
+    var mounted = Boolean(
+      typeof document !== 'undefined' &&
+      document.body &&
+      activeStoreDOM.parentNode &&
+      document.body.contains(activeStoreDOM)
+    );
+    if (!mounted) {
+      activeStoreDOM = null;
+    }
+    return mounted;
+  }
+
   function storeVisible() {
-    return Boolean(skinRoot && skinRoot.parentNode);
+    return isStoreMounted();
   }
 
   function captureStoreBack() {
@@ -2196,23 +2214,6 @@
     }
   }
 
-  function nativeStoreHasFocus(active) {
-    if (!active || !active.controller ||
-        typeof active.controller.back !== 'function') return false;
-    if (active.name === 'extensions')
-      return !storeNativeBack || active.controller.back === storeNativeBack;
-    if (active.name !== 'extensions_line') return false;
-    // Lampa registers a new extensions_line controller for every category.
-    // Reject a stale controller from another already-destroyed screen.
-    var line = active.controller.link;
-    if (line && typeof line.render === 'function' && skinRoot &&
-        typeof skinRoot.contains === 'function') {
-      try {return skinRoot.contains(line.render());}
-      catch (error) {return false;}
-    }
-    return true;
-  }
-
   function overlayTop() {
     try {
       return Lampa.Controller && typeof Lampa.Controller.windowTop === 'function' ?
@@ -2220,102 +2221,165 @@
     } catch (error) {return false;}
   }
 
-  function tryNativeStoreRescue(event) {
-    if (!storeVisible() || storeBackClosing ||
-        typeof storeNativeBack !== 'function' || overlayTop()) return false;
-    var active = null;
+  function hasActiveOverlay() {
     try {
-      active = Lampa.Controller && Lampa.Controller.enabled &&
+      // Check real, mounted overlays before trusting Controller.enabled().
+      // In particular, a stale 'select' focus must not hide a live modal.
+      if (typeof document === 'undefined' ||
+          typeof document.querySelector !== 'function') return true;
+      if (document.querySelector('.selectbox--open, .select--open, .modal:not(.hide)'))
+        return true;
+      var active = Lampa.Controller && Lampa.Controller.enabled &&
         Lampa.Controller.enabled();
-    } catch (error) {}
-    var name = active && active.name;
-    // Do not bypass any popup, player or input even if it is missing from
-    // the native window stack.
-    if (name === 'select' || name === 'modal' || name === 'keyboard' ||
-        name === 'search' || name === 'player') return false;
-    if (nativeStoreHasFocus(active)) return false;
-    if (event) {
-      if (typeof event.preventDefault === 'function') event.preventDefault();
-      if (typeof event.stopImmediatePropagation === 'function')
-        event.stopImmediatePropagation();
-      else if (typeof event.stopPropagation === 'function')
-        event.stopPropagation();
-    }
-    storeBackClosing = true;
-    try {
-      // This is the same callback registered by Lampa.Extensions.show().
-      // It destroys the native screen, restores the previous controller and
-      // runs our onClose cleanup, unlike Activity.backward() on Head.
-      storeNativeBack();
+      var name = active && active.name;
+      if (name === 'keyboard' || name === 'search' || name === 'player') return true;
+      var top = overlayTop();
+      if (top && top.name && top.name !== 'select' && top.name !== 'modal')
+        return true;
     } catch (error) {
-      console.warn('[My Store] Native store Back rescue failed:',error);
+      // Unknown overlay state is not permission to destroy an open screen.
+      return true;
     }
-    if (storeVisible()) storeBackClosing = false;
-    return true;
+    return false;
   }
 
-  function repairStoreBack() {
-    if (!storeVisible() || !Lampa.Controller ||
-        typeof Lampa.Controller.enabled !== 'function') return;
-    try {
-      var active = Lampa.Controller.enabled() || {};
-      var name = active.name, current = active.controller;
-      var top = overlayTop();
-      // An open Select/Modal must close before the store. If its focus was
-      // stolen, restore it instead of accidentally closing the store behind it.
-      if (top) {
-        if (top.name && top.name !== name &&
-            typeof Lampa.Controller.toggle === 'function')
-          Lampa.Controller.toggle(top.name, true);
-        return;
+
+  function invokeNativeStoreClose() {
+    var invoked = [];
+
+    function tryHandler(fn, desc) {
+      if (typeof fn !== 'function') return false;
+      if (invoked.indexOf(fn) !== -1) return false;
+      invoked.push(fn);
+
+      var threw = false;
+      try {
+        fn();
+      } catch (err) {
+        threw = true;
+        console.warn('[My Store] ' + desc + ' execution error:', err);
       }
-      if (nativeStoreHasFocus(active)) return;
-      if (name === 'select' || name === 'modal' || name === 'player' ||
-          name === 'keyboard' || name === 'search') return;
-      if (!name || name === 'content' || name === 'head' ||
-          name === 'menu' || name === 'settings' || name === 'items_line' ||
-          name === 'full_start' || name === 'full_descr' ||
-          name === 'extensions' || name === 'extensions_line' ||
-          !current || typeof current.back !== 'function') {
-        if (typeof Lampa.Controller.toggle === 'function')
-          Lampa.Controller.toggle('extensions', true);
+
+      // Немедленно проверяем реальное состояние DOM после вызова
+      if (!isStoreMounted()) return true;
+
+      // Если обработчик выбросил исключение и экран не размонтировался,
+      // прерываем дальнейшие вызовы back(), чтобы не работать с повреждённым контроллером
+      if (threw) {
+        console.warn('[My Store] Aborting secondary close attempts due to error in ' + desc);
+        return false;
       }
-    } catch (error) {
-      console.warn('[My Store] Back controller recovery failed:', error);
+
+      return false;
     }
+
+    // 1. Штатный сохранённый callback Extensions.onBack ядра Lampa
+    if (storeNativeBack) {
+      if (tryHandler(storeNativeBack, 'storeNativeBack')) {
+        return true;
+      }
+      if (!isStoreMounted()) return true;
+    }
+
+    // 2. Резерв: только если активный контроллер подтверждённо принадлежит нашему экрану
+    // и если ни один обработчик ещё не вызывался
+    if (isStoreMounted() && invoked.length === 0) {
+      try {
+        var active = Lampa.Controller && Lampa.Controller.enabled &&
+          Lampa.Controller.enabled();
+        if (active && (active.name === 'extensions' || active.name === 'extensions_line') &&
+            active.controller && typeof active.controller.back === 'function') {
+          var belongsToOurStore = false;
+          if (active.controller.back === storeNativeBack) {
+            belongsToOurStore = true;
+          } else if (active.controller.link && typeof active.controller.link.render === 'function') {
+            try {
+              var renderedLink = active.controller.link.render();
+              if (renderedLink && activeStoreDOM && activeStoreDOM.contains(renderedLink)) {
+                belongsToOurStore = true;
+              }
+            } catch (_) {
+              belongsToOurStore = false;
+            }
+          }
+          if (belongsToOurStore) {
+            tryHandler(active.controller.back, 'active.controller.back');
+          }
+        }
+      } catch (e) {
+        console.warn('[My Store] active controller check error:', e);
+      }
+    }
+
+    return !isStoreMounted();
+  }
+
+  function safeExecuteStoreBack(event, source) {
+    if (!isStoreMounted() || storeBackClosing) return false;
+    if (hasActiveOverlay()) return false;
+
+    storeBackClosing = true;
+    var closed = false;
+
+    try {
+      closed = invokeNativeStoreClose();
+    } finally {
+      storeBackClosing = false;
+    }
+
+    // Событие считается обработанным ТОЛЬКО если DOM магазина реально закрыт штатным кодом Lampa
+    if (closed && !isStoreMounted()) {
+      if (event) {
+        if (typeof event.preventDefault === 'function') event.preventDefault();
+        if (typeof event.stopImmediatePropagation === 'function')
+          event.stopImmediatePropagation();
+        else if (typeof event.stopPropagation === 'function')
+          event.stopPropagation();
+      }
+      return true;
+    }
+
+    return false;
   }
 
   function closeStoreFromArrow(event) {
-    if (!storeVisible()) return;
-    if (event) {
-      if (typeof event.preventDefault === 'function') event.preventDefault();
-      if (typeof event.stopImmediatePropagation === 'function')
-        event.stopImmediatePropagation();
-      else if (typeof event.stopPropagation === 'function')
-        event.stopPropagation();
+    if (!isStoreMounted()) return;
+    if (hasActiveOverlay()) {
+      // Never send the pointer Back event to Head/Activity while a popup
+      // is visible. Only a native select/modal controller may close itself.
+      var active = Lampa.Controller && Lampa.Controller.enabled &&
+        Lampa.Controller.enabled();
+      var top = overlayTop();
+      if (active && (active.name === 'select' || active.name === 'modal') &&
+          (!top || top.name === active.name) && active.controller &&
+          typeof active.controller.back === 'function') {
+        active.controller.back();
+      }
+      return;
     }
-    if (tryNativeStoreRescue()) return;
-    repairStoreBack();
-    if (Lampa.Controller && typeof Lampa.Controller.back === 'function')
-      Lampa.Controller.back();
+    safeExecuteStoreBack(event, 'arrow');
   }
 
   function onStoreBackKey(event) {
     var code = event && (event.keyCode || event.which);
     if (code !== 8 && code !== 27 && code !== 461 &&
         code !== 10009 && code !== 88) return;
-    // Backspace inside editing controls is text editing, not store navigation.
     var target = event && event.target;
     if (target && (target.isContentEditable ||
         /^(INPUT|TEXTAREA)$/i.test(String(target.tagName || '')))) return;
-    if (tryNativeStoreRescue(event)) return;
-    repairStoreBack();
-    // Normal keypresses continue to Lampa's own Keypad handler.
+
+    if (hasActiveOverlay()) return;
+
+    if (safeExecuteStoreBack(event, 'key')) {
+      return;
+    }
   }
 
   function bindStoreBack() {
-    if (!storeVisible()) return;
-    var button = skinRoot.querySelector('.head-backward__button');
+    if (!isStoreMounted()) return;
+    var root = skinRoot || activeStoreDOM;
+    if (!root) return;
+    var button = root.querySelector('.head-backward__button');
     if (button && typeof button.addEventListener === 'function') {
       backButton = button;
       backClick = closeStoreFromArrow;
@@ -2323,11 +2387,11 @@
     }
     // Lampa's focusable .head-backward selector dispatches hover:enter when
     // confirmed with a TV remote or via touch, not necessarily a child click.
-    var selector = skinRoot.querySelector('.head-backward.selector');
+    var selector = root.querySelector('.head-backward.selector');
     if (selector && typeof selector.addEventListener === 'function') {
       backSelector = selector;
       backEnter = closeStoreFromArrow;
-      selector.addEventListener('hover:enter',backEnter);
+      selector.addEventListener('hover:enter', backEnter);
     }
     if (typeof document !== 'undefined' &&
         typeof document.addEventListener === 'function') {
@@ -2380,6 +2444,7 @@
     if (!root || !root.classList || !root.classList.contains('extensions')) return;
     releaseSkin();
     skinRoot = root;
+    activeStoreDOM = root;
     root.classList.add(skinClass);
     bindStoreBack();
     watchInstalls();
