@@ -51,7 +51,7 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: быстрое «Продолжить SxxExx» с предварительным кешированием файлов TorrServer; кадры и названия серий TMDB подгружаются после открытия окна, без задержки списка. NUM, Lampac, Supabase Realtime, HDRezka, CUB и Trakt не изменяются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@332f075066d7818c01c38e9333a2d0e28991af80/lampa-sync-pro.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@e2cee5b8260433b69ddc799f627bf45b01a48d67/lampa-sync-pro.js",
           "version": "0.1.16"
         }
       ]
@@ -209,7 +209,7 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: быстрое «Продолжить SxxExx» с предварительным кешированием файлов TorrServer; кадры и названия серий TMDB подгружаются после открытия окна, без задержки списка. NUM, Lampac, Supabase Realtime, HDRezka, CUB и Trakt не изменяются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@332f075066d7818c01c38e9333a2d0e28991af80/lampa-sync-pro.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@e2cee5b8260433b69ddc799f627bf45b01a48d67/lampa-sync-pro.js",
           "version": "0.1.16"
         }
       ]
@@ -381,10 +381,10 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "owned": true,
-        "sha": "332f075066d7818c01c38e9333a2d0e28991af80",
+        "sha": "e2cee5b8260433b69ddc799f627bf45b01a48d67",
         "version": "0.1.16",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@332f075066d7818c01c38e9333a2d0e28991af80/lampa-sync-pro.js",
-        "published_at": "2026-11-07T12:01:21Z"
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@e2cee5b8260433b69ddc799f627bf45b01a48d67/lampa-sync-pro.js",
+        "published_at": "2026-11-07T12:07:38Z"
       }
     },
     "registered": {
@@ -625,10 +625,15 @@
           "sha": "332f075066d7818c01c38e9333a2d0e28991af80",
           "version": "0.1.16",
           "published_at": "2026-11-07T12:01:21Z"
+        },
+        {
+          "sha": "e2cee5b8260433b69ddc799f627bf45b01a48d67",
+          "version": "0.1.16",
+          "published_at": "2026-11-07T12:07:38Z"
         }
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-07T12:01:37Z"
+    "last_checked_at": "2026-11-07T12:07:52Z"
   }
 }
