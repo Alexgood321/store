@@ -22,9 +22,9 @@
         {
           "name": "NUM Series Pro",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d1fca76393b065ccc1d1cee35a81c37e4f4b84ed/num_series.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@ff6cf57688ba9d9425218c57dc79debda019c523/num_series.js",
           "descr": "Навигация по сезонам и сериям в списке файлов торрента, управление просмотренными сериями и продолжением просмотра.",
-          "version": "2.0.9"
+          "version": "2.0.10"
         },
         {
           "name": "HDREZKA",
@@ -90,9 +90,9 @@
         {
           "name": "NUM Series Pro",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d1fca76393b065ccc1d1cee35a81c37e4f4b84ed/num_series.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@ff6cf57688ba9d9425218c57dc79debda019c523/num_series.js",
           "descr": "Навигация по сезонам и сериям в списке файлов торрента, управление просмотренными сериями и продолжением просмотра.",
-          "version": "2.0.9"
+          "version": "2.0.10"
         }
       ]
     },
@@ -261,10 +261,10 @@
         "path": "num_series.js",
         "ref": "main",
         "owned": true,
-        "sha": "d1fca76393b065ccc1d1cee35a81c37e4f4b84ed",
-        "version": "2.0.9",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d1fca76393b065ccc1d1cee35a81c37e4f4b84ed/num_series.js",
-        "published_at": "2026-11-07T13:20:06Z"
+        "sha": "ff6cf57688ba9d9425218c57dc79debda019c523",
+        "version": "2.0.10",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@ff6cf57688ba9d9425218c57dc79debda019c523/num_series.js",
+        "published_at": "2026-11-07T13:53:04Z"
       },
       "HDREZKA": {
         "repo": "Alexgood321/lampa-hdrezka",
@@ -471,6 +471,11 @@
           "sha": "d1fca76393b065ccc1d1cee35a81c37e4f4b84ed",
           "version": "2.0.9",
           "published_at": "2026-11-07T13:20:06Z"
+        },
+        {
+          "sha": "ff6cf57688ba9d9425218c57dc79debda019c523",
+          "version": "2.0.10",
+          "published_at": "2026-11-07T13:53:04Z"
         }
       ],
       "HDREZKA": [
@@ -649,6 +654,6 @@
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-07T13:20:11Z"
+    "last_checked_at": "2026-11-07T13:53:22Z"
   }
 }
