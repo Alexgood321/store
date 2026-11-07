@@ -51,7 +51,7 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: кнопка «Продолжить SxxExx» первая на карточке, перед Play; в меню источников под «Торренты». Торренты открываются списком файлов на сохранённой серии, без автозапуска. Realtime, Lampac, NUM Series Pro. HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@2be05227b51c046107ee516f1d645e0cde120e3a/lampa-sync-pro.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@0a294178400449ef5e5ccbf2d275a1627bbe39da/lampa-sync-pro.js",
           "version": "0.1.12"
         }
       ]
@@ -209,7 +209,7 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: кнопка «Продолжить SxxExx» первая на карточке, перед Play; в меню источников под «Торренты». Торренты открываются списком файлов на сохранённой серии, без автозапуска. Realtime, Lampac, NUM Series Pro. HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@2be05227b51c046107ee516f1d645e0cde120e3a/lampa-sync-pro.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@0a294178400449ef5e5ccbf2d275a1627bbe39da/lampa-sync-pro.js",
           "version": "0.1.12"
         }
       ]
@@ -381,10 +381,10 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "owned": true,
-        "sha": "2be05227b51c046107ee516f1d645e0cde120e3a",
+        "sha": "0a294178400449ef5e5ccbf2d275a1627bbe39da",
         "version": "0.1.12",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@2be05227b51c046107ee516f1d645e0cde120e3a/lampa-sync-pro.js",
-        "published_at": "2026-11-07T09:21:40Z"
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@0a294178400449ef5e5ccbf2d275a1627bbe39da/lampa-sync-pro.js",
+        "published_at": "2026-11-07T09:24:21Z"
       }
     },
     "registered": {
@@ -605,10 +605,15 @@
           "sha": "2be05227b51c046107ee516f1d645e0cde120e3a",
           "version": "0.1.12",
           "published_at": "2026-11-07T09:21:40Z"
+        },
+        {
+          "sha": "0a294178400449ef5e5ccbf2d275a1627bbe39da",
+          "version": "0.1.12",
+          "published_at": "2026-11-07T09:24:21Z"
         }
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-07T09:21:55Z"
+    "last_checked_at": "2026-11-07T09:24:37Z"
   }
 }
