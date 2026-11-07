@@ -50,7 +50,7 @@
         {
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
-          "descr": "Тестовая альфа: кнопка «Продолжить» на карточке, синхронизация торрентов и Lampac онлайн через Supabase Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
+          "descr": "Тестовая альфа: кнопка «Продолжить» на карточке с автоповтором при задержке TorrServer, синхронизация торрентов и Lampac через Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@74ef66083cf4681051697512d2d12c8d0d52110f/lampa-sync-pro.js",
           "version": "0.1.8"
         }
@@ -208,7 +208,7 @@
         {
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
-          "descr": "Тестовая альфа: кнопка «Продолжить» на карточке, синхронизация торрентов и Lampac онлайн через Supabase Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
+          "descr": "Тестовая альфа: кнопка «Продолжить» на карточке с автоповтором при задержке TorrServer, синхронизация торрентов и Lampac через Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@74ef66083cf4681051697512d2d12c8d0d52110f/lampa-sync-pro.js",
           "version": "0.1.8"
         }
@@ -394,7 +394,7 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "author": "Alexgood321",
-        "descr": "Тестовая альфа: кнопка «Продолжить» на карточке, синхронизация торрентов и Lampac онлайн через Supabase Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
+        "descr": "Тестовая альфа: кнопка «Продолжить» на карточке с автоповтором при задержке TorrServer, синхронизация торрентов и Lampac через Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
         "categories": [
           "Мои",
           "Рейтинги и сервисы"
@@ -551,11 +551,6 @@
         }
       ],
       "Lampa Sync Pro": [
-        {
-          "sha": "241f39d7c419e09ac76396dde36003f23836d842",
-          "version": "0.1.5",
-          "published_at": "2026-11-07T01:08:27Z"
-        },
         {
           "sha": "e57c0ff67ccade91e5bee9c31a1b1ca0e2494d1a",
           "version": "0.1.5",
