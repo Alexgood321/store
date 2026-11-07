@@ -552,11 +552,6 @@
       ],
       "Lampa Sync Pro": [
         {
-          "sha": "8ec33457d927b1d056ed9fc0acdd49c82c0fd421",
-          "version": "0.1.1",
-          "published_at": "2026-11-06T23:52:57Z"
-        },
-        {
           "sha": "d8cfdc99f3b60c9e508bd9ff9c31621923720cc6",
           "version": "0.1.2",
           "published_at": "2026-11-07T00:41:29Z"
