@@ -45,7 +45,7 @@
           "author": "Alexgood321",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
           "descr": "Персональный магазин Lampa: установка расширений, проверка версий, обновления, журнал изменений и управление устройством.",
-          "version": "3.6.1"
+          "version": "3.6.2"
         },
         {
           "name": "Lampa Sync Pro",
@@ -361,10 +361,10 @@
         "path": "my_store_runtime.js",
         "ref": "main",
         "owned": false,
-        "sha": "b0c068c26374db40354505f2a5a0fe1ae8bb44ec",
-        "version": "3.6.1",
+        "sha": "112131da6fc511bbb269c9bf7b881fa865eff441",
+        "version": "3.6.2",
         "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
-        "published_at": "2026-11-06T23:57:12Z"
+        "published_at": "2026-11-07T00:14:39Z"
       },
       "Lampa Shield Ads": {
         "repo": "Alexgood321/lampa-plugins",
@@ -516,6 +516,11 @@
           "sha": "b0c068c26374db40354505f2a5a0fe1ae8bb44ec",
           "version": "3.6.1",
           "published_at": "2026-11-06T23:57:12Z"
+        },
+        {
+          "sha": "112131da6fc511bbb269c9bf7b881fa865eff441",
+          "version": "3.6.2",
+          "published_at": "2026-11-07T00:14:39Z"
         }
       ],
       "Lampa Shield Ads": [
@@ -534,6 +539,6 @@
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-07T00:06:40Z"
+    "last_checked_at": "2026-11-07T00:14:50Z"
   }
 }
