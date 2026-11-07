@@ -46,6 +46,13 @@
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
           "descr": "Персональный магазин Lampa: установка расширений, проверка версий, обновления, журнал изменений и управление устройством.",
           "version": "3.6.1"
+        },
+        {
+          "name": "Lampa Sync Pro",
+          "author": "Alexgood321",
+          "descr": "Тестовая альфа: синхронизация торрент-прогресса между устройствами через Supabase. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@8ec33457d927b1d056ed9fc0acdd49c82c0fd421/lampa-sync-pro.js",
+          "version": "0.1.1"
         }
       ]
     },
@@ -197,6 +204,13 @@
           "link": "https://nb557.github.io/plugins/rating.js",
           "descr": "Добавляет оценки КиноПоиска и IMDb в интерфейс Lampa.",
           "version": "rev-9935415e"
+        },
+        {
+          "name": "Lampa Sync Pro",
+          "author": "Alexgood321",
+          "descr": "Тестовая альфа: синхронизация торрент-прогресса между устройствами через Supabase. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@8ec33457d927b1d056ed9fc0acdd49c82c0fd421/lampa-sync-pro.js",
+          "version": "0.1.1"
         }
       ]
     },
@@ -361,9 +375,32 @@
         "version": "1.1.1",
         "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@708f014d5fe9db2d02b97a9d481a2fdefbd5060d/shield-ads/lampa-shield-ads.js",
         "published_at": "2026-11-06T13:56:45Z"
+      },
+      "Lampa Sync Pro": {
+        "repo": "Alexgood321/lampa-sync-pro",
+        "path": "lampa-sync-pro.js",
+        "ref": "main",
+        "owned": true,
+        "sha": "8ec33457d927b1d056ed9fc0acdd49c82c0fd421",
+        "version": "0.1.1",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@8ec33457d927b1d056ed9fc0acdd49c82c0fd421/lampa-sync-pro.js",
+        "published_at": "2026-11-06T23:52:57Z"
       }
     },
-    "registered": {},
+    "registered": {
+      "Lampa Sync Pro": {
+        "name": "Lampa Sync Pro",
+        "repo": "Alexgood321/lampa-sync-pro",
+        "path": "lampa-sync-pro.js",
+        "ref": "main",
+        "author": "Alexgood321",
+        "descr": "Тестовая альфа: синхронизация торрент-прогресса между устройствами через Supabase. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
+        "categories": [
+          "Мои",
+          "Рейтинги и сервисы"
+        ]
+      }
+    },
     "history": {
       "SURS Pro": [
         {
@@ -487,9 +524,16 @@
           "version": "1.1.1",
           "published_at": "2026-11-06T13:56:45Z"
         }
+      ],
+      "Lampa Sync Pro": [
+        {
+          "sha": "8ec33457d927b1d056ed9fc0acdd49c82c0fd421",
+          "version": "0.1.1",
+          "published_at": "2026-11-06T23:52:57Z"
+        }
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-07T00:01:30Z"
+    "last_checked_at": "2026-11-07T00:06:40Z"
   }
 }
