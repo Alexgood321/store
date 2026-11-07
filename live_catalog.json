@@ -45,12 +45,12 @@
           "author": "Alexgood321",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
           "descr": "Персональный магазин Lampa: установка расширений, проверка версий, обновления, журнал изменений и управление устройством.",
-          "version": "3.6.3"
+          "version": "3.6.4"
         },
         {
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
-          "descr": "Тестовая альфа: быстрое «Продолжить SxxExx» с предварительным кешированием файлов TorrServer; кадры и названия серий TMDB подгружаются после открытия окна, без задержки списка. NUM, Lampac, Supabase Realtime, HDRezka, CUB и Trakt не изменяются.",
+          "descr": "Тестовая альфа: синхронизация серий и продолжения, автоотметка предыдущего эпизода при запуске следующего без таймкодов VLC/IINA. Кнопка «Продолжить», кеш TorrServer, кадры TMDB, NUM и Supabase Realtime. HDRezka, CUB и Trakt не затрагиваются.",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@e2cee5b8260433b69ddc799f627bf45b01a48d67/lampa-sync-pro.js",
           "version": "0.1.16"
         }
@@ -208,7 +208,7 @@
         {
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
-          "descr": "Тестовая альфа: быстрое «Продолжить SxxExx» с предварительным кешированием файлов TorrServer; кадры и названия серий TMDB подгружаются после открытия окна, без задержки списка. NUM, Lampac, Supabase Realtime, HDRezka, CUB и Trakt не изменяются.",
+          "descr": "Тестовая альфа: синхронизация серий и продолжения, автоотметка предыдущего эпизода при запуске следующего без таймкодов VLC/IINA. Кнопка «Продолжить», кеш TorrServer, кадры TMDB, NUM и Supabase Realtime. HDRezka, CUB и Trakt не затрагиваются.",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@e2cee5b8260433b69ddc799f627bf45b01a48d67/lampa-sync-pro.js",
           "version": "0.1.16"
         }
@@ -361,10 +361,10 @@
         "path": "my_store_runtime.js",
         "ref": "main",
         "owned": false,
-        "sha": "0b1fc0783b586b7669927488f1326e779896fe9d",
-        "version": "3.6.3",
+        "sha": "40bba748fa9cad0973e3aa9d8f3c9b57880aebd4",
+        "version": "3.6.4",
         "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
-        "published_at": "2026-11-07T11:40:57Z"
+        "published_at": "2026-11-07T12:39:49Z"
       },
       "Lampa Shield Ads": {
         "repo": "Alexgood321/lampa-plugins",
@@ -394,7 +394,7 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "author": "Alexgood321",
-        "descr": "Тестовая альфа: быстрое «Продолжить SxxExx» с предварительным кешированием файлов TorrServer; кадры и названия серий TMDB подгружаются после открытия окна, без задержки списка. NUM, Lampac, Supabase Realtime, HDRezka, CUB и Trakt не изменяются.",
+        "descr": "Тестовая альфа: синхронизация серий и продолжения, автоотметка предыдущего эпизода при запуске следующего без таймкодов VLC/IINA. Кнопка «Продолжить», кеш TorrServer, кадры TMDB, NUM и Supabase Realtime. HDRezka, CUB и Trakt не затрагиваются.",
         "categories": [
           "Мои",
           "Рейтинги и сервисы"
@@ -561,6 +561,11 @@
           "sha": "0b1fc0783b586b7669927488f1326e779896fe9d",
           "version": "3.6.3",
           "published_at": "2026-11-07T11:40:57Z"
+        },
+        {
+          "sha": "40bba748fa9cad0973e3aa9d8f3c9b57880aebd4",
+          "version": "3.6.4",
+          "published_at": "2026-11-07T12:39:49Z"
         }
       ],
       "Lampa Shield Ads": [
@@ -629,6 +634,6 @@
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-07T12:07:52Z"
+    "last_checked_at": "2026-11-07T12:39:59Z"
   }
 }
