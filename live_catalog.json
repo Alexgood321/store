@@ -51,8 +51,8 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: синхронизация серий и продолжения, автоотметка предыдущего эпизода при запуске следующего без таймкодов VLC/IINA. Кнопка «Продолжить», кеш TorrServer, кадры TMDB, NUM и Supabase Realtime. HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@1554a4d917130e63a3d6397873021333f3887d21/lampa-sync-pro.js",
-          "version": "0.1.17"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@d1d29d80083155e36ef727e2a77614a98d5e3495/lampa-sync-pro.js",
+          "version": "0.1.18"
         }
       ]
     },
@@ -209,8 +209,8 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: синхронизация серий и продолжения, автоотметка предыдущего эпизода при запуске следующего без таймкодов VLC/IINA. Кнопка «Продолжить», кеш TorrServer, кадры TMDB, NUM и Supabase Realtime. HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@1554a4d917130e63a3d6397873021333f3887d21/lampa-sync-pro.js",
-          "version": "0.1.17"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@d1d29d80083155e36ef727e2a77614a98d5e3495/lampa-sync-pro.js",
+          "version": "0.1.18"
         }
       ]
     },
@@ -381,10 +381,10 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "owned": true,
-        "sha": "1554a4d917130e63a3d6397873021333f3887d21",
-        "version": "0.1.17",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@1554a4d917130e63a3d6397873021333f3887d21/lampa-sync-pro.js",
-        "published_at": "2026-11-07T13:19:57Z"
+        "sha": "d1d29d80083155e36ef727e2a77614a98d5e3495",
+        "version": "0.1.18",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@d1d29d80083155e36ef727e2a77614a98d5e3495/lampa-sync-pro.js",
+        "published_at": "2026-11-07T14:52:29Z"
       }
     },
     "registered": {
@@ -660,10 +660,15 @@
           "sha": "1554a4d917130e63a3d6397873021333f3887d21",
           "version": "0.1.17",
           "published_at": "2026-11-07T13:19:57Z"
+        },
+        {
+          "sha": "d1d29d80083155e36ef727e2a77614a98d5e3495",
+          "version": "0.1.18",
+          "published_at": "2026-11-07T14:52:29Z"
         }
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-07T14:40:15Z"
+    "last_checked_at": "2026-11-07T14:52:46Z"
   }
 }
