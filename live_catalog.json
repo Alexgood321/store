@@ -51,8 +51,8 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: синхронизация торрент-прогресса между устройствами через Supabase. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@8ec33457d927b1d056ed9fc0acdd49c82c0fd421/lampa-sync-pro.js",
-          "version": "0.1.1"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@d8cfdc99f3b60c9e508bd9ff9c31621923720cc6/lampa-sync-pro.js",
+          "version": "0.1.2"
         }
       ]
     },
@@ -209,8 +209,8 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: синхронизация торрент-прогресса между устройствами через Supabase. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@8ec33457d927b1d056ed9fc0acdd49c82c0fd421/lampa-sync-pro.js",
-          "version": "0.1.1"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@d8cfdc99f3b60c9e508bd9ff9c31621923720cc6/lampa-sync-pro.js",
+          "version": "0.1.2"
         }
       ]
     },
@@ -381,10 +381,10 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "owned": true,
-        "sha": "8ec33457d927b1d056ed9fc0acdd49c82c0fd421",
-        "version": "0.1.1",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@8ec33457d927b1d056ed9fc0acdd49c82c0fd421/lampa-sync-pro.js",
-        "published_at": "2026-11-06T23:52:57Z"
+        "sha": "d8cfdc99f3b60c9e508bd9ff9c31621923720cc6",
+        "version": "0.1.2",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@d8cfdc99f3b60c9e508bd9ff9c31621923720cc6/lampa-sync-pro.js",
+        "published_at": "2026-11-07T00:41:29Z"
       }
     },
     "registered": {
@@ -545,10 +545,15 @@
           "sha": "8ec33457d927b1d056ed9fc0acdd49c82c0fd421",
           "version": "0.1.1",
           "published_at": "2026-11-06T23:52:57Z"
+        },
+        {
+          "sha": "d8cfdc99f3b60c9e508bd9ff9c31621923720cc6",
+          "version": "0.1.2",
+          "published_at": "2026-11-07T00:41:29Z"
         }
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-07T00:25:43Z"
+    "last_checked_at": "2026-11-07T00:41:46Z"
   }
 }
