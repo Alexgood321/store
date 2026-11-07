@@ -13,6 +13,7 @@ on:
       - 'tests/store-central.cjs'
       - 'tests/store-version-colors.cjs'
       - 'tests/store-header-batch.cjs'
+      - 'tests/store-same-sha.cjs'
       - 'tests/store-back.cjs'
       - 'tests/store-diagnostics.cjs'
       - 'tests/store-performance.cjs'
@@ -34,6 +35,7 @@ on:
       - 'tests/store-central.cjs'
       - 'tests/store-version-colors.cjs'
       - 'tests/store-header-batch.cjs'
+      - 'tests/store-same-sha.cjs'
       - 'tests/store-back.cjs'
       - 'tests/store-diagnostics.cjs'
       - 'tests/store-performance.cjs'
@@ -65,6 +67,8 @@ jobs:
       - run: node tests/store-version-colors.cjs
       - run: node --check tests/store-header-batch.cjs
       - run: node tests/store-header-batch.cjs
+      - run: node --check tests/store-same-sha.cjs
+      - run: node tests/store-same-sha.cjs
       - run: node --check tests/store-back.cjs
       - run: node tests/store-back.cjs
       - run: node --check tests/store-diagnostics.cjs

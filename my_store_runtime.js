@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.6.2',
+    version: '3.6.3',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -402,14 +402,42 @@
     return true;
   }
 
+  // A source commit can change without a version bump. Accept the next SHA
+  // only when the central, ordered revision history proves this is a forward
+  // move between two commits declaring the SAME semantic version. Never
+  // treat an arbitrary SHA mismatch as a safe upgrade or downgrade.
+  function verifiedSameVersionRevision(name, url, meta, version) {
+    if (!meta || !meta.repo || !meta.path || !meta.sha ||
+        !/^\d+(?:\.\d+){1,3}$/.test(String(version || '')) ||
+        version !== meta.version ||
+        installedGithubKey(url) !== (meta.repo + '/' + meta.path).toLowerCase())
+      return false;
+    var pin = String(url || '').match(/@([a-f0-9]{7,40})\//i);
+    if (!pin || meta.sha.indexOf(pin[1].toLowerCase()) === 0) return false;
+    var history = LIVE_DATA && LIVE_DATA.meta && LIVE_DATA.meta.history &&
+      LIVE_DATA.meta.history[name];
+    if (!Array.isArray(history) || !history.length) return false;
+    var oldIndex = -1, newIndex = -1, oldMatches = 0;
+    for (var i = 0; i < history.length; i++) {
+      var revision = history[i];
+      if (!revision || !revision.sha || revision.version !== version) continue;
+      if (revision.sha.toLowerCase().indexOf(pin[1].toLowerCase()) === 0) {
+        oldIndex = i;
+        oldMatches++;
+      }
+      if (revision.sha.toLowerCase() === meta.sha.toLowerCase()) newIndex = i;
+    }
+    return oldMatches === 1 && oldIndex >= 0 && newIndex > oldIndex;
+  }
+
   function automaticUpgradeIsSafe(name, meta) {
     var item = findInstalled(name, meta);
     if (!item || !item.url) return false;
     var current = installedVersion(item.url, meta);
-    // Unknown versions and non-semantic revision strings require a manual
-    // decision. Avoid downgrades when a central manifest temporarily lags.
+    // Unknown or newer installed semantic versions must never be downgraded.
     return typeof current === 'string' &&
-      isVersionNewer(current, meta.version);
+      (isVersionNewer(current, meta.version) ||
+       verifiedSameVersionRevision(name, item.url, meta, current));
   }
 
   function updateInstalledAutomatically(quiet) {
@@ -935,6 +963,14 @@
     return result;
   }
 
+  function skippedBatchText(names) {
+    if (!names || !names.length) return '';
+    var first = names.slice(0, 3).join(', ');
+    return ' Пропущены: ' + first +
+      (names.length > 3 ? ' и ещё ' + (names.length - 3) : '') +
+      ' (неподтверждённая версия или SHA).';
+  }
+
   function saveSafeBatch(plan) {
     if (!plan || !plan.length || !Lampa.Plugins ||
         typeof Lampa.Plugins.save !== 'function' || !Lampa.Storage) return 0;
@@ -1170,7 +1206,7 @@
         if (!plan.items.length && !corePending && !pendingRestart) {
           done();
           notice('Подтверждённых обновлений нет.'+
-            (plan.skipped.length?' Пропущено без проверки версии: '+plan.skipped.length+'.':''));
+            skippedBatchText(plan.skipped));
           return;
         }
         var saved=plan.items.length ? saveSafeBatch(plan.items) : 0;
@@ -1190,7 +1226,7 @@
           (pendingRestart ? 'Ранее обновлённые ссылки готовы к применению' :
             'Новых ссылок не требуется'))+
           (corePending ? '. Доступно обновление ядра My Store' : '')+
-          (plan.skipped.length?'. Пропущено: '+plan.skipped.length:'')+'.';
+          skippedBatchText(plan.skipped)+'.';
         if (isPlayerOpened()) {
           notice(description+' Просмотр не прерывается; перезапустите Lampa позже.');
         } else {
@@ -1635,7 +1671,9 @@
       var pin = String(url).match(/@([a-f0-9]{7,40})\//i);
       var pinnedOld = pin && available.sha && available.sha.indexOf(pin[1].toLowerCase()) !== 0;
       newer = Boolean(pinnedOld || isVersionNewer(found, available.version));
-      if (newer) text += ' · Доступна: ' + available.version;
+      if (newer) text += found === available.version && pinnedOld ?
+        ' · Новая сборка: ' + available.version :
+        ' · Доступна: ' + available.version;
     }
     return {text:text, update:newer};
   }
