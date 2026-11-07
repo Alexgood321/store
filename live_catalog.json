@@ -51,7 +51,7 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: «Продолжить SxxExx» открывает штатный список серий без повторного запроса TorrServer и ожидания 2 секунд. Зеленая кнопка первая, Play вторая; фокус на сохранённой серии, автозапуска нет. Realtime, Lampac, NUM. HDRezka, CUB и Trakt не изменяются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@366185770f99044a8819a05dd087536130806fa7/lampa-sync-pro.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@cf1d91227dc40cf5c31897bec2ac42be1bb9ecc7/lampa-sync-pro.js",
           "version": "0.1.15"
         }
       ]
@@ -209,7 +209,7 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: «Продолжить SxxExx» открывает штатный список серий без повторного запроса TorrServer и ожидания 2 секунд. Зеленая кнопка первая, Play вторая; фокус на сохранённой серии, автозапуска нет. Realtime, Lampac, NUM. HDRezka, CUB и Trakt не изменяются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@366185770f99044a8819a05dd087536130806fa7/lampa-sync-pro.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@cf1d91227dc40cf5c31897bec2ac42be1bb9ecc7/lampa-sync-pro.js",
           "version": "0.1.15"
         }
       ]
@@ -381,10 +381,10 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "owned": true,
-        "sha": "366185770f99044a8819a05dd087536130806fa7",
+        "sha": "cf1d91227dc40cf5c31897bec2ac42be1bb9ecc7",
         "version": "0.1.15",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@366185770f99044a8819a05dd087536130806fa7/lampa-sync-pro.js",
-        "published_at": "2026-11-07T11:27:27Z"
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@cf1d91227dc40cf5c31897bec2ac42be1bb9ecc7/lampa-sync-pro.js",
+        "published_at": "2026-11-07T11:30:52Z"
       }
     },
     "registered": {
@@ -620,10 +620,15 @@
           "sha": "366185770f99044a8819a05dd087536130806fa7",
           "version": "0.1.15",
           "published_at": "2026-11-07T11:27:27Z"
+        },
+        {
+          "sha": "cf1d91227dc40cf5c31897bec2ac42be1bb9ecc7",
+          "version": "0.1.15",
+          "published_at": "2026-11-07T11:30:52Z"
         }
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-07T11:27:43Z"
+    "last_checked_at": "2026-11-07T11:31:06Z"
   }
 }
