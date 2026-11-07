@@ -50,7 +50,7 @@
         {
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
-          "descr": "Тестовая альфа: кнопка «Продолжить» на карточке с автоповтором при задержке TorrServer, синхронизация торрентов и Lampac через Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
+          "descr": "Тестовая альфа: «Продолжить» на карточке и сразу после «Торренты» в меню источников; автоповтор TorrServer, Realtime-синхронизация торрентов/Lampac, NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@0dfb2453d6c4d1b623d3f127d4c723fbc485aabb/lampa-sync-pro.js",
           "version": "0.1.9"
         }
@@ -208,7 +208,7 @@
         {
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
-          "descr": "Тестовая альфа: кнопка «Продолжить» на карточке с автоповтором при задержке TorrServer, синхронизация торрентов и Lampac через Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
+          "descr": "Тестовая альфа: «Продолжить» на карточке и сразу после «Торренты» в меню источников; автоповтор TorrServer, Realtime-синхронизация торрентов/Lampac, NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@0dfb2453d6c4d1b623d3f127d4c723fbc485aabb/lampa-sync-pro.js",
           "version": "0.1.9"
         }
@@ -394,7 +394,7 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "author": "Alexgood321",
-        "descr": "Тестовая альфа: кнопка «Продолжить» на карточке с автоповтором при задержке TorrServer, синхронизация торрентов и Lampac через Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
+        "descr": "Тестовая альфа: «Продолжить» на карточке и сразу после «Торренты» в меню источников; автоповтор TorrServer, Realtime-синхронизация торрентов/Lampac, NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
         "categories": [
           "Мои",
           "Рейтинги и сервисы"
