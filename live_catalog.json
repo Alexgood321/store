@@ -50,9 +50,9 @@
         {
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
-          "descr": "Тестовая альфа: кнопка «Продолжить» на карточке с автоповтором при задержке TorrServer, синхронизация торрентов и Lampac через Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@74ef66083cf4681051697512d2d12c8d0d52110f/lampa-sync-pro.js",
-          "version": "0.1.8"
+          "descr": "Тестовая альфа: кнопка «Продолжить» на карточке, синхронизация торрентов и Lampac онлайн через Supabase Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@0dfb2453d6c4d1b623d3f127d4c723fbc485aabb/lampa-sync-pro.js",
+          "version": "0.1.9"
         }
       ]
     },
@@ -208,9 +208,9 @@
         {
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
-          "descr": "Тестовая альфа: кнопка «Продолжить» на карточке с автоповтором при задержке TorrServer, синхронизация торрентов и Lampac через Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@74ef66083cf4681051697512d2d12c8d0d52110f/lampa-sync-pro.js",
-          "version": "0.1.8"
+          "descr": "Тестовая альфа: кнопка «Продолжить» на карточке, синхронизация торрентов и Lampac онлайн через Supabase Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@0dfb2453d6c4d1b623d3f127d4c723fbc485aabb/lampa-sync-pro.js",
+          "version": "0.1.9"
         }
       ]
     },
@@ -381,10 +381,10 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "owned": true,
-        "sha": "74ef66083cf4681051697512d2d12c8d0d52110f",
-        "version": "0.1.8",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@74ef66083cf4681051697512d2d12c8d0d52110f/lampa-sync-pro.js",
-        "published_at": "2026-11-07T08:43:59Z"
+        "sha": "0dfb2453d6c4d1b623d3f127d4c723fbc485aabb",
+        "version": "0.1.9",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@0dfb2453d6c4d1b623d3f127d4c723fbc485aabb/lampa-sync-pro.js",
+        "published_at": "2026-11-07T08:48:30Z"
       }
     },
     "registered": {
@@ -394,7 +394,7 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "author": "Alexgood321",
-        "descr": "Тестовая альфа: кнопка «Продолжить» на карточке с автоповтором при задержке TorrServer, синхронизация торрентов и Lampac через Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
+        "descr": "Тестовая альфа: кнопка «Продолжить» на карточке, синхронизация торрентов и Lampac онлайн через Supabase Realtime, интеграция с NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
         "categories": [
           "Мои",
           "Рейтинги и сервисы"
@@ -605,10 +605,15 @@
           "sha": "74ef66083cf4681051697512d2d12c8d0d52110f",
           "version": "0.1.8",
           "published_at": "2026-11-07T08:43:59Z"
+        },
+        {
+          "sha": "0dfb2453d6c4d1b623d3f127d4c723fbc485aabb",
+          "version": "0.1.9",
+          "published_at": "2026-11-07T08:48:30Z"
         }
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-07T08:44:14Z"
+    "last_checked_at": "2026-11-07T08:48:44Z"
   }
 }
