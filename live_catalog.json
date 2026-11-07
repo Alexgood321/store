@@ -50,7 +50,7 @@
         {
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
-          "descr": "Тестовая альфа: «Продолжить SxxExx» открывает штатный список серий без повторного запроса TorrServer и ожидания 2 секунд. Зеленая кнопка первая, Play вторая; фокус на сохранённой серии, автозапуска нет. Realtime, Lampac, NUM. HDRezka, CUB и Trakt не изменяются.",
+          "descr": "Тестовая альфа: быстрое «Продолжить SxxExx» с предварительным кешированием файлов TorrServer; кадры и названия серий TMDB подгружаются после открытия окна, без задержки списка. NUM, Lampac, Supabase Realtime, HDRezka, CUB и Trakt не изменяются.",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@cf1d91227dc40cf5c31897bec2ac42be1bb9ecc7/lampa-sync-pro.js",
           "version": "0.1.15"
         }
@@ -208,7 +208,7 @@
         {
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
-          "descr": "Тестовая альфа: «Продолжить SxxExx» открывает штатный список серий без повторного запроса TorrServer и ожидания 2 секунд. Зеленая кнопка первая, Play вторая; фокус на сохранённой серии, автозапуска нет. Realtime, Lampac, NUM. HDRezka, CUB и Trakt не изменяются.",
+          "descr": "Тестовая альфа: быстрое «Продолжить SxxExx» с предварительным кешированием файлов TorrServer; кадры и названия серий TMDB подгружаются после открытия окна, без задержки списка. NUM, Lampac, Supabase Realtime, HDRezka, CUB и Trakt не изменяются.",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@cf1d91227dc40cf5c31897bec2ac42be1bb9ecc7/lampa-sync-pro.js",
           "version": "0.1.15"
         }
@@ -394,7 +394,7 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "author": "Alexgood321",
-        "descr": "Тестовая альфа: «Продолжить SxxExx» открывает штатный список серий без повторного запроса TorrServer и ожидания 2 секунд. Зеленая кнопка первая, Play вторая; фокус на сохранённой серии, автозапуска нет. Realtime, Lampac, NUM. HDRezka, CUB и Trakt не изменяются.",
+        "descr": "Тестовая альфа: быстрое «Продолжить SxxExx» с предварительным кешированием файлов TorrServer; кадры и названия серий TMDB подгружаются после открытия окна, без задержки списка. NUM, Lampac, Supabase Realtime, HDRezka, CUB и Trakt не изменяются.",
         "categories": [
           "Мои",
           "Рейтинги и сервисы"
