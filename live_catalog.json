@@ -51,7 +51,7 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: синхронизация торрент-прогресса между устройствами через Supabase. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@e57c0ff67ccade91e5bee9c31a1b1ca0e2494d1a/lampa-sync-pro.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@47f0970efd98d630013625835fb1b234dd79df54/lampa-sync-pro.js",
           "version": "0.1.5"
         }
       ]
@@ -209,7 +209,7 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: синхронизация торрент-прогресса между устройствами через Supabase. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@e57c0ff67ccade91e5bee9c31a1b1ca0e2494d1a/lampa-sync-pro.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@47f0970efd98d630013625835fb1b234dd79df54/lampa-sync-pro.js",
           "version": "0.1.5"
         }
       ]
@@ -381,10 +381,10 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "owned": true,
-        "sha": "e57c0ff67ccade91e5bee9c31a1b1ca0e2494d1a",
+        "sha": "47f0970efd98d630013625835fb1b234dd79df54",
         "version": "0.1.5",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@e57c0ff67ccade91e5bee9c31a1b1ca0e2494d1a/lampa-sync-pro.js",
-        "published_at": "2026-11-07T01:08:58Z"
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@47f0970efd98d630013625835fb1b234dd79df54/lampa-sync-pro.js",
+        "published_at": "2026-11-07T01:13:32Z"
       }
     },
     "registered": {
@@ -570,10 +570,15 @@
           "sha": "e57c0ff67ccade91e5bee9c31a1b1ca0e2494d1a",
           "version": "0.1.5",
           "published_at": "2026-11-07T01:08:58Z"
+        },
+        {
+          "sha": "47f0970efd98d630013625835fb1b234dd79df54",
+          "version": "0.1.5",
+          "published_at": "2026-11-07T01:13:32Z"
         }
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-07T01:09:10Z"
+    "last_checked_at": "2026-11-07T01:13:46Z"
   }
 }
