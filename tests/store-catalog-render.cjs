@@ -39,7 +39,7 @@ assert.equal(win.__storeShow.store,'blob:https://lampa.example/catalog-1');
 const received=JSON.parse(blobs[0].parts.join(''));
 assert.ok(received.results.find(g=>g.title==='Мои')
   .results.some(p=>p.name==='Lampa Sync Pro'));
-assert.equal(received.meta.tracked['Lampa Sync Pro'].version,'0.1.1');
+assert.equal(received.meta.tracked['Lampa Sync Pro'].version,catalog.meta.tracked['Lampa Sync Pro'].version);
 win.__storeShow.onClose();
 assert.deepEqual(revoked,['blob:https://lampa.example/catalog-1']);
 delete win.Blob;
