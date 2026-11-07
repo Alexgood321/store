@@ -16,6 +16,8 @@ on:
       - 'tests/store-back.cjs'
       - 'tests/store-diagnostics.cjs'
       - 'tests/store-performance.cjs'
+      - 'tests/store-catalog-render.cjs'
+      - 'tests/store-catalog-render.cjs'
       - 'tests/store-shield-ads.cjs'
       - 'tests/test_registry_sync.py'
       - 'sync_sources.json'
@@ -69,6 +71,7 @@ jobs:
       - run: node tests/store-diagnostics.cjs
       - run: node --check tests/store-performance.cjs
       - run: node tests/store-performance.cjs
+      - run: node tests/store-catalog-render.cjs
       - run: node --check tests/store-shield-ads.cjs
       - run: node tests/store-shield-ads.cjs
       - run: python3 -m py_compile scripts/sync_catalog.py

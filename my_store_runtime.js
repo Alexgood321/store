@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.6.1',
+    version: '3.6.2',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -135,6 +135,7 @@
   var LIVE_META = {};
   var LIVE_DATA = null;
   var LAST_LIVE_URL = null;
+  var activeSnapshotStoreURL = '';
   var lastLiveLoadAt = 0;
   var LIVE_CACHE_MS = 30000;
   var LIVE_OVERRIDES = {};
@@ -2131,6 +2132,7 @@
     reopenAfterInstall = false;
     storeOpenPending = false;
     releaseSkin();
+    releaseNativeStoreURL();
     if (reopen) setTimeout(openStore, 0);
   }
 
@@ -2357,6 +2359,40 @@
     setTimeout(refreshSkin, 1100);
   }
 
+  // Native Lampa.Extensions.show() downloads params.store a second time.
+  // A mutable @main CDN alias may be stale even after this runtime fetched
+  // the newest manifest. Supply the SAME verified JSON with a local Blob URL.
+  function nativeStoreURL(remote) {
+    if (!LIVE_DATA || !Array.isArray(LIVE_DATA.results) ||
+        !LIVE_DATA.meta || remote !== LAST_LIVE_URL ||
+        remote === CONFIG.emergency) return remote;
+    releaseNativeStoreURL();
+    try {
+      var BlobAPI = window.Blob || (typeof Blob !== 'undefined' ? Blob : null);
+      var URLAPI = window.URL || window.webkitURL || null;
+      if (!BlobAPI || !URLAPI ||
+          typeof URLAPI.createObjectURL !== 'function') return remote;
+      var url = URLAPI.createObjectURL(new BlobAPI(
+        [JSON.stringify(LIVE_DATA)],{type:'application/json;charset=utf-8'}));
+      if (typeof url !== 'string' || !/^blob:/i.test(url)) return remote;
+      activeSnapshotStoreURL = url;
+      return url;
+    } catch (error) {
+      console.warn('[My Store] In-memory catalog unavailable:',error);
+      return remote;
+    }
+  }
+
+  function releaseNativeStoreURL() {
+    if (!activeSnapshotStoreURL) return;
+    try {
+      var URLAPI = window.URL || window.webkitURL;
+      if (URLAPI && typeof URLAPI.revokeObjectURL === 'function')
+        URLAPI.revokeObjectURL(activeSnapshotStoreURL);
+    } catch (error) {}
+    activeSnapshotStoreURL = '';
+  }
+
   function openStore() {
     if (storeOpenPending || storeVisible()) return;
     if (!Lampa.Extensions || typeof Lampa.Extensions.show !== 'function') {
@@ -2370,20 +2406,22 @@
     }
     storeOpenPending = true;
     try {
+      // A deliberate store opening always fetches current catalog metadata.
       loadLive(function (url) {
         storeOpenPending = false;
         if (storeVisible()) return;
         try {
           Lampa.Extensions.show({
-            store: url,
+            store: nativeStoreURL(url),
             with_installed: true,
             onClose: onStoreClose
           });
           attachSkin();
         } catch (error) {
+          releaseNativeStoreURL();
           console.warn('[My Store] Unable to open store:', error);
         }
-      }, false);
+      }, true);
     } catch (error) {
       storeOpenPending = false;
       console.warn('[My Store] Unable to fetch store:', error);

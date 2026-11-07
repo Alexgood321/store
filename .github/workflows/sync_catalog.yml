@@ -60,6 +60,12 @@ jobs:
             fi
             git commit -m "chore: synchronize tracked Lampa plugin revisions"
             if git push origin HEAD:main; then
+              # The mutable @main jsDelivr fallback can stay cached for hours;
+              # purge it only after a real catalog change, never each poll.
+              if ! curl --fail --silent --show-error --max-time 15 --retry 2 \
+                "https://purge.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json"; then
+                echo "::warning::jsDelivr cache purge failed; raw GitHub remains primary."
+              fi
               echo "Catalog synchronized"
               exit 0
             fi
