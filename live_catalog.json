@@ -50,9 +50,9 @@
         {
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
-          "descr": "Тестовая альфа: кнопка «Продолжить SxxExx» первая на карточке, перед Play; в меню источников под «Торренты». Торренты открываются списком файлов на сохранённой серии, без автозапуска. Realtime, Lampac, NUM Series Pro. HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@0a294178400449ef5e5ccbf2d275a1627bbe39da/lampa-sync-pro.js",
-          "version": "0.1.12"
+          "descr": "Тестовая альфа: «Продолжить SxxExx» первая на карточке даже после закрепления источника Lampa, штатная Play вторая. Торренты открываются списком файлов на сохранённой серии без автозапуска. Realtime, Lampac, NUM Series Pro. HDRezka, CUB и Trakt не изменяются.",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@708d43e7a58bf8e6bbd2a185d6983c25ff30b503/lampa-sync-pro.js",
+          "version": "0.1.13"
         }
       ]
     },
@@ -208,9 +208,9 @@
         {
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
-          "descr": "Тестовая альфа: кнопка «Продолжить SxxExx» первая на карточке, перед Play; в меню источников под «Торренты». Торренты открываются списком файлов на сохранённой серии, без автозапуска. Realtime, Lampac, NUM Series Pro. HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@0a294178400449ef5e5ccbf2d275a1627bbe39da/lampa-sync-pro.js",
-          "version": "0.1.12"
+          "descr": "Тестовая альфа: «Продолжить SxxExx» первая на карточке даже после закрепления источника Lampa, штатная Play вторая. Торренты открываются списком файлов на сохранённой серии без автозапуска. Realtime, Lampac, NUM Series Pro. HDRezka, CUB и Trakt не изменяются.",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@708d43e7a58bf8e6bbd2a185d6983c25ff30b503/lampa-sync-pro.js",
+          "version": "0.1.13"
         }
       ]
     },
@@ -381,10 +381,10 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "owned": true,
-        "sha": "0a294178400449ef5e5ccbf2d275a1627bbe39da",
-        "version": "0.1.12",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@0a294178400449ef5e5ccbf2d275a1627bbe39da/lampa-sync-pro.js",
-        "published_at": "2026-11-07T09:24:21Z"
+        "sha": "708d43e7a58bf8e6bbd2a185d6983c25ff30b503",
+        "version": "0.1.13",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@708d43e7a58bf8e6bbd2a185d6983c25ff30b503/lampa-sync-pro.js",
+        "published_at": "2026-11-07T09:28:41Z"
       }
     },
     "registered": {
@@ -394,7 +394,7 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "author": "Alexgood321",
-        "descr": "Тестовая альфа: кнопка «Продолжить SxxExx» первая на карточке, перед Play; в меню источников под «Торренты». Торренты открываются списком файлов на сохранённой серии, без автозапуска. Realtime, Lampac, NUM Series Pro. HDRezka, CUB и Trakt не затрагиваются.",
+        "descr": "Тестовая альфа: «Продолжить SxxExx» первая на карточке даже после закрепления источника Lampa, штатная Play вторая. Торренты открываются списком файлов на сохранённой серии без автозапуска. Realtime, Lampac, NUM Series Pro. HDRezka, CUB и Trakt не изменяются.",
         "categories": [
           "Мои",
           "Рейтинги и сервисы"
@@ -605,10 +605,15 @@
           "sha": "0a294178400449ef5e5ccbf2d275a1627bbe39da",
           "version": "0.1.12",
           "published_at": "2026-11-07T09:24:21Z"
+        },
+        {
+          "sha": "708d43e7a58bf8e6bbd2a185d6983c25ff30b503",
+          "version": "0.1.13",
+          "published_at": "2026-11-07T09:28:41Z"
         }
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-07T09:24:37Z"
+    "last_checked_at": "2026-11-07T09:28:55Z"
   }
 }
