@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.6.3',
+    version: '3.6.4',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -369,7 +369,8 @@
     var meta = LIVE_META[name];
     if (!meta || !Lampa.Plugins || !Lampa.Plugins.save) return false;
     var item = findInstalled(name, meta);
-    if (!item || item.url === meta.link || !isUpdateAvailable(name)) return false;
+    if (!item || item.url === meta.link || !isUpdateAvailable(name) ||
+        !automaticUpgradeIsSafe(name,meta)) return false;
     var old = item.url;
     try {
       item.url = meta.link;
@@ -635,12 +636,15 @@
         var info = LIVE_META[name], installed = findInstalled(name, info);
         if (!installed) continue;
         var outdated = isUpdateAvailable(name);
-        if (outdated) count++;
+        var canUpdate = outdated && automaticUpgradeIsSafe(name,info);
+        if (canUpdate) count++;
         var floating = /@(main|master|dev|latest)\//i.test(String(installed.url));
         var currentVersion = installedVersion(String(installed.url), info);
         var currentLabel = currentVersion === null ? 'проверяется' : (currentVersion || 'не определена');
-        var details = outdated ?
+        var details = canUpdate ?
           'Сохранённая ссылка: ' + currentLabel + ' · Доступна: ' + info.version + ' · обновить ссылку' :
+          outdated ? 'Сохранённая ссылка: ' + currentLabel +
+            ' · Обновление заблокировано: версия или SHA не подтверждены' :
           floating && currentVersion === null ?
             'Проверяется версия JS · после обновления ветки нужен перезапуск' :
             'Сохранённая ссылка: ' + currentLabel + ' · В каталоге: ' + info.version;
@@ -648,10 +652,13 @@
         var countCopies = matchingInstalled(name, info).length;
         if (countCopies > 1) details += ' · Установлено копий: ' + countCopies;
         var versionDisplay = versionDisplayState(name,currentVersion || '',
-          info.version || '',outdated);
+          info.version || '',canUpdate);
+        if (outdated && !canUpdate)
+          versionDisplay.hint = 'Обновление заблокировано: установленная версия или направление SHA не подтверждены.';
         if (countCopies > 1)
           versionDisplay.hint += ' Установлено копий: ' + countCopies + '.';
-        rows.push({title:name,subtitle:details,name:name,canUpdate:outdated,
+        rows.push({title:name,subtitle:details,name:name,canUpdate:canUpdate,
+          unsafeUpdate:outdated && !canUpdate,
           versionDisplay:versionDisplay,onDraw:decorateUpdateVersionRow});
       }
       if (rows.length === 0) rows.push({title:'Установленных отслеживаемых плагинов нет', action:'none'});
@@ -722,6 +729,8 @@
                 }
               }
             });
+          } else if (row.unsafeUpdate) {
+            notice('Обновление ' + row.name + ' заблокировано: версия или SHA не подтверждены.');
           } else if (row.action !== 'none') {
             notice('Обновление не требуется');
           }
@@ -865,36 +874,12 @@
   }
 
   function applyOwnedBatch() {
-    var records = Lampa.Plugins && Lampa.Plugins.get ? Lampa.Plugins.get() : [];
-    var changed = [];
-    for (var name in LIVE_META) {
-      if (!Object.prototype.hasOwnProperty.call(LIVE_META,name)) continue;
-      var meta = LIVE_META[name];
-      if (!meta || !meta.owned || !meta.link) continue;
-      var installed = findInstalled(name,meta);
-      if (!installed || !installed.url || installed.status === 0 ||
-          installed.status === false || installed.url === meta.link) continue;
-      changed.push({name:name,item:installed,oldUrl:installed.url,newUrl:meta.link});
-    }
-    if (!changed.length) return 0;
-    try {
-      for (var i=0; i<changed.length; i++) changed[i].item.url=changed[i].newUrl;
-      Lampa.Plugins.save();
-      if (Lampa.Storage) Lampa.Storage.set(BATCH_BACKUP_KEY, {
-        at:Date.now(), items:changed.map(function(e) {
-          return {name:e.name,from:e.oldUrl,to:e.newUrl};
-        })
-      });
-      for (var j=0; j<changed.length; j++)
-        historyAdd('link_updated',changed[j].name,changed[j].oldUrl,changed[j].newUrl);
-      deviceSet({last_update_at:Date.now()});
-      return changed.length;
-    } catch (e) {
-      for (var k=0; k<changed.length; k++) changed[k].item.url=changed[k].oldUrl;
-      try {Lampa.Plugins.save()}catch(ignored){}
-      console.warn('[My Store] Batch update rejected:',e);
-      return -1;
-    }
+    // Share the verified forward-only plan with toolbar and auto-update.
+    var plan = getSafeBatchPlan();
+    var owned = plan.items.filter(function(entry) {
+      return LIVE_META[entry.name] && LIVE_META[entry.name].owned;
+    });
+    return saveSafeBatch(owned);
   }
 
   function rollbackOwnedBatch() {
@@ -1243,36 +1228,46 @@
 
   function applyOwnedAndReload() {
     loadLive(function(url) {
-      if (url === CONFIG.emergency) return notice('Нет актуального каталога. Обновление отменено.');
-      if (!Lampa.Select || !Lampa.Select.show) return;
-      var candidates = Object.keys(LIVE_META).filter(function(name){
-        var meta=LIVE_META[name], item=findInstalled(name,meta);
-        return meta && meta.owned && item && item.status !== 0 && item.status !== false &&
-          item.url !== meta.link;
-      });
-      if (!candidates.length) {
-        var surs = LIVE_META['SURS Pro'];
-        var installedSurs = surs && findInstalled('SURS Pro', surs);
-        var runningSurs = runningVersion('SURS Pro');
-        var savedSurs = installedSurs ? installedVersion(installedSurs.url, surs) : '';
-        if (runningSurs && savedSurs && isVersionNewer(runningSurs, savedSurs)) {
-          notice('Ссылка SURS обновлена, но выполняется старая версия.');
-          return confirmReload();
+      if (!url || url.indexOf(CONFIG.catalog + '?') !== 0 ||
+          !catalogIsKnownGood())
+        return notice('Нет подтверждённого каталога. Обновление отменено.');
+      if (!Lampa.Select || typeof Lampa.Select.show !== 'function') return;
+      getSafeBatchPlan();
+      waitForBatchVersions(function() {
+        if (!catalogIsKnownGood())
+          return notice('Каталог устарел. Обновление отменено.');
+        var plan = getSafeBatchPlan();
+        var candidates = plan.items.filter(function(entry) {
+          return LIVE_META[entry.name] && LIVE_META[entry.name].owned;
+        });
+        var skipped = plan.skipped.filter(function(name) {
+          return LIVE_META[name] && LIVE_META[name].owned;
+        });
+        if (!candidates.length) {
+          if (skipped.length)
+            return notice('Безопасное обновление не подтверждено.' +
+              skippedBatchText(skipped));
+          return notice('Мои плагины уже используют актуальные ссылки.');
         }
-        return notice('Мои плагины уже используют актуальные ссылки.');
-      }
-      Lampa.Select.show({
-        title:'Обновить '+candidates.length+' и перезапустить?',
-        items:[{title:'Применить и перезапустить',action:'apply'},
-               {title:'Отмена',action:'cancel'}],
-        onSelect:function(choice) {
-          if (choice.action !== 'apply') return;
-          var count = applyOwnedBatch();
-          if(count>0){notice('Обновлено ссылок: '+count);rebootLampa();}
-          else notice('Замена ссылок не выполнена');
-        }
-      });
-    },true);
+        Lampa.Select.show({
+          title:'Обновить '+candidates.length+' и перезапустить?',
+          items:[{title:'Применить и перезапустить',action:'apply'},
+                 {title:'Отмена',action:'cancel'}],
+          onSelect:function(choice) {
+            if (choice.action !== 'apply') return;
+            // Revalidate before writing in case installed URLs changed.
+            var count = applyOwnedBatch();
+            if (count > 0) {
+              notice('Обновлено ссылок: '+count+skippedBatchText(skipped));
+              rebootLampa();
+            } else if (count < 0)
+              notice('Не удалось сохранить обновления. Ссылки восстановлены.');
+            else
+              notice('Обновление отменено: версия или SHA больше не подтверждены.');
+          }
+        });
+      },0);
+    },true,true,true);
   }
 
   function showPerformance() {
