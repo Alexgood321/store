@@ -13,9 +13,13 @@ function setup(){
     removeEventListener(t,f,c){this.removed.push({t,f,c});}};
   const document={events:[],removed:[],addEventListener(t,f,c){this.events.push({t,f,c});},
     removeEventListener(t,f,c){this.removed.push({t,f,c});}};
+  const selector={events:[],removed:[],
+    addEventListener(t,f,c){this.events.push({t,f,c});},
+    removeEventListener(t,f,c){this.removed.push({t,f,c});}};
   const root={parentNode:{},classList:{remove(){}},
     contains(node){return Boolean(node && node.inside);},
-    querySelector(q){return q==='.head-backward__button'?button:null;}};
+    querySelector(q){return q==='.head-backward__button'?button:
+      q==='.head-backward.selector'?selector:null;}};
   let name='extensions_line',modal=false,backs=0,shows=0;
   let controllerBack=function(){},controllerLink=null;
   const toggles=[],network=[];
@@ -29,11 +33,12 @@ function setup(){
     Reguest:function(){this.silent=(url,ok)=>network.push({url,ok});}};
   vm.runInNewContext(code,{window:browser,Lampa,document,console,setTimeout(){},clearTimeout(){}});
   const qa=browser.qa;qa.setRoot(root);qa.bind();
-  return{qa,button,root,document,name:n=>{name=n;},modal:v=>{modal=v;},
+  return{qa,button,selector,root,document,name:n=>{name=n;},modal:v=>{modal=v;},
     nativeBack:f=>{controllerBack=f;},link:link=>{controllerLink=link;},
     toggles,network,backs:()=>backs,shows:()=>shows};
 }
 const a=setup();const arrow=a.button.events[0];assert.equal(arrow.t,'click');assert.equal(arrow.c,true);
+assert.equal(a.selector.events[0].t,'hover:enter','focusable Back supports TV Enter/touch');
 let cancel=0,stop=0;arrow.f({preventDefault(){cancel++;},stopImmediatePropagation(){stop++;}});
 assert.equal(a.backs(),1);assert.equal(a.toggles.length,0);assert.equal(cancel,1);assert.equal(stop,1);
 const b=setup();b.name('head');b.button.events[0].f({preventDefault(){},stopImmediatePropagation(){}});
@@ -45,11 +50,18 @@ assert.equal(popup.toggles.length,0);assert.equal(popup.backs(),1);
 const detached=setup();detached.root.parentNode=null;detached.qa.close({preventDefault(){throw Error('closed view');}});
 assert.equal(detached.backs(),0);
 const disposed=setup();disposed.qa.cleanup();assert.equal(disposed.button.removed.length,1);
+assert.equal(disposed.selector.removed.length,1);
 assert.equal(disposed.document.removed.length,1);
 const concurrency=setup();concurrency.qa.setRoot(null);concurrency.qa.open();concurrency.qa.open();
 assert.equal(concurrency.network.length,1,'duplicate openings blocked');
 concurrency.network[0].ok({results:[{title:'Empty',results:[]}],meta:{tracked:{},last_checked_at:new Date().toISOString()}});
 assert.equal(concurrency.shows(),1);
+
+// TV remote OK on the focusable native header dispatches hover:enter,
+ // not click on the inner Back icon. The store must still close.
+const fromSelector=setup();
+fromSelector.selector.events[0].f({preventDefault(){},stopImmediatePropagation(){}});
+assert.equal(fromSelector.backs(),1,'selector Enter runs native store navigation');
 
 // Native Lampa Extensions.show() installs its own onBack closure. Capture
 // exactly that closure before other plugins can move focus to the top header.
