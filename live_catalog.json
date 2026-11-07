@@ -50,7 +50,7 @@
         {
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
-          "descr": "Тестовая альфа: «Продолжить» на карточке и сразу после «Торренты» в меню источников; автоповтор TorrServer, Realtime-синхронизация торрентов/Lampac, NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
+          "descr": "Тестовая альфа: «Продолжить» с номером серии на карточке и в источниках; торренты открываются списком файлов с фокусом на сохранённом эпизоде без автозапуска; Supabase Realtime, Lampac, NUM Series Pro. HDRezka, CUB и Trakt не затрагиваются.",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@56bba7d9e6f8b5b8e76c455e0f8f697eb8220ae9/lampa-sync-pro.js",
           "version": "0.1.10"
         }
@@ -208,7 +208,7 @@
         {
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
-          "descr": "Тестовая альфа: «Продолжить» на карточке и сразу после «Торренты» в меню источников; автоповтор TorrServer, Realtime-синхронизация торрентов/Lampac, NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
+          "descr": "Тестовая альфа: «Продолжить» с номером серии на карточке и в источниках; торренты открываются списком файлов с фокусом на сохранённом эпизоде без автозапуска; Supabase Realtime, Lampac, NUM Series Pro. HDRezka, CUB и Trakt не затрагиваются.",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@56bba7d9e6f8b5b8e76c455e0f8f697eb8220ae9/lampa-sync-pro.js",
           "version": "0.1.10"
         }
@@ -394,7 +394,7 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "author": "Alexgood321",
-        "descr": "Тестовая альфа: «Продолжить» на карточке и сразу после «Торренты» в меню источников; автоповтор TorrServer, Realtime-синхронизация торрентов/Lampac, NUM Series Pro. Требуется вход; HDRezka, CUB и Trakt не затрагиваются.",
+        "descr": "Тестовая альфа: «Продолжить» с номером серии на карточке и в источниках; торренты открываются списком файлов с фокусом на сохранённом эпизоде без автозапуска; Supabase Realtime, Lampac, NUM Series Pro. HDRezka, CUB и Trakt не затрагиваются.",
         "categories": [
           "Мои",
           "Рейтинги и сервисы"
