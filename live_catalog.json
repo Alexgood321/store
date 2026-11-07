@@ -51,8 +51,8 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: «Продолжить SxxExx» открывает штатный список серий без повторного запроса TorrServer и ожидания 2 секунд. Зеленая кнопка первая, Play вторая; фокус на сохранённой серии, автозапуска нет. Realtime, Lampac, NUM. HDRezka, CUB и Trakt не изменяются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@320c1e834f97b531f6c38d02e8634db9711b73e1/lampa-sync-pro.js",
-          "version": "0.1.14"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@366185770f99044a8819a05dd087536130806fa7/lampa-sync-pro.js",
+          "version": "0.1.15"
         }
       ]
     },
@@ -209,8 +209,8 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: «Продолжить SxxExx» открывает штатный список серий без повторного запроса TorrServer и ожидания 2 секунд. Зеленая кнопка первая, Play вторая; фокус на сохранённой серии, автозапуска нет. Realtime, Lampac, NUM. HDRezka, CUB и Trakt не изменяются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@320c1e834f97b531f6c38d02e8634db9711b73e1/lampa-sync-pro.js",
-          "version": "0.1.14"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@366185770f99044a8819a05dd087536130806fa7/lampa-sync-pro.js",
+          "version": "0.1.15"
         }
       ]
     },
@@ -381,10 +381,10 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "owned": true,
-        "sha": "320c1e834f97b531f6c38d02e8634db9711b73e1",
-        "version": "0.1.14",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@320c1e834f97b531f6c38d02e8634db9711b73e1/lampa-sync-pro.js",
-        "published_at": "2026-11-07T09:50:26Z"
+        "sha": "366185770f99044a8819a05dd087536130806fa7",
+        "version": "0.1.15",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@366185770f99044a8819a05dd087536130806fa7/lampa-sync-pro.js",
+        "published_at": "2026-11-07T11:27:27Z"
       }
     },
     "registered": {
@@ -620,10 +620,15 @@
           "sha": "320c1e834f97b531f6c38d02e8634db9711b73e1",
           "version": "0.1.14",
           "published_at": "2026-11-07T09:50:26Z"
+        },
+        {
+          "sha": "366185770f99044a8819a05dd087536130806fa7",
+          "version": "0.1.15",
+          "published_at": "2026-11-07T11:27:27Z"
         }
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-07T11:26:44Z"
+    "last_checked_at": "2026-11-07T11:27:43Z"
   }
 }
