@@ -22,9 +22,9 @@
         {
           "name": "NUM Series Pro",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d95bbd6fd65eebaaed987b58549b6eedc70a0d0f/num_series.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d1fca76393b065ccc1d1cee35a81c37e4f4b84ed/num_series.js",
           "descr": "Навигация по сезонам и сериям в списке файлов торрента, управление просмотренными сериями и продолжением просмотра.",
-          "version": "2.0.8"
+          "version": "2.0.9"
         },
         {
           "name": "HDREZKA",
@@ -51,8 +51,8 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: синхронизация серий и продолжения, автоотметка предыдущего эпизода при запуске следующего без таймкодов VLC/IINA. Кнопка «Продолжить», кеш TorrServer, кадры TMDB, NUM и Supabase Realtime. HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@e2cee5b8260433b69ddc799f627bf45b01a48d67/lampa-sync-pro.js",
-          "version": "0.1.16"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@1554a4d917130e63a3d6397873021333f3887d21/lampa-sync-pro.js",
+          "version": "0.1.17"
         }
       ]
     },
@@ -90,9 +90,9 @@
         {
           "name": "NUM Series Pro",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d95bbd6fd65eebaaed987b58549b6eedc70a0d0f/num_series.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d1fca76393b065ccc1d1cee35a81c37e4f4b84ed/num_series.js",
           "descr": "Навигация по сезонам и сериям в списке файлов торрента, управление просмотренными сериями и продолжением просмотра.",
-          "version": "2.0.8"
+          "version": "2.0.9"
         }
       ]
     },
@@ -209,8 +209,8 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: синхронизация серий и продолжения, автоотметка предыдущего эпизода при запуске следующего без таймкодов VLC/IINA. Кнопка «Продолжить», кеш TorrServer, кадры TMDB, NUM и Supabase Realtime. HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@e2cee5b8260433b69ddc799f627bf45b01a48d67/lampa-sync-pro.js",
-          "version": "0.1.16"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@1554a4d917130e63a3d6397873021333f3887d21/lampa-sync-pro.js",
+          "version": "0.1.17"
         }
       ]
     },
@@ -261,10 +261,10 @@
         "path": "num_series.js",
         "ref": "main",
         "owned": true,
-        "sha": "d95bbd6fd65eebaaed987b58549b6eedc70a0d0f",
-        "version": "2.0.8",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d95bbd6fd65eebaaed987b58549b6eedc70a0d0f/num_series.js",
-        "published_at": "2026-11-07T11:26:29Z"
+        "sha": "d1fca76393b065ccc1d1cee35a81c37e4f4b84ed",
+        "version": "2.0.9",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d1fca76393b065ccc1d1cee35a81c37e4f4b84ed/num_series.js",
+        "published_at": "2026-11-07T13:20:06Z"
       },
       "HDREZKA": {
         "repo": "Alexgood321/lampa-hdrezka",
@@ -381,10 +381,10 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "owned": true,
-        "sha": "e2cee5b8260433b69ddc799f627bf45b01a48d67",
-        "version": "0.1.16",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@e2cee5b8260433b69ddc799f627bf45b01a48d67/lampa-sync-pro.js",
-        "published_at": "2026-11-07T12:07:38Z"
+        "sha": "1554a4d917130e63a3d6397873021333f3887d21",
+        "version": "0.1.17",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@1554a4d917130e63a3d6397873021333f3887d21/lampa-sync-pro.js",
+        "published_at": "2026-11-07T13:19:57Z"
       }
     },
     "registered": {
@@ -466,6 +466,11 @@
           "sha": "d95bbd6fd65eebaaed987b58549b6eedc70a0d0f",
           "version": "2.0.8",
           "published_at": "2026-11-07T11:26:29Z"
+        },
+        {
+          "sha": "d1fca76393b065ccc1d1cee35a81c37e4f4b84ed",
+          "version": "2.0.9",
+          "published_at": "2026-11-07T13:20:06Z"
         }
       ],
       "HDREZKA": [
@@ -640,10 +645,15 @@
           "sha": "e2cee5b8260433b69ddc799f627bf45b01a48d67",
           "version": "0.1.16",
           "published_at": "2026-11-07T12:07:38Z"
+        },
+        {
+          "sha": "1554a4d917130e63a3d6397873021333f3887d21",
+          "version": "0.1.17",
+          "published_at": "2026-11-07T13:19:57Z"
         }
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-07T13:06:04Z"
+    "last_checked_at": "2026-11-07T13:20:11Z"
   }
 }
