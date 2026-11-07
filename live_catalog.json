@@ -29,9 +29,9 @@
         {
           "name": "HDREZKA",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@cc4b591463edd083fe3c1ef610b1c4ed56411dd2/rezka.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@37223cef4547426a4a41ab7ecfc611b3c9d21862/rezka.js",
           "descr": "Интеграция HDRezka: просмотр, озвучки, Premium-метки, коллекции, «Досмотреть» и прогресс. Синхронизация требует настроенного HTTPS-шлюза.",
-          "version": "1.7.6"
+          "version": "1.7.7"
         },
         {
           "name": "Lampa Shield Ads",
@@ -103,9 +103,9 @@
         {
           "name": "HDREZKA",
           "author": "Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@cc4b591463edd083fe3c1ef610b1c4ed56411dd2/rezka.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@37223cef4547426a4a41ab7ecfc611b3c9d21862/rezka.js",
           "descr": "Интеграция HDRezka: просмотр, озвучки, Premium-метки, коллекции, «Досмотреть» и прогресс. Синхронизация требует настроенного HTTPS-шлюза.",
-          "version": "1.7.6"
+          "version": "1.7.7"
         },
         {
           "name": "Онлайн Мод",
@@ -271,10 +271,10 @@
         "path": "rezka.js",
         "ref": "main",
         "owned": true,
-        "sha": "cc4b591463edd083fe3c1ef610b1c4ed56411dd2",
-        "version": "1.7.6",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@cc4b591463edd083fe3c1ef610b1c4ed56411dd2/rezka.js",
-        "published_at": "2026-11-06T22:54:28Z"
+        "sha": "37223cef4547426a4a41ab7ecfc611b3c9d21862",
+        "version": "1.7.7",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-hdrezka@37223cef4547426a4a41ab7ecfc611b3c9d21862/rezka.js",
+        "published_at": "2026-11-07T09:35:04Z"
       },
       "Torrent Styles": {
         "repo": "Alexgood321/store",
@@ -463,6 +463,11 @@
           "sha": "cc4b591463edd083fe3c1ef610b1c4ed56411dd2",
           "version": "1.7.6",
           "published_at": "2026-11-06T22:54:28Z"
+        },
+        {
+          "sha": "37223cef4547426a4a41ab7ecfc611b3c9d21862",
+          "version": "1.7.7",
+          "published_at": "2026-11-07T09:35:04Z"
         }
       ],
       "Torrent Styles": [
@@ -609,6 +614,6 @@
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-07T09:28:55Z"
+    "last_checked_at": "2026-11-07T09:37:46Z"
   }
 }
