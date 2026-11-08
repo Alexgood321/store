@@ -51,8 +51,8 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: синхронизация серий и продолжения, автоотметка предыдущего эпизода при запуске следующего без таймкодов VLC/IINA. Кнопка «Продолжить», кеш TorrServer, кадры TMDB, NUM и Supabase Realtime. HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@a5b8a8ea7f65b8fd84efcafa6b4e7f2de435f448/lampa-sync-pro.js",
-          "version": "0.1.20"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@152d83e55b2199b4b163641be24505d97ca2fab3/lampa-sync-pro.js",
+          "version": "0.1.21"
         },
         {
           "name": "KP Rating Pro",
@@ -216,8 +216,8 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: синхронизация серий и продолжения, автоотметка предыдущего эпизода при запуске следующего без таймкодов VLC/IINA. Кнопка «Продолжить», кеш TorrServer, кадры TMDB, NUM и Supabase Realtime. HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@a5b8a8ea7f65b8fd84efcafa6b4e7f2de435f448/lampa-sync-pro.js",
-          "version": "0.1.20"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@152d83e55b2199b4b163641be24505d97ca2fab3/lampa-sync-pro.js",
+          "version": "0.1.21"
         },
         {
           "name": "KP Rating Pro",
@@ -395,10 +395,10 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "owned": true,
-        "sha": "a5b8a8ea7f65b8fd84efcafa6b4e7f2de435f448",
-        "version": "0.1.20",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@a5b8a8ea7f65b8fd84efcafa6b4e7f2de435f448/lampa-sync-pro.js",
-        "published_at": "2026-11-08T14:14:50Z"
+        "sha": "152d83e55b2199b4b163641be24505d97ca2fab3",
+        "version": "0.1.21",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@152d83e55b2199b4b163641be24505d97ca2fab3/lampa-sync-pro.js",
+        "published_at": "2026-11-08T15:18:45Z"
       },
       "KP Rating Pro": {
         "repo": "Alexgood321/lampa-plugins",
@@ -668,11 +668,6 @@
       ],
       "Lampa Sync Pro": [
         {
-          "sha": "0a294178400449ef5e5ccbf2d275a1627bbe39da",
-          "version": "0.1.12",
-          "published_at": "2026-11-07T09:24:21Z"
-        },
-        {
           "sha": "708d43e7a58bf8e6bbd2a185d6983c25ff30b503",
           "version": "0.1.13",
           "published_at": "2026-11-07T09:28:41Z"
@@ -726,6 +721,11 @@
           "sha": "a5b8a8ea7f65b8fd84efcafa6b4e7f2de435f448",
           "version": "0.1.20",
           "published_at": "2026-11-08T14:14:50Z"
+        },
+        {
+          "sha": "152d83e55b2199b4b163641be24505d97ca2fab3",
+          "version": "0.1.21",
+          "published_at": "2026-11-08T15:18:45Z"
         }
       ],
       "KP Rating Pro": [
