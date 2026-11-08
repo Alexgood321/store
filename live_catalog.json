@@ -53,6 +53,13 @@
           "descr": "Тестовая альфа: синхронизация серий и продолжения, автоотметка предыдущего эпизода при запуске следующего без таймкодов VLC/IINA. Кнопка «Продолжить», кеш TorrServer, кадры TMDB, NUM и Supabase Realtime. HDRezka, CUB и Trakt не затрагиваются.",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@a5b8a8ea7f65b8fd84efcafa6b4e7f2de435f448/lampa-sync-pro.js",
           "version": "0.1.20"
+        },
+        {
+          "name": "KP Rating Pro",
+          "author": "Alexgood321",
+          "descr": "Рейтинг Кинопоиска на постерах Lampa: асинхронная подмена, кэш, поиск совпадений, контроль запросов и режимы КП / TMDB / оба.",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@28e0855ca1b6a79c99898328e164d130337c0ba0/kp_rating_pro.js",
+          "version": "1.0.0"
         }
       ]
     },
@@ -211,6 +218,13 @@
           "descr": "Тестовая альфа: синхронизация серий и продолжения, автоотметка предыдущего эпизода при запуске следующего без таймкодов VLC/IINA. Кнопка «Продолжить», кеш TorrServer, кадры TMDB, NUM и Supabase Realtime. HDRezka, CUB и Trakt не затрагиваются.",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@a5b8a8ea7f65b8fd84efcafa6b4e7f2de435f448/lampa-sync-pro.js",
           "version": "0.1.20"
+        },
+        {
+          "name": "KP Rating Pro",
+          "author": "Alexgood321",
+          "descr": "Рейтинг Кинопоиска на постерах Lampa: асинхронная подмена, кэш, поиск совпадений, контроль запросов и режимы КП / TMDB / оба.",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@28e0855ca1b6a79c99898328e164d130337c0ba0/kp_rating_pro.js",
+          "version": "1.0.0"
         }
       ]
     },
@@ -385,6 +399,16 @@
         "version": "0.1.20",
         "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@a5b8a8ea7f65b8fd84efcafa6b4e7f2de435f448/lampa-sync-pro.js",
         "published_at": "2026-11-08T14:14:50Z"
+      },
+      "KP Rating Pro": {
+        "repo": "Alexgood321/lampa-plugins",
+        "path": "kp_rating_pro.js",
+        "ref": "main",
+        "owned": true,
+        "sha": "28e0855ca1b6a79c99898328e164d130337c0ba0",
+        "version": "1.0.0",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@28e0855ca1b6a79c99898328e164d130337c0ba0/kp_rating_pro.js",
+        "published_at": "2026-11-08T14:17:35Z"
       }
     },
     "registered": {
@@ -395,6 +419,18 @@
         "ref": "main",
         "author": "Alexgood321",
         "descr": "Тестовая альфа: синхронизация серий и продолжения, автоотметка предыдущего эпизода при запуске следующего без таймкодов VLC/IINA. Кнопка «Продолжить», кеш TorrServer, кадры TMDB, NUM и Supabase Realtime. HDRezka, CUB и Trakt не затрагиваются.",
+        "categories": [
+          "Мои",
+          "Рейтинги и сервисы"
+        ]
+      },
+      "KP Rating Pro": {
+        "name": "KP Rating Pro",
+        "repo": "Alexgood321/lampa-plugins",
+        "path": "kp_rating_pro.js",
+        "ref": "main",
+        "author": "Alexgood321",
+        "descr": "Рейтинг Кинопоиска на постерах Lampa: асинхронная подмена, кэш, поиск совпадений, контроль запросов и режимы КП / TMDB / оба.",
         "categories": [
           "Мои",
           "Рейтинги и сервисы"
@@ -686,9 +722,16 @@
           "version": "0.1.20",
           "published_at": "2026-11-08T14:14:50Z"
         }
+      ],
+      "KP Rating Pro": [
+        {
+          "sha": "28e0855ca1b6a79c99898328e164d130337c0ba0",
+          "version": "1.0.0",
+          "published_at": "2026-11-08T14:17:35Z"
+        }
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-08T13:55:17Z"
+    "last_checked_at": "2026-11-08T14:17:35Z"
   }
 }
