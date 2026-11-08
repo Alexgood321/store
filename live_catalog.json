@@ -58,8 +58,8 @@
           "name": "KP Rating Pro",
           "author": "Alexgood321",
           "descr": "Рейтинг Кинопоиска на постерах Lampa: асинхронная подмена, кэш, поиск совпадений, контроль запросов и режимы КП / TMDB / оба.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@cc4a83e8e8a3ad0f8ad0c16893d8fdb16e74d87f/kp_rating_pro.js",
-          "version": "1.0.1"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@611dc49c1798e16f39439c06f3b2c422f0cfca05/kp_rating_pro.js",
+          "version": "1.1.0"
         }
       ]
     },
@@ -223,8 +223,8 @@
           "name": "KP Rating Pro",
           "author": "Alexgood321",
           "descr": "Рейтинг Кинопоиска на постерах Lampa: асинхронная подмена, кэш, поиск совпадений, контроль запросов и режимы КП / TMDB / оба.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@cc4a83e8e8a3ad0f8ad0c16893d8fdb16e74d87f/kp_rating_pro.js",
-          "version": "1.0.1"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@611dc49c1798e16f39439c06f3b2c422f0cfca05/kp_rating_pro.js",
+          "version": "1.1.0"
         }
       ]
     },
@@ -405,10 +405,10 @@
         "path": "kp_rating_pro.js",
         "ref": "main",
         "owned": true,
-        "sha": "cc4a83e8e8a3ad0f8ad0c16893d8fdb16e74d87f",
-        "version": "1.0.1",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@cc4a83e8e8a3ad0f8ad0c16893d8fdb16e74d87f/kp_rating_pro.js",
-        "published_at": "2026-11-08T14:29:00Z"
+        "sha": "611dc49c1798e16f39439c06f3b2c422f0cfca05",
+        "version": "1.1.0",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@611dc49c1798e16f39439c06f3b2c422f0cfca05/kp_rating_pro.js",
+        "published_at": "2026-11-08T14:39:03Z"
       }
     },
     "registered": {
@@ -733,10 +733,15 @@
           "sha": "cc4a83e8e8a3ad0f8ad0c16893d8fdb16e74d87f",
           "version": "1.0.1",
           "published_at": "2026-11-08T14:29:00Z"
+        },
+        {
+          "sha": "611dc49c1798e16f39439c06f3b2c422f0cfca05",
+          "version": "1.1.0",
+          "published_at": "2026-11-08T14:39:03Z"
         }
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-08T14:29:00Z"
+    "last_checked_at": "2026-11-08T14:39:03Z"
   }
 }
