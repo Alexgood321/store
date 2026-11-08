@@ -51,8 +51,8 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: синхронизация серий и продолжения, автоотметка предыдущего эпизода при запуске следующего без таймкодов VLC/IINA. Кнопка «Продолжить», кеш TorrServer, кадры TMDB, NUM и Supabase Realtime. HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@773348b6c2a18d8dc049b4293384bc503952319c/lampa-sync-pro.js",
-          "version": "0.1.19"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@a5b8a8ea7f65b8fd84efcafa6b4e7f2de435f448/lampa-sync-pro.js",
+          "version": "0.1.20"
         }
       ]
     },
@@ -209,8 +209,8 @@
           "name": "Lampa Sync Pro",
           "author": "Alexgood321",
           "descr": "Тестовая альфа: синхронизация серий и продолжения, автоотметка предыдущего эпизода при запуске следующего без таймкодов VLC/IINA. Кнопка «Продолжить», кеш TorrServer, кадры TMDB, NUM и Supabase Realtime. HDRezka, CUB и Trakt не затрагиваются.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@773348b6c2a18d8dc049b4293384bc503952319c/lampa-sync-pro.js",
-          "version": "0.1.19"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@a5b8a8ea7f65b8fd84efcafa6b4e7f2de435f448/lampa-sync-pro.js",
+          "version": "0.1.20"
         }
       ]
     },
@@ -381,10 +381,10 @@
         "path": "lampa-sync-pro.js",
         "ref": "main",
         "owned": true,
-        "sha": "773348b6c2a18d8dc049b4293384bc503952319c",
-        "version": "0.1.19",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@773348b6c2a18d8dc049b4293384bc503952319c/lampa-sync-pro.js",
-        "published_at": "2026-11-07T15:16:39Z"
+        "sha": "a5b8a8ea7f65b8fd84efcafa6b4e7f2de435f448",
+        "version": "0.1.20",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-sync-pro@a5b8a8ea7f65b8fd84efcafa6b4e7f2de435f448/lampa-sync-pro.js",
+        "published_at": "2026-11-08T14:14:50Z"
       }
     },
     "registered": {
@@ -680,6 +680,11 @@
           "sha": "773348b6c2a18d8dc049b4293384bc503952319c",
           "version": "0.1.19",
           "published_at": "2026-11-07T15:16:39Z"
+        },
+        {
+          "sha": "a5b8a8ea7f65b8fd84efcafa6b4e7f2de435f448",
+          "version": "0.1.20",
+          "published_at": "2026-11-08T14:14:50Z"
         }
       ]
     },
