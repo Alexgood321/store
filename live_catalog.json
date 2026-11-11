@@ -64,9 +64,9 @@
         {
           "name": "TorrServer Switch Pro",
           "author": "Alexgood321",
-          "descr": "Переключение основного и дополнительного TorrServer через кнопку TS 1 / TS 2 в верхней панели Lampa, без перезагрузки.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@fa5da15041cadced493137fe988b6096c97f1049/torrserver_switch.js",
-          "version": "1.0.0"
+          "descr": "Адреса TS 1/TS 2, кнопка в шапке, ручной/AUTO режимы, мониторинг /echo, задержка, резервирование, настройки и диагностика.",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@53494fb1260c8a30e182a30f5d658cf2d0043c1a/torrserver_switch.js",
+          "version": "2.0.1"
         }
       ]
     },
@@ -151,9 +151,9 @@
         {
           "name": "TorrServer Switch Pro",
           "author": "Alexgood321",
-          "descr": "Переключение основного и дополнительного TorrServer через кнопку TS 1 / TS 2 в верхней панели Lampa, без перезагрузки.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@fa5da15041cadced493137fe988b6096c97f1049/torrserver_switch.js",
-          "version": "1.0.0"
+          "descr": "Адреса TS 1/TS 2, кнопка в шапке, ручной/AUTO режимы, мониторинг /echo, задержка, резервирование, настройки и диагностика.",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@53494fb1260c8a30e182a30f5d658cf2d0043c1a/torrserver_switch.js",
+          "version": "2.0.1"
         }
       ]
     },
@@ -429,10 +429,10 @@
         "path": "torrserver_switch.js",
         "ref": "main",
         "owned": true,
-        "sha": "fa5da15041cadced493137fe988b6096c97f1049",
-        "version": "1.0.0",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@fa5da15041cadced493137fe988b6096c97f1049/torrserver_switch.js",
-        "published_at": "2026-11-11T08:05:11Z"
+        "sha": "53494fb1260c8a30e182a30f5d658cf2d0043c1a",
+        "version": "2.0.1",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@53494fb1260c8a30e182a30f5d658cf2d0043c1a/torrserver_switch.js",
+        "published_at": "2026-11-11T08:32:30Z"
       }
     },
     "registered": {
@@ -466,7 +466,7 @@
         "path": "torrserver_switch.js",
         "ref": "main",
         "author": "Alexgood321",
-        "descr": "Переключение основного и дополнительного TorrServer через кнопку TS 1 / TS 2 в верхней панели Lampa, без перезагрузки.",
+        "descr": "Адреса TS 1/TS 2, кнопка в шапке, ручной/AUTO режимы, мониторинг /echo, задержка, резервирование, настройки и диагностика.",
         "categories": [
           "Мои",
           "Торренты"
@@ -796,6 +796,11 @@
           "sha": "fa5da15041cadced493137fe988b6096c97f1049",
           "version": "1.0.0",
           "published_at": "2026-11-11T08:05:11Z"
+        },
+        {
+          "sha": "53494fb1260c8a30e182a30f5d658cf2d0043c1a",
+          "version": "2.0.1",
+          "published_at": "2026-11-11T08:32:30Z"
         }
       ]
     },
