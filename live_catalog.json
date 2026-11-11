@@ -64,9 +64,9 @@
         {
           "name": "TorrServer Switch Pro",
           "author": "Alexgood321",
-          "descr": "Исправлена адаптивная круглая кнопка без наложения TS/пинга; переключение, анимация, мониторинг и AUTO. На узких экранах широкая плашка становится круглой.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@f94278ef815ced6131d7b9b96edbea883ee6af1d/torrserver_switch.js",
-          "version": "2.1.1"
+          "descr": "Круглая кнопка TS/пинг: увеличена подпись ms и точка состояния сдвинута внутрь. Анимация, диагностика, мониторинг и AUTO.",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d3e8cc3b488950ea7662c5a493f07a7f2d03b7e0/torrserver_switch.js",
+          "version": "2.1.2"
         }
       ]
     },
@@ -151,9 +151,9 @@
         {
           "name": "TorrServer Switch Pro",
           "author": "Alexgood321",
-          "descr": "Исправлена адаптивная круглая кнопка без наложения TS/пинга; переключение, анимация, мониторинг и AUTO. На узких экранах широкая плашка становится круглой.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@f94278ef815ced6131d7b9b96edbea883ee6af1d/torrserver_switch.js",
-          "version": "2.1.1"
+          "descr": "Круглая кнопка TS/пинг: увеличена подпись ms и точка состояния сдвинута внутрь. Анимация, диагностика, мониторинг и AUTO.",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d3e8cc3b488950ea7662c5a493f07a7f2d03b7e0/torrserver_switch.js",
+          "version": "2.1.2"
         }
       ]
     },
@@ -429,10 +429,10 @@
         "path": "torrserver_switch.js",
         "ref": "main",
         "owned": true,
-        "sha": "f94278ef815ced6131d7b9b96edbea883ee6af1d",
-        "version": "2.1.1",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@f94278ef815ced6131d7b9b96edbea883ee6af1d/torrserver_switch.js",
-        "published_at": "2026-11-11T15:16:30Z"
+        "sha": "d3e8cc3b488950ea7662c5a493f07a7f2d03b7e0",
+        "version": "2.1.2",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d3e8cc3b488950ea7662c5a493f07a7f2d03b7e0/torrserver_switch.js",
+        "published_at": "2026-11-11T16:13:45Z"
       }
     },
     "registered": {
@@ -466,7 +466,7 @@
         "path": "torrserver_switch.js",
         "ref": "main",
         "author": "Alexgood321",
-        "descr": "Исправлена адаптивная круглая кнопка без наложения TS/пинга; переключение, анимация, мониторинг и AUTO. На узких экранах широкая плашка становится круглой.",
+        "descr": "Круглая кнопка TS/пинг: увеличена подпись ms и точка состояния сдвинута внутрь. Анимация, диагностика, мониторинг и AUTO.",
         "categories": [
           "Мои",
           "Торренты"
@@ -811,6 +811,11 @@
           "sha": "f94278ef815ced6131d7b9b96edbea883ee6af1d",
           "version": "2.1.1",
           "published_at": "2026-11-11T15:16:30Z"
+        },
+        {
+          "sha": "d3e8cc3b488950ea7662c5a493f07a7f2d03b7e0",
+          "version": "2.1.2",
+          "published_at": "2026-11-11T16:13:45Z"
         }
       ]
     },
