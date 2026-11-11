@@ -64,9 +64,9 @@
         {
           "name": "TorrServer Switch Pro",
           "author": "Alexgood321",
-          "descr": "Адреса TS 1/TS 2, кнопка в шапке, ручной/AUTO режимы, мониторинг /echo, задержка, резервирование, настройки и диагностика.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@53494fb1260c8a30e182a30f5d658cf2d0043c1a/torrserver_switch.js",
-          "version": "2.0.1"
+          "descr": "Круглая кнопка в шапке, выбор TS/задержка/чередование, регулируемая анимация и пауза при фокусе. Статусы, мониторинг и AUTO.",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@b06d2545d95a0b390952b153b8731b7dbd3837c0/torrserver_switch.js",
+          "version": "2.1.0"
         }
       ]
     },
@@ -151,9 +151,9 @@
         {
           "name": "TorrServer Switch Pro",
           "author": "Alexgood321",
-          "descr": "Адреса TS 1/TS 2, кнопка в шапке, ручной/AUTO режимы, мониторинг /echo, задержка, резервирование, настройки и диагностика.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@53494fb1260c8a30e182a30f5d658cf2d0043c1a/torrserver_switch.js",
-          "version": "2.0.1"
+          "descr": "Круглая кнопка в шапке, выбор TS/задержка/чередование, регулируемая анимация и пауза при фокусе. Статусы, мониторинг и AUTO.",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@b06d2545d95a0b390952b153b8731b7dbd3837c0/torrserver_switch.js",
+          "version": "2.1.0"
         }
       ]
     },
@@ -429,10 +429,10 @@
         "path": "torrserver_switch.js",
         "ref": "main",
         "owned": true,
-        "sha": "53494fb1260c8a30e182a30f5d658cf2d0043c1a",
-        "version": "2.0.1",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@53494fb1260c8a30e182a30f5d658cf2d0043c1a/torrserver_switch.js",
-        "published_at": "2026-11-11T08:32:30Z"
+        "sha": "b06d2545d95a0b390952b153b8731b7dbd3837c0",
+        "version": "2.1.0",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@b06d2545d95a0b390952b153b8731b7dbd3837c0/torrserver_switch.js",
+        "published_at": "2026-11-11T14:40:25Z"
       }
     },
     "registered": {
@@ -466,7 +466,7 @@
         "path": "torrserver_switch.js",
         "ref": "main",
         "author": "Alexgood321",
-        "descr": "Адреса TS 1/TS 2, кнопка в шапке, ручной/AUTO режимы, мониторинг /echo, задержка, резервирование, настройки и диагностика.",
+        "descr": "Круглая кнопка в шапке, выбор TS/задержка/чередование, регулируемая анимация и пауза при фокусе. Статусы, мониторинг и AUTO.",
         "categories": [
           "Мои",
           "Торренты"
@@ -801,6 +801,11 @@
           "sha": "53494fb1260c8a30e182a30f5d658cf2d0043c1a",
           "version": "2.0.1",
           "published_at": "2026-11-11T08:32:30Z"
+        },
+        {
+          "sha": "b06d2545d95a0b390952b153b8731b7dbd3837c0",
+          "version": "2.1.0",
+          "published_at": "2026-11-11T14:40:25Z"
         }
       ]
     },
