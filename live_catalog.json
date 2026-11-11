@@ -64,9 +64,9 @@
         {
           "name": "TorrServer Switch Pro",
           "author": "Alexgood321",
-          "descr": "Круглая кнопка в шапке, выбор TS/задержка/чередование, регулируемая анимация и пауза при фокусе. Статусы, мониторинг и AUTO.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@b06d2545d95a0b390952b153b8731b7dbd3837c0/torrserver_switch.js",
-          "version": "2.1.0"
+          "descr": "Исправлена адаптивная круглая кнопка без наложения TS/пинга; переключение, анимация, мониторинг и AUTO. На узких экранах широкая плашка становится круглой.",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@f94278ef815ced6131d7b9b96edbea883ee6af1d/torrserver_switch.js",
+          "version": "2.1.1"
         }
       ]
     },
@@ -151,9 +151,9 @@
         {
           "name": "TorrServer Switch Pro",
           "author": "Alexgood321",
-          "descr": "Круглая кнопка в шапке, выбор TS/задержка/чередование, регулируемая анимация и пауза при фокусе. Статусы, мониторинг и AUTO.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@b06d2545d95a0b390952b153b8731b7dbd3837c0/torrserver_switch.js",
-          "version": "2.1.0"
+          "descr": "Исправлена адаптивная круглая кнопка без наложения TS/пинга; переключение, анимация, мониторинг и AUTO. На узких экранах широкая плашка становится круглой.",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@f94278ef815ced6131d7b9b96edbea883ee6af1d/torrserver_switch.js",
+          "version": "2.1.1"
         }
       ]
     },
@@ -429,10 +429,10 @@
         "path": "torrserver_switch.js",
         "ref": "main",
         "owned": true,
-        "sha": "b06d2545d95a0b390952b153b8731b7dbd3837c0",
-        "version": "2.1.0",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@b06d2545d95a0b390952b153b8731b7dbd3837c0/torrserver_switch.js",
-        "published_at": "2026-11-11T14:40:25Z"
+        "sha": "f94278ef815ced6131d7b9b96edbea883ee6af1d",
+        "version": "2.1.1",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@f94278ef815ced6131d7b9b96edbea883ee6af1d/torrserver_switch.js",
+        "published_at": "2026-11-11T15:16:30Z"
       }
     },
     "registered": {
@@ -466,7 +466,7 @@
         "path": "torrserver_switch.js",
         "ref": "main",
         "author": "Alexgood321",
-        "descr": "Круглая кнопка в шапке, выбор TS/задержка/чередование, регулируемая анимация и пауза при фокусе. Статусы, мониторинг и AUTO.",
+        "descr": "Исправлена адаптивная круглая кнопка без наложения TS/пинга; переключение, анимация, мониторинг и AUTO. На узких экранах широкая плашка становится круглой.",
         "categories": [
           "Мои",
           "Торренты"
@@ -806,6 +806,11 @@
           "sha": "b06d2545d95a0b390952b153b8731b7dbd3837c0",
           "version": "2.1.0",
           "published_at": "2026-11-11T14:40:25Z"
+        },
+        {
+          "sha": "f94278ef815ced6131d7b9b96edbea883ee6af1d",
+          "version": "2.1.1",
+          "published_at": "2026-11-11T15:16:30Z"
         }
       ]
     },
