@@ -60,6 +60,13 @@
           "descr": "Рейтинг Кинопоиска на постерах Lampa: асинхронная подмена, кэш, поиск совпадений, контроль запросов и режимы КП / TMDB / оба.",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@611dc49c1798e16f39439c06f3b2c422f0cfca05/kp_rating_pro.js",
           "version": "1.1.0"
+        },
+        {
+          "name": "TorrServer Switch Pro",
+          "author": "Alexgood321",
+          "descr": "Переключение основного и дополнительного TorrServer через кнопку TS 1 / TS 2 в верхней панели Lampa, без перезагрузки.",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@fa5da15041cadced493137fe988b6096c97f1049/torrserver_switch.js",
+          "version": "1.0.0"
         }
       ]
     },
@@ -140,6 +147,13 @@
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/torrent_styles_v2.js?v=1.2.1",
           "descr": "Оформление списка торрентов: цветовые метки сидов, пиров, битрейта и размера. Копия из твоего форка.",
           "version": "1.2.1"
+        },
+        {
+          "name": "TorrServer Switch Pro",
+          "author": "Alexgood321",
+          "descr": "Переключение основного и дополнительного TorrServer через кнопку TS 1 / TS 2 в верхней панели Lampa, без перезагрузки.",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@fa5da15041cadced493137fe988b6096c97f1049/torrserver_switch.js",
+          "version": "1.0.0"
         }
       ]
     },
@@ -409,6 +423,16 @@
         "version": "1.1.0",
         "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@611dc49c1798e16f39439c06f3b2c422f0cfca05/kp_rating_pro.js",
         "published_at": "2026-11-08T14:39:03Z"
+      },
+      "TorrServer Switch Pro": {
+        "repo": "Alexgood321/lampa-plugins",
+        "path": "torrserver_switch.js",
+        "ref": "main",
+        "owned": true,
+        "sha": "fa5da15041cadced493137fe988b6096c97f1049",
+        "version": "1.0.0",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@fa5da15041cadced493137fe988b6096c97f1049/torrserver_switch.js",
+        "published_at": "2026-11-11T08:05:11Z"
       }
     },
     "registered": {
@@ -434,6 +458,18 @@
         "categories": [
           "Мои",
           "Рейтинги и сервисы"
+        ]
+      },
+      "TorrServer Switch Pro": {
+        "name": "TorrServer Switch Pro",
+        "repo": "Alexgood321/lampa-plugins",
+        "path": "torrserver_switch.js",
+        "ref": "main",
+        "author": "Alexgood321",
+        "descr": "Переключение основного и дополнительного TorrServer через кнопку TS 1 / TS 2 в верхней панели Lampa, без перезагрузки.",
+        "categories": [
+          "Мои",
+          "Торренты"
         ]
       }
     },
@@ -753,6 +789,13 @@
           "sha": "611dc49c1798e16f39439c06f3b2c422f0cfca05",
           "version": "1.1.0",
           "published_at": "2026-11-08T14:39:03Z"
+        }
+      ],
+      "TorrServer Switch Pro": [
+        {
+          "sha": "fa5da15041cadced493137fe988b6096c97f1049",
+          "version": "1.0.0",
+          "published_at": "2026-11-11T08:05:11Z"
         }
       ]
     },
