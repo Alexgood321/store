@@ -8,9 +8,9 @@
         {
           "name": "SURS Pro",
           "author": "aviamovie / Lampa Community / Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@72cf6325ed7f26e9a10058e0a30b06df8cfd9237/surs.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@f8945ef27e89884d674a6a9fbe5b899d9140519f/surs.js",
           "descr": "Настраиваемые подборки и полки главного экрана: порядок, скрытие, источники, редактор с пульта и сенсорного экрана. Исправлен сбой sid при создании главного экрана.",
-          "version": "4.0.11"
+          "version": "4.0.12"
         },
         {
           "name": "Home Categories Pro",
@@ -77,9 +77,9 @@
         {
           "name": "SURS Pro",
           "author": "aviamovie / Lampa Community / Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@72cf6325ed7f26e9a10058e0a30b06df8cfd9237/surs.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@f8945ef27e89884d674a6a9fbe5b899d9140519f/surs.js",
           "descr": "Настраиваемые подборки и полки главного экрана: порядок, скрытие, источники, редактор с пульта и сенсорного экрана. Исправлен сбой sid при создании главного экрана.",
-          "version": "4.0.11"
+          "version": "4.0.12"
         },
         {
           "name": "Home Categories Pro",
@@ -269,10 +269,10 @@
         "path": "surs.js",
         "ref": "main",
         "owned": true,
-        "sha": "72cf6325ed7f26e9a10058e0a30b06df8cfd9237",
-        "version": "4.0.11",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@72cf6325ed7f26e9a10058e0a30b06df8cfd9237/surs.js",
-        "published_at": "2026-11-15T11:02:42Z"
+        "sha": "f8945ef27e89884d674a6a9fbe5b899d9140519f",
+        "version": "4.0.12",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@f8945ef27e89884d674a6a9fbe5b899d9140519f/surs.js",
+        "published_at": "2026-11-15T13:15:24Z"
       },
       "Home Categories Pro": {
         "repo": "Alexgood321/lampa-plugins",
@@ -476,11 +476,6 @@
     "history": {
       "SURS Pro": [
         {
-          "sha": "ad97e9dba62194163154adba7391169bf0aae810",
-          "version": "4.0.1",
-          "published_at": "2026-11-09T12:53:33Z"
-        },
-        {
           "sha": "738ac2cd99e0fa89381717344ebfb3d44151cc5d",
           "version": "4.0.2",
           "published_at": "2026-11-11T06:15:27Z"
@@ -534,6 +529,11 @@
           "sha": "72cf6325ed7f26e9a10058e0a30b06df8cfd9237",
           "version": "4.0.11",
           "published_at": "2026-11-15T11:02:42Z"
+        },
+        {
+          "sha": "f8945ef27e89884d674a6a9fbe5b899d9140519f",
+          "version": "4.0.12",
+          "published_at": "2026-11-15T13:15:24Z"
         }
       ],
       "Home Categories Pro": [
@@ -820,6 +820,6 @@
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-15T11:02:46Z"
+    "last_checked_at": "2026-11-15T13:15:27Z"
   }
 }
