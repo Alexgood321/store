@@ -8,7 +8,7 @@
         {
           "name": "SURS Pro",
           "author": "aviamovie / Lampa Community / Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@a6b9df3c48b4678d6b3d040844dd4ee13fa2e5dc/surs.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@19519fe48a86caa657a7dc7be134e05cefaca62d/surs.js",
           "descr": "Настраиваемые подборки и полки главного экрана: порядок, скрытие, источники, редактор с пульта и сенсорного экрана. Исправлен сбой sid при создании главного экрана.",
           "version": "4.0.9"
         },
@@ -77,7 +77,7 @@
         {
           "name": "SURS Pro",
           "author": "aviamovie / Lampa Community / Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@a6b9df3c48b4678d6b3d040844dd4ee13fa2e5dc/surs.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@19519fe48a86caa657a7dc7be134e05cefaca62d/surs.js",
           "descr": "Настраиваемые подборки и полки главного экрана: порядок, скрытие, источники, редактор с пульта и сенсорного экрана. Исправлен сбой sid при создании главного экрана.",
           "version": "4.0.9"
         },
@@ -269,9 +269,9 @@
         "path": "surs.js",
         "ref": "main",
         "owned": true,
-        "sha": "a6b9df3c48b4678d6b3d040844dd4ee13fa2e5dc",
+        "sha": "19519fe48a86caa657a7dc7be134e05cefaca62d",
         "version": "4.0.9",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@a6b9df3c48b4678d6b3d040844dd4ee13fa2e5dc/surs.js",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@19519fe48a86caa657a7dc7be134e05cefaca62d/surs.js",
         "published_at": "2026-11-15T08:45:33Z"
       },
       "Home Categories Pro": {
@@ -531,7 +531,7 @@
           "published_at": "2026-11-14T10:14:28Z"
         },
         {
-          "sha": "a6b9df3c48b4678d6b3d040844dd4ee13fa2e5dc",
+          "sha": "19519fe48a86caa657a7dc7be134e05cefaca62d",
           "version": "4.0.9",
           "published_at": "2026-11-15T08:45:33Z"
         }
