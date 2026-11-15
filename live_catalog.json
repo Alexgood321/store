@@ -476,11 +476,6 @@
     "history": {
       "SURS Pro": [
         {
-          "sha": "7b49dbe7c0c3309866b2c0225f7977ecdccaa515",
-          "version": "3.9.25",
-          "published_at": "2026-11-09T04:19:31Z"
-        },
-        {
           "sha": "3ad46747d22905050565c32fda258de20010eab4",
           "version": "3.9.26",
           "published_at": "2026-11-09T04:38:53Z"
@@ -529,6 +524,11 @@
           "sha": "a2803cbe88f881136acb3b4d3fe9738d3aa69816",
           "version": "4.0.8",
           "published_at": "2026-11-14T10:14:28Z"
+        },
+        {
+          "sha": "a6b9df3c48b4678d6b3d040844dd4ee13fa2e5dc",
+          "version": "4.0.9",
+          "published_at": "2026-11-15T08:45:33Z"
         },
         {
           "sha": "19519fe48a86caa657a7dc7be134e05cefaca62d",
