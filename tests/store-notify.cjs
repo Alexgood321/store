@@ -34,7 +34,8 @@ test.setData(data);
 assert.equal(test.available('SURS Pro'),true);
 let announced=test.notify([]);
 assert.equal(announced.length,1,'available update announced once');
-assert.match(alerts.at(-1),/SURS Pro 4\.0\.15/);
+assert.ok(alerts.at(-1).includes('SURS Pro '+original.version),
+  'actual latest SURS version must appear in the update notice');
 assert.equal(test.notify([]).length,0,'same SHA is not announced twice');
 assert.equal(alerts.length,1);
 

@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.6.9',
+    version: '3.6.10',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -677,6 +677,26 @@
     }
   }
 
+  // An up-to-date saved plugin URL is not proof that its JS is running.
+  // Offer a restart action instead of misleadingly saying no update exists.
+  function pluginNeedsActivation(name, meta, installed) {
+    if (!meta || !installed || !installed.url || installed.url !== meta.link ||
+        installed.status === 0 || installed.status === '0' ||
+        installed.status === false) return false;
+    var running = runningVersion(name);
+    return Boolean(running && isVersionNewer(running, meta.version));
+  }
+
+  function countPendingPluginActivations() {
+    var count = 0;
+    for (var name in LIVE_META) {
+      if (!Object.prototype.hasOwnProperty.call(LIVE_META,name)) continue;
+      if (pluginNeedsActivation(name,LIVE_META[name],
+          findInstalled(name,LIVE_META[name]))) count++;
+    }
+    return count;
+  }
+
   function showUpdateCenter(forceRefresh, reportResult, reopenAfterCheck) {
     loadLive(function (resolvedUrl, autoApplied) {
       if (reportResult) {
@@ -704,7 +724,13 @@
         var outdated = isUpdateAvailable(name);
         var canUpdate = outdated && automaticUpgradeIsSafe(name,info);
         var canPin = !canUpdate && canPinVerifiedRelease(name,info);
-        if (canUpdate || canPin) count++;
+        var canRestart = !canUpdate && !canPin &&
+          pluginNeedsActivation(name,info,installed);
+        var unconfirmedSurs = !canUpdate && !canPin && !canRestart &&
+          name === 'SURS Pro' && installed.url === info.link &&
+          installed.status !== 0 && installed.status !== '0' &&
+          installed.status !== false && !runningVersion(name);
+        if (canUpdate || canPin || canRestart || unconfirmedSurs) count++;
         var floating = /@(main|master|dev|latest)\//i.test(String(installed.url));
         var currentVersion = installedVersion(String(installed.url), info);
         var currentLabel = currentVersion === null ? 'проверяется' : (currentVersion || 'не определена');
@@ -712,6 +738,10 @@
           'Сохранённая ссылка: ' + currentLabel + ' · Доступна: ' + info.version + ' · обновить ссылку' :
           canPin ? 'Источник @main: версия запуска не подтверждена · ' +
             'закрепить проверенную сборку ' + info.version + ' (вручную)' :
+          canRestart ? 'Ссылка уже обновлена до ' + info.version +
+            ' · Запущена старая версия · применить: перезапустить Lampa' :
+          unconfirmedSurs ? 'Ссылка ' + info.version +
+            ' сохранена · запуск SURS не подтверждён · проверить диагностику' :
           outdated ? 'Сохранённая ссылка: ' + currentLabel +
             ' · Обновление заблокировано: версия или SHA не подтверждены' :
           floating && currentVersion === null ?
@@ -724,12 +754,17 @@
           info.version || '',canUpdate);
         if (canPin)
           versionDisplay.hint = 'Можно вручную закрепить официальный SHA. Автоматическая замена без проверки запрещена; предыдущая ссылка сохраняется для отката.';
+        else if (canRestart)
+          versionDisplay.hint = 'Новый файл уже выбран, но текущая Lampa выполняет старый JS. Нужен перезапуск, повторная установка не требуется.';
+        else if (unconfirmedSurs)
+          versionDisplay.hint = 'Ссылка на новую сборку сохранена, но запуск SURS не подтверждён. Проверьте диагностику; если JS не запустился, смена ссылки не поможет.';
         else if (outdated && !canUpdate)
           versionDisplay.hint = 'Обновление заблокировано: установленная версия или направление SHA не подтверждены.';
         if (countCopies > 1)
           versionDisplay.hint += ' Установлено копий: ' + countCopies + '.';
         rows.push({title:name,subtitle:details,name:name,canUpdate:canUpdate,
-          canPin:canPin, unsafeUpdate:outdated && !canUpdate && !canPin,
+          canPin:canPin,canRestart:canRestart,unconfirmedSurs:unconfirmedSurs,
+          unsafeUpdate:outdated && !canUpdate && !canPin,
           versionDisplay:versionDisplay,onDraw:decorateUpdateVersionRow});
       }
       if (rows.length === 0) rows.push({title:'Установленных отслеживаемых плагинов нет', action:'none'});
@@ -813,6 +848,10 @@
                   notice('Не удалось закрепить сборку: проверьте версию и установку');
               }
             });
+          } else if (row.canRestart) {
+            confirmReload();
+          } else if (row.unconfirmedSurs) {
+            showPluginDiagnostics();
           } else if (row.unsafeUpdate) {
             notice('Обновление ' + row.name + ' заблокировано: версия или SHA не подтверждены.');
           } else if (row.action !== 'none') {
@@ -1076,7 +1115,8 @@
     if (!headerBatchButton || !isHeaderBatchEnabled()) return;
     var count=0;
     if (LAST_LIVE_URL && LAST_LIVE_URL.indexOf(CONFIG.catalog + '?')===0 &&
-        catalogIsKnownGood()) count=getSafeBatchPlan().items.length+(needsCoreReload()?1:0);
+        catalogIsKnownGood()) count=getSafeBatchPlan().items.length+
+          (needsCoreReload()?1:0)+countPendingPluginActivations();
     var bubble=headerBatchButton.find('.alex-store-header-batch-count');
     if (bubble && bubble.length) {
       bubble.text(headerBatchPendingRestart ? '✓' :
@@ -1272,7 +1312,8 @@
         }
         var plan=getSafeBatchPlan();
         var corePending=needsCoreReload();
-        var pendingRestart=headerBatchPendingRestart;
+        var pendingRestart=headerBatchPendingRestart ||
+          countPendingPluginActivations() > 0;
         if (!plan.items.length && !corePending && !pendingRestart) {
           done();
           notice('Подтверждённых обновлений нет.'+
