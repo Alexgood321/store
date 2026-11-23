@@ -24,7 +24,7 @@ const instrumented = source.slice(0, at) +
   'canPinVerifiedRelease:canPinVerifiedRelease,pinVerifiedRelease:pinVerifiedRelease,' +
   'showUpdateCenter:showUpdateCenter,replaceInstalled:replaceInstalled,' +
   'rollbackUpdate:rollbackUpdate,versionText:versionText,' +
-  'notifyGitHubCheck:notifyGitHubCheck};' +
+  'notifyGitHubCheck:notifyGitHubCheck,fresh:catalogIsFresh};' +
   source.slice(at);
 
 const floating = 'https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@main/surs.js';
@@ -55,7 +55,7 @@ vm.runInNewContext(instrumented,{
 const t=window.__qa;
 t.setCatalog(catalog);
 
-// The CDN now serves 4.0.13, yet Lampa still executes 4.0.12.
+// The CDN now serves the catalog's latest SURS, while Lampa still executes 4.0.12.
 // The old implementation incorrectly said there was no update.
 assert.equal(t.isUpdateAvailable('SURS Pro'),true);
 assert.equal(t.automaticUpgradeIsSafe('SURS Pro',meta),true);
@@ -120,5 +120,14 @@ assert.equal(t.canPinVerifiedRelease('SURS Pro',meta),true);
 const before=saves;
 assert.equal(t.replaceInstalled('SURS Pro',true),false);
 assert.equal(saves,before);
+
+// A late scheduler update must not disable verified forward-only pins
+// after only two hours; after 12 hours no automatic replacement is allowed.
+catalog.meta.last_checked_at=new Date(Date.now()-3*60*60*1000).toISOString();
+assert.equal(t.fresh(),true,'three-hour-old central catalog is usable');
+catalog.meta.last_checked_at=new Date(Date.now()-13*60*60*1000).toISOString();
+assert.equal(t.fresh(),false,'thirteen-hour-old catalog must not permit auto updates');
+catalog.meta.last_checked_at=new Date().toISOString();
+
 assert.ok(saves>=4,'upgrades and rollbacks must call Lampa.Plugins.save()');
 console.log('PASS My Store: floating URLs, live version, manual SHA pin, rollback, downgrade safety');
