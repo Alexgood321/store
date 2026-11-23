@@ -15,9 +15,9 @@
         {
           "name": "Home Categories Pro",
           "author": "Lampa Community / Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@e0f1f562a527a6e248efc933fab25066e428c776/home_categories.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@931994cbe3f0b14e64f640a050551551cf576f76/home_categories.js",
           "descr": "Скрытие и изменение порядка категорий главного экрана Lampa. Управление с ТВ-пульта и сенсорного экрана.",
-          "version": "2.0.2"
+          "version": "2.0.3"
         },
         {
           "name": "NUM Series Pro",
@@ -45,7 +45,7 @@
           "author": "Alexgood321",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
           "descr": "Персональный магазин Lampa: установка расширений, проверка версий, обновления, журнал изменений и управление устройством.",
-          "version": "3.6.6"
+          "version": "3.6.7"
         },
         {
           "name": "Lampa Sync Pro",
@@ -58,15 +58,15 @@
           "name": "KP Rating Pro",
           "author": "Alexgood321",
           "descr": "Рейтинг Кинопоиска на постерах Lampa: асинхронная подмена, кэш, поиск совпадений, контроль запросов и режимы КП / TMDB / оба.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@611dc49c1798e16f39439c06f3b2c422f0cfca05/kp_rating_pro.js",
-          "version": "1.1.0"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@931994cbe3f0b14e64f640a050551551cf576f76/kp_rating_pro.js",
+          "version": "1.1.1"
         },
         {
           "name": "TorrServer Switch Pro",
           "author": "Alexgood321",
           "descr": "Круглая кнопка TS/пинг: увеличена подпись ms и точка состояния сдвинута внутрь. Анимация, диагностика, мониторинг и AUTO.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d3e8cc3b488950ea7662c5a493f07a7f2d03b7e0/torrserver_switch.js",
-          "version": "2.1.2"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@931994cbe3f0b14e64f640a050551551cf576f76/torrserver_switch.js",
+          "version": "2.1.3"
         }
       ]
     },
@@ -84,9 +84,9 @@
         {
           "name": "Home Categories Pro",
           "author": "Lampa Community / Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@e0f1f562a527a6e248efc933fab25066e428c776/home_categories.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@931994cbe3f0b14e64f640a050551551cf576f76/home_categories.js",
           "descr": "Скрытие и изменение порядка категорий главного экрана Lampa. Управление с ТВ-пульта и сенсорного экрана.",
-          "version": "2.0.2"
+          "version": "2.0.3"
         },
         {
           "name": "Продолжить просмотр",
@@ -152,8 +152,8 @@
           "name": "TorrServer Switch Pro",
           "author": "Alexgood321",
           "descr": "Круглая кнопка TS/пинг: увеличена подпись ms и точка состояния сдвинута внутрь. Анимация, диагностика, мониторинг и AUTO.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d3e8cc3b488950ea7662c5a493f07a7f2d03b7e0/torrserver_switch.js",
-          "version": "2.1.2"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@931994cbe3f0b14e64f640a050551551cf576f76/torrserver_switch.js",
+          "version": "2.1.3"
         }
       ]
     },
@@ -237,8 +237,8 @@
           "name": "KP Rating Pro",
           "author": "Alexgood321",
           "descr": "Рейтинг Кинопоиска на постерах Lampa: асинхронная подмена, кэш, поиск совпадений, контроль запросов и режимы КП / TMDB / оба.",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@611dc49c1798e16f39439c06f3b2c422f0cfca05/kp_rating_pro.js",
-          "version": "1.1.0"
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@931994cbe3f0b14e64f640a050551551cf576f76/kp_rating_pro.js",
+          "version": "1.1.1"
         }
       ]
     },
@@ -279,10 +279,10 @@
         "path": "home_categories.js",
         "ref": "main",
         "owned": true,
-        "sha": "e0f1f562a527a6e248efc933fab25066e428c776",
-        "version": "2.0.2",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@e0f1f562a527a6e248efc933fab25066e428c776/home_categories.js",
-        "published_at": "2026-11-07T00:01:12Z"
+        "sha": "931994cbe3f0b14e64f640a050551551cf576f76",
+        "version": "2.0.3",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@931994cbe3f0b14e64f640a050551551cf576f76/home_categories.js",
+        "published_at": "2026-11-23T14:58:27Z"
       },
       "NUM Series Pro": {
         "repo": "Alexgood321/lampa-plugins",
@@ -389,10 +389,10 @@
         "path": "my_store_runtime.js",
         "ref": "main",
         "owned": false,
-        "sha": "c7584983759fdf8748064743de105b41d218ddf2",
-        "version": "3.6.6",
+        "sha": "1cdf05779182ae6ea44d754eadc0f6388dea4440",
+        "version": "3.6.7",
         "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
-        "published_at": "2026-11-07T15:56:51Z"
+        "published_at": "2026-11-23T14:59:29Z"
       },
       "Lampa Shield Ads": {
         "repo": "Alexgood321/lampa-plugins",
@@ -419,20 +419,20 @@
         "path": "kp_rating_pro.js",
         "ref": "main",
         "owned": true,
-        "sha": "611dc49c1798e16f39439c06f3b2c422f0cfca05",
-        "version": "1.1.0",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@611dc49c1798e16f39439c06f3b2c422f0cfca05/kp_rating_pro.js",
-        "published_at": "2026-11-08T14:39:03Z"
+        "sha": "931994cbe3f0b14e64f640a050551551cf576f76",
+        "version": "1.1.1",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@931994cbe3f0b14e64f640a050551551cf576f76/kp_rating_pro.js",
+        "published_at": "2026-11-23T14:58:27Z"
       },
       "TorrServer Switch Pro": {
         "repo": "Alexgood321/lampa-plugins",
         "path": "torrserver_switch.js",
         "ref": "main",
         "owned": true,
-        "sha": "d3e8cc3b488950ea7662c5a493f07a7f2d03b7e0",
-        "version": "2.1.2",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@d3e8cc3b488950ea7662c5a493f07a7f2d03b7e0/torrserver_switch.js",
-        "published_at": "2026-11-11T16:13:45Z"
+        "sha": "931994cbe3f0b14e64f640a050551551cf576f76",
+        "version": "2.1.3",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@931994cbe3f0b14e64f640a050551551cf576f76/torrserver_switch.js",
+        "published_at": "2026-11-23T14:58:27Z"
       }
     },
     "registered": {
@@ -546,6 +546,11 @@
           "sha": "e0f1f562a527a6e248efc933fab25066e428c776",
           "version": "2.0.2",
           "published_at": "2026-11-07T00:01:12Z"
+        },
+        {
+          "sha": "931994cbe3f0b14e64f640a050551551cf576f76",
+          "version": "2.0.3",
+          "published_at": "2026-11-23T14:58:27Z"
         }
       ],
       "NUM Series Pro": [
@@ -703,6 +708,11 @@
           "sha": "c7584983759fdf8748064743de105b41d218ddf2",
           "version": "3.6.6",
           "published_at": "2026-11-07T15:56:51Z"
+        },
+        {
+          "sha": "1cdf05779182ae6ea44d754eadc0f6388dea4440",
+          "version": "3.6.7",
+          "published_at": "2026-11-23T14:59:29Z"
         }
       ],
       "Lampa Shield Ads": [
@@ -789,6 +799,11 @@
           "sha": "611dc49c1798e16f39439c06f3b2c422f0cfca05",
           "version": "1.1.0",
           "published_at": "2026-11-08T14:39:03Z"
+        },
+        {
+          "sha": "931994cbe3f0b14e64f640a050551551cf576f76",
+          "version": "1.1.1",
+          "published_at": "2026-11-23T14:58:27Z"
         }
       ],
       "TorrServer Switch Pro": [
@@ -816,10 +831,15 @@
           "sha": "d3e8cc3b488950ea7662c5a493f07a7f2d03b7e0",
           "version": "2.1.2",
           "published_at": "2026-11-11T16:13:45Z"
+        },
+        {
+          "sha": "931994cbe3f0b14e64f640a050551551cf576f76",
+          "version": "2.1.3",
+          "published_at": "2026-11-23T14:58:27Z"
         }
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-23T03:55:27Z"
+    "last_checked_at": "2026-11-23T15:00:46Z"
   }
 }
