@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.6.6',
+    version: '3.6.7',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
