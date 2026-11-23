@@ -15,9 +15,9 @@
         {
           "name": "Home Categories Pro",
           "author": "Lampa Community / Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@931994cbe3f0b14e64f640a050551551cf576f76/home_categories.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@79fba6510ecae0c32bc1d300200c9a8145ff6fda/home_categories.js",
           "descr": "Скрытие и изменение порядка категорий главного экрана Lampa. Управление с ТВ-пульта и сенсорного экрана.",
-          "version": "2.0.3"
+          "version": "2.0.4"
         },
         {
           "name": "NUM Series Pro",
@@ -84,9 +84,9 @@
         {
           "name": "Home Categories Pro",
           "author": "Lampa Community / Alexgood321",
-          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@931994cbe3f0b14e64f640a050551551cf576f76/home_categories.js",
+          "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@79fba6510ecae0c32bc1d300200c9a8145ff6fda/home_categories.js",
           "descr": "Скрытие и изменение порядка категорий главного экрана Lampa. Управление с ТВ-пульта и сенсорного экрана.",
-          "version": "2.0.3"
+          "version": "2.0.4"
         },
         {
           "name": "Продолжить просмотр",
@@ -279,10 +279,10 @@
         "path": "home_categories.js",
         "ref": "main",
         "owned": true,
-        "sha": "931994cbe3f0b14e64f640a050551551cf576f76",
-        "version": "2.0.3",
-        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@931994cbe3f0b14e64f640a050551551cf576f76/home_categories.js",
-        "published_at": "2026-11-23T14:58:27Z"
+        "sha": "79fba6510ecae0c32bc1d300200c9a8145ff6fda",
+        "version": "2.0.4",
+        "link": "https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@79fba6510ecae0c32bc1d300200c9a8145ff6fda/home_categories.js",
+        "published_at": "2026-11-23T16:38:00Z"
       },
       "NUM Series Pro": {
         "repo": "Alexgood321/lampa-plugins",
@@ -551,6 +551,11 @@
           "sha": "931994cbe3f0b14e64f640a050551551cf576f76",
           "version": "2.0.3",
           "published_at": "2026-11-23T14:58:27Z"
+        },
+        {
+          "version": "2.0.4",
+          "sha": "79fba6510ecae0c32bc1d300200c9a8145ff6fda",
+          "published_at": "2026-11-23T16:38:00Z"
         }
       ],
       "NUM Series Pro": [
@@ -840,6 +845,6 @@
       ]
     },
     "auto_update_installed": false,
-    "last_checked_at": "2026-11-23T15:00:46Z"
+    "last_checked_at": "2026-11-23T15:22:06Z"
   }
 }
