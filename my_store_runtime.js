@@ -363,6 +363,7 @@
         (meta.repo + '/' + meta.path).toLowerCase()) return false;
     var currentVersion = installedVersion(url, meta);
     var executedVersion = runningVersion(name);
+    if (executedVersion === meta.version) return false;
     return isVersionNewer(currentVersion, meta.version) ||
       isVersionNewer(executedVersion, meta.version);
   }
@@ -466,6 +467,7 @@
         (meta.repo + '/' + meta.path).toLowerCase()) return false;
     var current = installedVersion(item.url, meta);
     var running = runningVersion(name);
+    if (running === meta.version) return false;
     return !isVersionNewer(meta.version, current) &&
       !isVersionNewer(meta.version, running);
   }
