@@ -20,6 +20,15 @@ def fixture():
     syncer.ROOT = root
     return temp, root
 
+# Every published pin must be the latest entry in its verified history.
+# Otherwise the client cannot determine ordered same-version SHA upgrades.
+published = json.loads((REPO / "live_catalog.json").read_text(encoding="utf-8"))
+for name, item in published["meta"]["tracked"].items():
+    history = published["meta"]["history"].get(name, [])
+    assert history, f"{name}: missing revision history"
+    assert history[-1]["sha"] == item["sha"], f"{name}: current SHA absent from history tail"
+    assert history[-1]["version"] == item["version"], f"{name}: history version mismatch"
+
 old_root = syncer.ROOT
 old_commit = syncer.latest_path_commit
 old_fetch = syncer.fetch_text
