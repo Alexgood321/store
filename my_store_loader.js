@@ -12,7 +12,7 @@
   var LAST_GOOD_KEY = 'alexgood321_store_boot_last_good_v1';
   var PRIOR_GOOD_KEY = 'alexgood321_store_boot_prior_good_v1';
   var NEXT_RELEASE_KEY = 'alexgood321_store_boot_checked_release_v1';
-  var state = {loader_version:'1.1.0',status:'starting',sha:'',version:'',
+  var state = {loader_version:'1.1.1',status:'starting',sha:'',version:'',
     source:'',checked_at:0,last_error:'',catalog_fresh:false,catalog_checked_at:'',
     available_sha:'',available_version:'',
     metrics:{started_at:Date.now(),catalog_ms:0,runtime_ms:0,boot_ms:0,fallback_attempts:0}};
@@ -161,7 +161,7 @@
 
   function runtimeURL(sha, alternative) {
     return alternative ?
-      'https://raw.githubusercontent.com/' + REPO + '/' + sha +
+      'https://rawcdn.githack.com/' + REPO + '/' + sha +
         '/' + RUNTIME_PATH + '?build=' + sha.slice(0,12) :
       'https://cdn.jsdelivr.net/gh/' + REPO + '@' + sha +
         '/' + RUNTIME_PATH + '?build=' + sha.slice(0,12);
