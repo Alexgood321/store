@@ -6,6 +6,7 @@ on:
     paths:
       - 'my_store_loader.js'
       - 'tests/store-loader-fallback.cjs'
+      - 'tests/store-floating-updates.cjs'
       - 'my_store_runtime.js'
       - 'my_store_release.json'
       - 'live_catalog.json'
@@ -29,6 +30,7 @@ on:
     paths:
       - 'my_store_loader.js'
       - 'tests/store-loader-fallback.cjs'
+      - 'tests/store-floating-updates.cjs'
       - 'my_store_runtime.js'
       - 'my_store_release.json'
       - 'live_catalog.json'
@@ -62,6 +64,7 @@ jobs:
       - run: node --check my_store_runtime.js
       - run: node --check tests/store-versions.cjs
       - run: node tests/store-versions.cjs
+      - run: node tests/store-floating-updates.cjs
       - run: node --check tests/store-menu.cjs
       - run: node tests/store-menu.cjs
       - run: node --check tests/store-central.cjs
