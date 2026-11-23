@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.6.7',
+    version: '3.6.8',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -269,10 +269,11 @@
   function catalogIsFresh() {
     if (!LIVE_DATA || !LIVE_DATA.meta) return false;
     var stamp = Date.parse(LIVE_DATA.meta.last_checked_at || '');
-    // The central scheduler is configured for five minutes. Allow two hours
-    // for a delayed GitHub Actions run, but never silently claim freshness.
+    // Allow delayed scheduled checks for 12 hours. Immutable forward-only
+    // release pins still require verified metadata, and long outages block
+    // automatic URL replacement rather than trusting indefinitely stale data.
     return isFinite(stamp) && stamp > 0 &&
-      Date.now() >= stamp && Date.now() - stamp <= 2 * 60 * 60 * 1000;
+      Date.now() >= stamp && Date.now() - stamp <= 12 * 60 * 60 * 1000;
   }
 
   // An installed Lampa entry usually has url/status but no plugin name.
@@ -356,12 +357,18 @@
     // A previous immutable commit is outdated even if no version string is declared.
     if (pinned) return meta.sha.indexOf(pinned[1].toLowerCase()) !== 0;
 
-    // @main/@master, GitHub Pages and other floating URLs can still return a
-    // stale JS file from cache. Compare its detected version with the manifest.
-    // Unknown or non-semantic versions must not generate a false notification.
-    if (normalized(url) !== normalized(meta.link)) return false;
+    // A floating URL can serve the latest JS while this Lampa session still
+    // runs an older build. The executed version is stronger evidence than
+    // fetching @main again. Never infer this from unknown running state.
+    if (installedGithubKey(url) !==
+        (meta.repo + '/' + meta.path).toLowerCase()) return false;
     var currentVersion = installedVersion(url, meta);
-    return isVersionNewer(currentVersion, meta.version);
+    var executedVersion = runningVersion(name);
+    if (executedVersion === meta.version ||
+        isVersionNewer(meta.version, currentVersion) ||
+        isVersionNewer(meta.version, executedVersion)) return false;
+    return isVersionNewer(currentVersion, meta.version) ||
+      isVersionNewer(executedVersion, meta.version);
   }
 
   function notice(message) {
@@ -439,10 +446,58 @@
     var item = findInstalled(name, meta);
     if (!item || !item.url) return false;
     var current = installedVersion(item.url, meta);
-    // Unknown or newer installed semantic versions must never be downgraded.
-    return typeof current === 'string' &&
-      (isVersionNewer(current, meta.version) ||
-       verifiedSameVersionRevision(name, item.url, meta, current));
+    var running = runningVersion(name);
+    // Never downgrade even when @main serves older cached source to Lampa.
+    if (isVersionNewer(meta.version, current) ||
+        isVersionNewer(meta.version, running)) return false;
+    return isVersionNewer(current, meta.version) ||
+      (!/@[a-f0-9]{7,40}\//i.test(String(item.url)) &&
+       installedGithubKey(item.url) ===
+         (meta.repo + '/' + meta.path).toLowerCase() &&
+       /^\d+(?:\.\d+){1,3}$/.test(String(current || '')) &&
+       isVersionNewer(running, meta.version)) ||
+      verifiedSameVersionRevision(name, item.url, meta, current);
+  }
+
+  // Explicit recovery for a recognized floating URL whose actual JS version
+  // cannot be verified. The user chooses this action; auto-update never does.
+  function canPinVerifiedRelease(name, meta) {
+    if (!meta || !meta.sha || !meta.link || !meta.repo || !meta.path ||
+        !catalogIsKnownGood()) return false;
+    var item = findInstalled(name, meta);
+    if (!item || !item.url || item.url === meta.link ||
+        item.status === 0 || item.status === '0' || item.status === false) return false;
+    if (/@[a-f0-9]{7,40}\//i.test(String(item.url))) return false;
+    if (installedGithubKey(item.url) !==
+        (meta.repo + '/' + meta.path).toLowerCase()) return false;
+    var current = installedVersion(item.url, meta);
+    var running = runningVersion(name);
+    if (running === meta.version) return false;
+    return !isVersionNewer(meta.version, current) &&
+      !isVersionNewer(meta.version, running);
+  }
+
+  function pinVerifiedRelease(name) {
+    var meta = LIVE_META[name];
+    if (!canPinVerifiedRelease(name, meta) ||
+        !Lampa.Plugins || typeof Lampa.Plugins.save !== 'function') return false;
+    var item = findInstalled(name, meta), old = item.url;
+    try {
+      item.url = meta.link;
+      Lampa.Plugins.save();
+      if (Lampa.Storage) Lampa.Storage.set(UPDATE_BACKUP_KEY, {
+        name:name, oldUrl:old, newUrl:meta.link
+      });
+      historyAdd('verified_manual_pin', name, old, meta.link);
+      deviceSet({last_update_at:Date.now()});
+      notice('Закреплена версия ' + name + ' ' + meta.version +
+        '. Перезапустите Lampa. Предыдущую ссылку можно восстановить.');
+      return true;
+    } catch (error) {
+      item.url = old;
+      console.warn('[My Store] Verified manual pin failed:', error);
+      return false;
+    }
   }
 
   function updateInstalledAutomatically(quiet) {
@@ -478,6 +533,7 @@
     for (var i = 0; i < applied.length; i++) appliedLookup[applied[i]] = true;
 
     var available = [];
+    var manualPinCandidates = [];
     var unknown = 0;
     for (var name in LIVE_META) {
       if (!Object.prototype.hasOwnProperty.call(LIVE_META,name)) continue;
@@ -489,10 +545,12 @@
       // in the report even though it is no longer considered outdated.
       if (appliedLookup[name] || isUpdateAvailable(name)) {
         available.push(name + ' ' + (info.version || ('rev-' + info.sha.slice(0,8))));
+      } else if (canPinVerifiedRelease(name, info)) {
+        manualPinCandidates.push(name);
       } else {
         var pinned = /@[a-f0-9]{7,40}\//i.test(String(current.url || ''));
         if (!pinned && isVersionNewer('0.0', info.version) &&
-            cachedSourceVersion(current.url) === '') unknown++;
+            !cachedSourceVersion(current.url)) unknown++;
       }
     }
 
@@ -508,9 +566,13 @@
         notice('Найдены обновления (' + available.length + '): ' +
           visible.join(', ') + suffix + '. Для установки обновите ссылку.');
       }
+    } else if (manualPinCandidates.length) {
+      notice('В каталоге есть проверенные сборки, но запуск не подтверждён: ' +
+        manualPinCandidates.slice(0,3).join(', ') +
+        '. Откройте «Обновления плагинов» для ручного закрепления.');
     } else if (unknown) {
-      notice('Каталог проверен. Обновлений не обнаружено; ' +
-        'не удалось определить версию ' + unknown + ' плагинов.');
+      notice('Каталог проверен. Версии ' + unknown +
+        ' плагинов не удалось определить; результат неполный.');
     } else {
       notice('Проверено. Новых версий не найдено.');
     }
@@ -641,12 +703,15 @@
         if (!installed) continue;
         var outdated = isUpdateAvailable(name);
         var canUpdate = outdated && automaticUpgradeIsSafe(name,info);
-        if (canUpdate) count++;
+        var canPin = !canUpdate && canPinVerifiedRelease(name,info);
+        if (canUpdate || canPin) count++;
         var floating = /@(main|master|dev|latest)\//i.test(String(installed.url));
         var currentVersion = installedVersion(String(installed.url), info);
         var currentLabel = currentVersion === null ? 'проверяется' : (currentVersion || 'не определена');
         var details = canUpdate ?
           'Сохранённая ссылка: ' + currentLabel + ' · Доступна: ' + info.version + ' · обновить ссылку' :
+          canPin ? 'Источник @main: версия запуска не подтверждена · ' +
+            'закрепить проверенную сборку ' + info.version + ' (вручную)' :
           outdated ? 'Сохранённая ссылка: ' + currentLabel +
             ' · Обновление заблокировано: версия или SHA не подтверждены' :
           floating && currentVersion === null ?
@@ -657,12 +722,14 @@
         if (countCopies > 1) details += ' · Установлено копий: ' + countCopies;
         var versionDisplay = versionDisplayState(name,currentVersion || '',
           info.version || '',canUpdate);
-        if (outdated && !canUpdate)
+        if (canPin)
+          versionDisplay.hint = 'Можно вручную закрепить официальный SHA. Автоматическая замена без проверки запрещена; предыдущая ссылка сохраняется для отката.';
+        else if (outdated && !canUpdate)
           versionDisplay.hint = 'Обновление заблокировано: установленная версия или направление SHA не подтверждены.';
         if (countCopies > 1)
           versionDisplay.hint += ' Установлено копий: ' + countCopies + '.';
         rows.push({title:name,subtitle:details,name:name,canUpdate:canUpdate,
-          unsafeUpdate:outdated && !canUpdate,
+          canPin:canPin, unsafeUpdate:outdated && !canUpdate && !canPin,
           versionDisplay:versionDisplay,onDraw:decorateUpdateVersionRow});
       }
       if (rows.length === 0) rows.push({title:'Установленных отслеживаемых плагинов нет', action:'none'});
@@ -731,6 +798,19 @@
                 if (decision.action === 'confirm') {
                   if (!replaceInstalled(selected)) notice('Обновление не удалось');
                 }
+              }
+            });
+          } else if (row.canPin) {
+            var selectedPin = row.name;
+            Lampa.Select.show({
+              title: 'Закрепить проверенный релиз ' + selectedPin + '?',
+              items: [
+                {title:'Заменить плавающую ссылку на SHA из каталога',action:'confirm'},
+                {title:'Отмена',action:'cancel'}
+              ],
+              onSelect:function(decision) {
+                if (decision.action === 'confirm' && !pinVerifiedRelease(selectedPin))
+                  notice('Не удалось закрепить сборку: проверьте версию и установку');
               }
             });
           } else if (row.unsafeUpdate) {
@@ -1671,10 +1751,18 @@
     if (available && available.version) {
       var pin = String(url).match(/@([a-f0-9]{7,40})\//i);
       var pinnedOld = pin && available.sha && available.sha.indexOf(pin[1].toLowerCase()) !== 0;
-      newer = Boolean(pinnedOld || isVersionNewer(found, available.version));
-      if (newer) text += found === available.version && pinnedOld ?
-        ' · Новая сборка: ' + available.version :
-        ' · Доступна: ' + available.version;
+      var executingOlder = match && isVersionNewer(runningVersion(match.name), available.version);
+      var manualPin = match && canPinVerifiedRelease(match.name, available);
+      newer = Boolean(pinnedOld || isVersionNewer(found, available.version) ||
+        executingOlder || manualPin);
+      if (newer) {
+        if (manualPin && !pinnedOld && !executingOlder &&
+            !isVersionNewer(found, available.version))
+          text += ' · Можно закрепить проверенную сборку ' + available.version;
+        else text += found === available.version && pinnedOld ?
+          ' · Новая сборка: ' + available.version :
+          ' · Доступна: ' + available.version;
+      }
     }
     return {text:text, update:newer};
   }
