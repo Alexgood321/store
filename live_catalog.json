@@ -729,16 +729,6 @@
       ],
       "Lampa Sync Pro": [
         {
-          "sha": "708d43e7a58bf8e6bbd2a185d6983c25ff30b503",
-          "version": "0.1.13",
-          "published_at": "2026-11-07T09:28:41Z"
-        },
-        {
-          "sha": "eddfe50c689e527a19167e5fd911b438dd686ad6",
-          "version": "0.1.14",
-          "published_at": "2026-11-07T09:45:42Z"
-        },
-        {
           "sha": "320c1e834f97b531f6c38d02e8634db9711b73e1",
           "version": "0.1.14",
           "published_at": "2026-11-07T09:50:26Z"
@@ -787,6 +777,16 @@
           "sha": "152d83e55b2199b4b163641be24505d97ca2fab3",
           "version": "0.1.21",
           "published_at": "2026-11-08T15:18:45Z"
+        },
+        {
+          "sha": "20913a4cef26399c72ab8aebdea015a02134f69d",
+          "version": "0.1.22",
+          "published_at": "2026-11-11T11:26:04Z"
+        },
+        {
+          "sha": "8eaa7c2589064a04e503e17b9069c4ef8ccfc69d",
+          "version": "0.1.23",
+          "published_at": "2026-11-23T13:19:29Z"
         }
       ],
       "KP Rating Pro": [

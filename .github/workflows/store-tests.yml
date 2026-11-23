@@ -10,6 +10,7 @@ on:
       - 'my_store_release.json'
       - 'live_catalog.json'
       - 'tests/store-versions.cjs'
+      - 'tests/store-floating-updates.cjs'
       - 'tests/store-menu.cjs'
       - 'tests/store-central.cjs'
       - 'tests/store-version-colors.cjs'
@@ -33,6 +34,7 @@ on:
       - 'my_store_release.json'
       - 'live_catalog.json'
       - 'tests/store-versions.cjs'
+      - 'tests/store-floating-updates.cjs'
       - 'tests/store-menu.cjs'
       - 'tests/store-central.cjs'
       - 'tests/store-version-colors.cjs'
@@ -62,6 +64,7 @@ jobs:
       - run: node --check my_store_runtime.js
       - run: node --check tests/store-versions.cjs
       - run: node tests/store-versions.cjs
+      - run: node tests/store-floating-updates.cjs
       - run: node --check tests/store-menu.cjs
       - run: node tests/store-menu.cjs
       - run: node --check tests/store-central.cjs
