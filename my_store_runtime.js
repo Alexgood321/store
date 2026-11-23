@@ -5,7 +5,7 @@
   var CONFIG = {
     id: 'alexgood321_personal_store',
     component: 'alexgood321_personal_store',
-    version: '3.6.8',
+    version: '3.6.9',
     name: 'Мои плагины',
     catalog: 'https://raw.githubusercontent.com/Alexgood321/store/main/live_catalog.json',
     fallback: 'https://cdn.jsdelivr.net/gh/Alexgood321/store@main/live_catalog.json',
@@ -1473,6 +1473,56 @@
     },Boolean(force));
   }
 
+  // Publish a one-time per-SHA update notice when a source Action has
+  // refreshed the central catalog. Polling is intentionally foreground-only.
+  var UPDATE_NOTICE_SHA_KEY = 'alexgood321_store_notice_sha_v1';
+  function notifyNewCatalogReleases(alreadyUpdated) {
+    if (!catalogIsFresh() || !LIVE_META || !Lampa.Storage ||
+        typeof Lampa.Storage.get !== 'function' ||
+        !LAST_LIVE_URL ||
+        LAST_LIVE_URL.indexOf(CONFIG.catalog + '?') !== 0) return [];
+    var seen = {};
+    try {
+      var saved = Lampa.Storage.get(UPDATE_NOTICE_SHA_KEY, {});
+      if (saved && typeof saved === 'object' && !Array.isArray(saved)) seen = saved;
+    } catch (error) { return []; }
+    var applied = {};
+    (alreadyUpdated || []).forEach(function (name) {applied[name] = true;});
+    var fresh = [], restart = [], changed = false;
+    for (var name in LIVE_META) {
+      if (!Object.prototype.hasOwnProperty.call(LIVE_META,name)) continue;
+      var meta = LIVE_META[name];
+      if (!meta || !/^[a-f0-9]{40}$/i.test(String(meta.sha || '')) ||
+          seen[name] === meta.sha) continue;
+      var installed = findInstalled(name,meta);
+      if (!installed || !installed.url || installed.status === 0 ||
+          installed.status === '0' || installed.status === false) continue;
+      var running = runningVersion(name);
+      if (isVersionNewer(meta.version, running)) continue;
+      var needsRestart = installed.url === meta.link && running &&
+        isVersionNewer(running, meta.version);
+      var update = isUpdateAvailable(name) || canPinVerifiedRelease(name,meta);
+      if (!applied[name] && !update && !needsRestart) continue;
+      seen[name] = meta.sha;
+      changed = true;
+      if (applied[name]) continue; // Auto-update already displayed its own notice.
+      if (needsRestart) restart.push(name + ' ' + meta.version);
+      else fresh.push(name + ' ' + meta.version);
+    }
+    if (changed) {
+      try {Lampa.Storage.set(UPDATE_NOTICE_SHA_KEY,seen);}
+      catch (error) {console.warn('[My Store] Update notice checkpoint:',error);}
+    }
+    var messages = [];
+    if (fresh.length) messages.push('Обновления в My Store: ' +
+      fresh.slice(0,4).join(', ') +
+      (fresh.length > 4 ? ' и ещё ' + (fresh.length - 4) : '') + '.');
+    if (restart.length) messages.push('Ссылки актуальны, нужен перезапуск Lampa: ' +
+      restart.slice(0,3).join(', ') + '.');
+    if (messages.length) notice(messages.join(' '));
+    return fresh.concat(restart);
+  }
+
   function periodicCatalogCheck() {
     // Avoid network work while the app is backgrounded or a video is playing.
     // The next foreground/idle check catches up with the central catalog.
@@ -1489,6 +1539,7 @@
       // automatic URL replacement from the centrally generated catalog.
       if (applied && applied.length)
         notice('Ссылки обновлены (' + applied.length + '). Перезапустите Lampa для применения кода.');
+      notifyNewCatalogReleases(applied);
       if (skinRoot) queueSkin();
       refreshHeaderBatchBadge();
       snapshotThisDevice();
@@ -1625,15 +1676,17 @@
           putVersion(url, version);
           // Version fetching is asynchronous. Re-check opt-in updates as soon
           // as an old installed SHA has been verified, not five minutes later.
+          var updated = [];
           if (catalogIsFresh() && LAST_LIVE_URL &&
               LAST_LIVE_URL.indexOf(CONFIG.catalog + '?') === 0) {
-            var updated = updateInstalledAutomatically(true);
+            updated = updateInstalledAutomatically(true);
             if (updated.length) {
               headerBatchPendingRestart = true;
               notice('Ссылки обновлены (' + updated.length +
                 '). Перезапустите Lampa для применения кода.');
             }
           }
+          notifyNewCatalogReleases(updated);
           if (skinRoot) queueSkin();
           runVersionTasks();
         }
@@ -2744,11 +2797,11 @@
     if (isHeaderStoreShortcutEnabled()) setTimeout(syncHeaderStoreShortcut,1200);
     setTimeout(snapshotThisDevice,5000);
     setTimeout(periodicCatalogCheck,12000);
-    if (typeof setInterval === 'function') setInterval(periodicCatalogCheck,5*60*1000);
+    if (typeof setInterval === 'function') setInterval(periodicCatalogCheck,60*1000);
     if (typeof document !== 'undefined' &&
         typeof document.addEventListener === 'function')
       document.addEventListener('visibilitychange', function () {
-        if (!document.hidden && Date.now() - lastLiveLoadAt > 5*60*1000)
+        if (!document.hidden && Date.now() - lastLiveLoadAt > 60*1000)
           periodicCatalogCheck();
       });
     if (Lampa.Settings && Lampa.Settings.listener && typeof Lampa.Settings.listener.follow === 'function') {
