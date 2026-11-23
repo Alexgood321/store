@@ -95,8 +95,6 @@ check('broken SURS 4.0.9 blob pin is replaced by the valid same-version commit',
     'a6b9df3c48b4678d6b3d040844dd4ee13fa2e5dc/surs.js';
   assert.equal(t.isUpdateAvailable('SURS Pro'),true);
   assert.equal(t.replaceInstalled('SURS Pro',true),true);
-  assert.equal(records[0].url,
-    'https://cdn.jsdelivr.net/gh/Alexgood321/lampa-plugins@'+
-    '19519fe48a86caa657a7dc7be134e05cefaca62d/surs.js');
+  assert.equal(records[0].url,currentCatalog.meta.tracked['SURS Pro'].link);
 });
 console.log('My Store tests: '+passed+' passed.');
