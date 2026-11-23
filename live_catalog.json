@@ -45,7 +45,7 @@
           "author": "Alexgood321",
           "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
           "descr": "Персональный магазин Lampa: установка расширений, проверка версий, обновления, журнал изменений и управление устройством.",
-          "version": "3.6.9"
+          "version": "3.6.10"
         },
         {
           "name": "KP Rating Pro",
@@ -389,10 +389,10 @@
         "path": "my_store_runtime.js",
         "ref": "main",
         "owned": false,
-        "sha": "fd6e8450dfdff00a15b6bb7146a6a52e2eefb742",
-        "version": "3.6.9",
+        "sha": "562186232df9e4c4ddb78df109a045012c93848f",
+        "version": "3.6.10",
         "link": "https://cdn.jsdelivr.net/gh/Alexgood321/store@main/my_store_loader.js",
-        "published_at": "2026-11-23T19:18:02Z"
+        "published_at": "2026-11-23T19:36:15Z"
       },
       "Lampa Shield Ads": {
         "repo": "Alexgood321/lampa-plugins",
@@ -728,6 +728,11 @@
           "sha": "fd6e8450dfdff00a15b6bb7146a6a52e2eefb742",
           "version": "3.6.9",
           "published_at": "2026-11-23T19:18:02Z"
+        },
+        {
+          "sha": "562186232df9e4c4ddb78df109a045012c93848f",
+          "version": "3.6.10",
+          "published_at": "2026-11-23T19:36:15Z"
         }
       ],
       "Lampa Shield Ads": [
